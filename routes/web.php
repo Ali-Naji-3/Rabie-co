@@ -21,3 +21,7 @@ Route::get('/product', function () {
 Route::get('/cart', function () {
     return view('cart');
 })->name('cart');
+
+Route::get('/write-review', function () {
+    return view('write-review');
+})->name('write-review');

@@ -164,7 +164,7 @@
 											<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">ADDITIONAL INFORMATION</a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">REVIEWS (1)</a>
+											<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">REVIEWS (3)</a>
 										</li>
 									</ul>
 									<div class="tab-content" id="myTabContent">
@@ -235,46 +235,147 @@
 										</div>
 										<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 											<div class="prod-bottom-tab-sin">
-												<h5>Review (1)</h5>
-												<div class="product-review">
-													<div class="reviwer">
-														<img src="media/images/reviewer.png" alt="">
-														<div class="review-details">
-															<span>Posted by Tonoy - Published on	March 22, 2018</span>
-															<div class="rating">
-																<ul>
-																	<li><a href="#"><i class="far fa-star"></i></a></li>
-																	<li><a href="#"><i class="far fa-star"></i></a></li>
-																	<li><a href="#"><i class="far fa-star"></i></a></li>
-																	<li><a href="#"><i class="far fa-star"></i></a></li>
-																	<li><a href="#"><i class="far fa-star"></i></a></li>
-																</ul>
+												<!-- Review Summary Section -->
+												<div class="review-summary-section mb-4" style="background: #f8f9fa; padding: 25px; border-radius: 12px; border-left: 4px solid #007bff;">
+													<div class="row align-items-center">
+														<!-- Average Rating -->
+														<div class="col-md-4 text-center">
+															<div class="average-rating">
+																<h2 style="color: #007bff; font-weight: 700; margin: 0; font-size: 48px;">5.0</h2>
+																<div class="stars mb-2">
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 20px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 20px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 20px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 20px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 20px;"></i>
+																</div>
+																<p style="color: #666; margin: 0; font-size: 14px;">Average Rating</p>
 															</div>
-															<p>But I must explain to you how all this mistaken idea of denouncipleasure and praisi pain was born and I will give you a complete.</p>
+														</div>
+														
+														<!-- Total Reviews -->
+														<div class="col-md-4 text-center">
+															<div class="total-reviews">
+																<h2 style="color: #28a745; font-weight: 700; margin: 0; font-size: 48px;">3</h2>
+																<p style="color: #666; margin: 0; font-size: 14px;">Total Reviews</p>
+															</div>
+														</div>
+														
+														<!-- Recommended -->
+														<div class="col-md-4 text-center">
+															<div class="recommended">
+																<h2 style="color: #28a745; font-weight: 700; margin: 0; font-size: 48px;">3</h2>
+																<p style="color: #666; margin: 0; font-size: 14px;">Recommended</p>
+															</div>
 														</div>
 													</div>
-													<div class="add-your-review">
-														<h6>ADD A REVIEW</h6>
-														<p>YOUR RATING* </p>
-														<div class="rating">
-															<ul>
-																<li><a href="#"><i class="far fa-star"></i></a></li>
-																<li><a href="#"><i class="far fa-star"></i></a></li>
-																<li><a href="#"><i class="far fa-star"></i></a></li>
-																<li><a href="#"><i class="far fa-star"></i></a></li>
-																<li><a href="#"><i class="far fa-star"></i></a></li>
-															</ul>
-														</div>
+												</div>
 
-														<div class="raing-form">
-															<form action="#">
-																<input type="text" placeholder="">
-																<input type="text">
-																<textarea name="rating-form"></textarea>
-																<input type="submit">
-															</form>
+												<!-- Individual Reviews -->
+												<div class="reviews-list">
+													<!-- Review 1 -->
+													<div class="review-card mb-4" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+														<div class="review-header d-flex justify-content-between align-items-start mb-3">
+															<div class="review-rating">
+																<div class="stars mb-2">
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																</div>
+																<span style="color: #666; font-size: 14px;">5.0/5.0</span>
+															</div>
+															<span style="color: #999; font-size: 14px;">Published 1 week ago</span>
+														</div>
+														
+														<div class="review-content">
+															<h6 style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; font-size: 18px;">"Excellent Product!"</h6>
+															<p style="color: #666; line-height: 1.6; margin-bottom: 15px;">This product exceeded my expectations. The quality is outstanding and delivery was fast!</p>
+														</div>
+														
+														<div class="review-footer d-flex justify-content-between align-items-center">
+															<div class="reviewer-info d-flex align-items-center">
+																<div class="user-avatar mr-2" style="width: 32px; height: 32px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+																	<i class="fas fa-user" style="color: white; font-size: 14px;"></i>
+																</div>
+																<span style="color: #1b1b18; font-weight: 500;">Admin User</span>
+															</div>
+															<span class="recommendation-badge" style="background: #28a745; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 500;">Recommends</span>
 														</div>
 													</div>
+
+													<!-- Review 2 -->
+													<div class="review-card mb-4" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+														<div class="review-header d-flex justify-content-between align-items-start mb-3">
+															<div class="review-rating">
+																<div class="stars mb-2">
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																</div>
+																<span style="color: #666; font-size: 14px;">5.0/5.0</span>
+															</div>
+															<span style="color: #999; font-size: 14px;">Published 2 weeks ago</span>
+														</div>
+														
+														<div class="review-content">
+															<h6 style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; font-size: 18px;">"Perfect Quality!"</h6>
+															<p style="color: #666; line-height: 1.6; margin-bottom: 15px;">Amazing quality and perfect fit. Highly recommend this product to anyone looking for premium quality.</p>
+														</div>
+														
+														<div class="review-footer d-flex justify-content-between align-items-center">
+															<div class="reviewer-info d-flex align-items-center">
+																<div class="user-avatar mr-2" style="width: 32px; height: 32px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+																	<i class="fas fa-user" style="color: white; font-size: 14px;"></i>
+																</div>
+																<span style="color: #1b1b18; font-weight: 500;">Sarah Johnson</span>
+															</div>
+															<span class="recommendation-badge" style="background: #28a745; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 500;">Recommends</span>
+														</div>
+													</div>
+
+													<!-- Review 3 -->
+													<div class="review-card mb-4" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+														<div class="review-header d-flex justify-content-between align-items-start mb-3">
+															<div class="review-rating">
+																<div class="stars mb-2">
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																	<i class="fas fa-star" style="color: #ffc107; font-size: 16px;"></i>
+																</div>
+																<span style="color: #666; font-size: 14px;">5.0/5.0</span>
+															</div>
+															<span style="color: #999; font-size: 14px;">Published 3 weeks ago</span>
+														</div>
+														
+														<div class="review-content">
+															<h6 style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; font-size: 18px;">"Great Value!"</h6>
+															<p style="color: #666; line-height: 1.6; margin-bottom: 15px;">Excellent value for money. The product quality is top-notch and the customer service was outstanding.</p>
+														</div>
+														
+														<div class="review-footer d-flex justify-content-between align-items-center">
+															<div class="reviewer-info d-flex align-items-center">
+																<div class="user-avatar mr-2" style="width: 32px; height: 32px; background: #ffc107; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+																	<i class="fas fa-user" style="color: white; font-size: 14px;"></i>
+																</div>
+																<span style="color: #1b1b18; font-weight: 500;">Mike Chen</span>
+															</div>
+															<span class="recommendation-badge" style="background: #28a745; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 500;">Recommends</span>
+														</div>
+													</div>
+												</div>
+
+												<!-- Leave Review Button -->
+												<div class="leave-review-section text-center mt-4">
+													<a href="{{ route('write-review') }}" class="btn btn-primary btn-lg" style="background: #007bff; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+														<i class="fas fa-star mr-2"></i>
+														Leave a review
+													</a>
 												</div>
 											</div>
 										</div>
@@ -292,31 +393,6 @@
 		</section>
 		<!-- /.shop-area -->
 
-		<!--=========================-->
-		<!--=   Subscribe area      =-->
-		<!--=========================-->
-
-		<section class="subscribe-area style-two">
-			<div class="container container-two">
-				<div class="row">
-					<div class="col-lg-5">
-						<div class="subscribe-text">
-							<h6>Join our newsletter</h6>
-						</div>
-					</div>
-					<!-- col-xl-6 -->
-
-					<div class="col-lg-7">
-						<div class="subscribe-wrapper">
-							<input placeholder="Enter Keyword" type="text">
-							<button type="submit">SUBSCRIBE</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /.container-two -->
-		</section>
-		<!-- subscribe-area -->
 
 		<!--=========================-->
 

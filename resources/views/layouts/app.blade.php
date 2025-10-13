@@ -80,6 +80,99 @@
 		#checkoutModal .success-icon {
 			margin-bottom: 30px;
 		}
+
+		/* Center REVIEW title with ::after pseudo-element */
+		.small-sec-title.text-center {
+			position: relative;
+			text-align: center;
+		}
+		.small-sec-title.text-center h6 {
+			display: inline-block;
+			position: relative;
+			padding: 0 20px;
+		}
+		.small-sec-title.text-center h6::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 100%;
+			width: 200px;
+			height: 2px;
+			background-color: #ddd;
+			transform: translateY(-50%);
+		}
+		.small-sec-title.text-center h6::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: 100%;
+			width: 200px;
+			height: 2px;
+			background-color: #ddd;
+			transform: translateY(-50%);
+		}
+
+		/* Quick View Modal Styling */
+		#quickViewModal .modal-content {
+			border-radius: 15px;
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+			border: none;
+		}
+		#quickViewModal .modal-header {
+			background: linear-gradient(135deg, #f53003, #ff6b35);
+			color: white;
+			border-radius: 15px 15px 0 0;
+		}
+		#quickViewModal .modal-title {
+			font-weight: 600;
+			font-size: 20px;
+		}
+		#quickViewModal .close {
+			color: white;
+			opacity: 0.8;
+		}
+		#quickViewModal .close:hover {
+			opacity: 1;
+		}
+		#quickViewModal .product-image-container {
+			position: relative;
+			overflow: hidden;
+			border-radius: 10px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+		}
+		#quickViewModal .product-image-container img {
+			transition: transform 0.3s ease;
+		}
+		#quickViewModal .product-image-container:hover img {
+			transform: scale(1.05);
+		}
+		#quickViewModal .btn-primary {
+			transition: all 0.3s ease;
+		}
+		#quickViewModal .btn-primary:hover {
+			background-color: #d42902 !important;
+			border-color: #d42902 !important;
+			transform: translateY(-2px);
+			box-shadow: 0 5px 15px rgba(245, 48, 3, 0.4);
+		}
+		#quickViewModal .btn-outline-secondary {
+			transition: all 0.3s ease;
+		}
+		#quickViewModal .btn-outline-secondary:hover {
+			background-color: #6c757d;
+			border-color: #6c757d;
+			color: white;
+			transform: translateY(-2px);
+		}
+		#quickViewModal .product-features ul li {
+			margin-bottom: 5px;
+		}
+		#quickViewModal .product-features ul li:before {
+			content: "✓";
+			color: #28a745;
+			font-weight: bold;
+			margin-right: 10px;
+		}
 	</style>
 
 	@stack('styles')
@@ -117,6 +210,7 @@
 								<li><a href="{{ url('/') }}" class="active">home</a></li>
 								<li><a href="{{ route('collection') }}">COLLECTION</a></li>
 								<li><a href="{{ route('contact') }}">CONTACT</a></li>
+							<li><a href="{{ route('write-review') }}">WRITE REVIEW</a></li>
 							</ul>
 						</div>
 					</div>
@@ -554,6 +648,67 @@
 		</div>
 	</div>
 
+	<!-- Quick View Modal -->
+	<div class="modal fade" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header border-0">
+					<h5 class="modal-title" id="quickViewTitle">Product Details</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true" style="font-size: 24px; color: #999;">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="product-image-container">
+								<img id="quickViewImage" src="" alt="" class="img-fluid rounded" style="width: 100%; height: 300px; object-fit: cover;">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="product-details">
+								<h4 id="quickViewProductName" style="color: #1b1b18; margin-bottom: 15px;"></h4>
+								<div class="rating mb-3">
+									<span style="color: #ffc107; font-size: 18px;">
+										<i class="fas fa-star"></i>
+										<i class="fas fa-star"></i>
+										<i class="fas fa-star"></i>
+										<i class="fas fa-star"></i>
+										<i class="fas fa-star"></i>
+									</span>
+									<span style="color: #666; margin-left: 10px;">(5.0)</span>
+								</div>
+								<div class="price mb-3">
+									<h3 id="quickViewPrice" style="color: #f53003; font-weight: bold; margin: 0;"></h3>
+								</div>
+								<div class="product-description mb-4">
+									<p style="color: #666; line-height: 1.6;">Premium quality product with excellent craftsmanship. Perfect for your collection and daily use.</p>
+								</div>
+								<div class="product-actions">
+									<button class="btn btn-primary mr-2" style="background-color: #f53003; border-color: #f53003; padding: 10px 30px;">
+										<i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+									</button>
+									<button class="btn btn-outline-secondary" style="padding: 10px 20px;">
+										<i class="fas fa-heart mr-2"></i>Add to Wishlist
+									</button>
+								</div>
+								<div class="product-features mt-4">
+									<h6 style="color: #1b1b18; margin-bottom: 10px;">Features:</h6>
+									<ul style="color: #666; padding-left: 20px;">
+										<li>Premium Quality Materials</li>
+										<li>Fast Shipping Available</li>
+										<li>30-Day Return Policy</li>
+										<li>Customer Support 24/7</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Dependency Scripts -->
 	<script src="{{ asset('dependencies/jquery/jquery.min.js') }}"></script>
 	<script src="{{ asset('dependencies/popper.js/popper.min.js') }}"></script>
@@ -581,6 +736,53 @@
 			$('.checkout-btn').on('click', function(e) {
 				e.preventDefault();
 				$('#checkoutModal').modal('show');
+			});
+		});
+	</script>
+
+	<!-- Quick View Modal Script -->
+	<script>
+		$(document).ready(function() {
+			// Handle quick view button clicks
+			$('.quick-view-btn').on('click', function(e) {
+				e.preventDefault();
+				
+				// Get product data from the clicked element
+				var productName = $(this).data('name');
+				var productImage = $(this).data('image');
+				var productPrice = $(this).data('price');
+				
+				// Update modal content
+				$('#quickViewProductName').text(productName);
+				$('#quickViewImage').attr('src', productImage);
+				$('#quickViewPrice').text(productPrice);
+				$('#quickViewTitle').text(productName + ' - Details');
+				
+				// Show modal with animation
+				$('#quickViewModal').modal('show');
+			});
+
+			// Handle add to cart from quick view
+			$('#quickViewModal .btn-primary').on('click', function() {
+				var productName = $('#quickViewProductName').text();
+				
+				// Show success message
+				alert('Added "' + productName + '" to cart successfully!');
+				
+				// Close modal
+				$('#quickViewModal').modal('hide');
+			});
+
+			// Handle add to wishlist
+			$('#quickViewModal .btn-outline-secondary').on('click', function() {
+				var productName = $('#quickViewProductName').text();
+				
+				// Show success message
+				alert('Added "' + productName + '" to wishlist!');
+				
+				// Change button to show it's added
+				$(this).removeClass('btn-outline-secondary').addClass('btn-success');
+				$(this).html('<i class="fas fa-heart mr-2"></i>Added to Wishlist');
 			});
 		});
 	</script>
