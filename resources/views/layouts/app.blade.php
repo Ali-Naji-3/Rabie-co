@@ -49,6 +49,37 @@
 		.sin-product .pro-icon a {
 			pointer-events: auto;
 		}
+
+		/* Order Completed Modal Styling */
+		#checkoutModal .modal-content {
+			border-radius: 12px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+			border: none;
+		}
+		#checkoutModal .modal-header {
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: 1050;
+			border: none;
+			background: transparent;
+		}
+		#checkoutModal .close {
+			position: relative;
+			z-index: 1051;
+			opacity: 0.8;
+			transition: opacity 0.3s ease;
+		}
+		#checkoutModal .close:hover {
+			opacity: 1;
+		}
+		#checkoutModal .modal-body {
+			padding: 50px 30px;
+			background-color: #ffffff;
+		}
+		#checkoutModal .success-icon {
+			margin-bottom: 30px;
+		}
 	</style>
 
 	@stack('styles')
@@ -137,10 +168,10 @@
 												<p>Total <span>$244.00</span></p>
 											</div>
 											<div class="cart-checkout">
-												<a href="#"><i class="fa fa-shopping-cart"></i>View Cart</a>
+												<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
 											</div>
 											<div class="cart-share">
-												<a href="#"><i class="fa fa-share"></i>Checkout</a>
+												<a href="#" class="checkout-btn"><i class="fa fa-share"></i>Checkout</a>
 											</div>
 										</div>
 									</div>
@@ -269,67 +300,6 @@
 
 		<!-- Page Content -->
 		@yield('content')
-
-		<!--=========================-->
-		<!--=   Instagram area      =-->
-		<!--=========================-->
-
-		<section class="instagram-area">
-			<div class="instagram-slider owl-carousel owl-theme">
-				<!-- single instagram-slider -->
-				<div class="sin-instagram">
-					<img src="{{ asset('media/images/instagram/1.jpg') }}" alt="">
-					<div class="hover-text">
-						<a href="#">
-					<img src="{{ asset('media/images/icon/ig.png') }}" alt="">
-					<span>instagram</span>
-				</a>
-					</div>
-				</div>
-				<!-- single instagram-slider -->
-				<div class="sin-instagram">
-					<img src="{{ asset('media/images/instagram/2.jpg') }}" alt="">
-					<div class="hover-text">
-						<a href="#">
-					<img src="{{ asset('media/images/icon/ig.png') }}" alt="">
-					<span>instagram</span>
-				</a>
-					</div>
-				</div>
-				<!-- single instagram-slider -->
-				<div class="sin-instagram">
-					<img src="{{ asset('media/images/instagram/3.jpg') }}" alt="">
-					<div class="hover-text">
-						<a href="#">
-					<img src="{{ asset('media/images/icon/ig.png') }}" alt="">
-					<span>instagram</span>
-				</a>
-					</div>
-				</div>
-				<!-- single instagram-slider -->
-				<div class="sin-instagram">
-					<img src="{{ asset('media/images/instagram/4.jpg') }}" alt="">
-					<div class="hover-text">
-						<a href="#">
-					<img src="{{ asset('media/images/icon/ig.png') }}" alt="">
-					<span>instagram</span>
-				</a>
-					</div>
-				</div>
-				<!-- single instagram-slider -->
-				<div class="sin-instagram">
-					<img src="{{ asset('media/images/instagram/5.jpg') }}" alt="">
-					<div class="hover-text">
-						<a href="#">
-					<img src="{{ asset('media/images/icon/ig.png') }}" alt="">
-					<span>instagram</span>
-				</a>
-					</div>
-				</div>
-			</div>
-			<!-- /.instagram-slider end -->
-		</section>
-		<!-- /.instagram-area end-->
 
 		<!--=========================-->
 		<!--=   Footer area      =-->
@@ -564,6 +534,26 @@
 	</div>
 	<!-- /#site -->
 
+	<!-- Order Completed Modal -->
+	<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header border-0">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true" style="font-size: 24px; color: #999;">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body text-center">
+					<div class="success-icon mb-4">
+						<i class="fa fa-check-circle" style="font-size: 80px; color: #66BB6A;"></i>
+					</div>
+					<h2 style="color: #333333; font-weight: bold; margin-bottom: 15px;">Order completed!</h2>
+					<p style="color: #666666; font-size: 16px; margin-bottom: 0;">You will receive a confirmation email soon!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Dependency Scripts -->
 	<script src="{{ asset('dependencies/jquery/jquery.min.js') }}"></script>
 	<script src="{{ asset('dependencies/popper.js/popper.min.js') }}"></script>
@@ -583,6 +573,17 @@
 
 	<!-- Site Scripts -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>
+
+	<!-- Checkout Confirmation Script -->
+	<script>
+		$(document).ready(function() {
+			// Handle checkout button click
+			$('.checkout-btn').on('click', function(e) {
+				e.preventDefault();
+				$('#checkoutModal').modal('show');
+			});
+		});
+	</script>
 
 	@stack('scripts')
 

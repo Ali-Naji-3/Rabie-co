@@ -17,3 +17,7 @@ Route::get('/collection', function () {
 Route::get('/product', function () {
     return view('product-fullwidth');
 })->name('product');
+
+Route::get('/cart', function () {
+    return view('cart');
+})->name('cart');
