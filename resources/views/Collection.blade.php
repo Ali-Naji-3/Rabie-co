@@ -606,7 +606,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp1.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp1.jpg') }}" alt=""></a>
 														</div>
 														<div class="pro-icon">
 															<ul>
@@ -651,7 +651,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp2.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp2.jpg') }}" alt=""></a>
 														</div>
 														<span class="new-tag">NEW!</span>
 														<div class="pro-icon">
@@ -697,7 +697,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp3.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp3.jpg') }}" alt=""></a>
 														</div>
 														<div class="pro-icon">
 															<ul>
@@ -742,7 +742,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp1.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp1.jpg') }}" alt=""></a>
 														</div>
 														<div class="pro-icon">
 															<ul>
@@ -787,7 +787,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp2.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp2.jpg') }}" alt=""></a>
 														</div>
 														<span class="new-tag">NEW!</span>
 														<div class="pro-icon">
@@ -833,7 +833,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp1.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp1.jpg') }}" alt=""></a>
 														</div>
 														<div class="pro-icon">
 															<ul>
@@ -878,7 +878,7 @@
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
 														<div class="pro-img">
-															<img src="media/images/product/lp2.jpg') }}" alt=""></a>
+															<img src="{{ asset('media/images/product/lp2.jpg') }}" alt=""></a>
 														</div>
 														<span class="new-tag">NEW!</span>
 														<div class="pro-icon">
@@ -943,30 +943,5 @@
 		</section>
 		<!-- /.shop-area -->
 
-		<!--=========================-->
-		<!--=   Subscribe area      =-->
-		<!--=========================-->
-
-		<section class="subscribe-area style-two">
-			<div class="container container-two">
-				<div class="row">
-					<div class="col-lg-5">
-						<div class="subscribe-text">
-							<h6>Join our newsletter</h6>
-						</div>
-					</div>
-					<!-- col-xl-6 -->
-
-					<div class="col-lg-7">
-						<div class="subscribe-wrapper">
-							<input placeholder="Enter Keyword" type="text">
-							<button type="submit">SUBSCRIBE</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /.container-two -->
-		</section>
-		<!-- subscribe-area -->
 
 @endsection

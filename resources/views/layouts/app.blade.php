@@ -210,7 +210,6 @@
 								<li><a href="{{ url('/') }}" class="active">home</a></li>
 								<li><a href="{{ route('collection') }}">COLLECTION</a></li>
 								<li><a href="{{ route('contact') }}">CONTACT</a></li>
-							<li><a href="{{ route('write-review') }}">WRITE REVIEW</a></li>
 							</ul>
 						</div>
 					</div>
