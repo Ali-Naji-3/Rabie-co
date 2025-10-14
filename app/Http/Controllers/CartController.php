@@ -23,11 +23,13 @@ class CartController extends Controller
         }
 
         $subtotal = $cartItems->sum(function($item) {
-            $price = $item->product->sale_price ?? $item->product->price;
-            return $price * $item->quantity;
+            return $item->product->final_price * $item->quantity;
         });
 
-        return view('cart', compact('cartItems', 'subtotal'));
+        $shipping = $subtotal >= 100 ? 0 : 10; // Free shipping over $100
+        $total = $subtotal + $shipping; // Total without tax
+
+        return view('cart', compact('cartItems', 'subtotal', 'shipping', 'total'));
     }
 
     public function add(Request $request)
@@ -44,26 +46,44 @@ class CartController extends Controller
         }
 
         if (Auth::check()) {
-            $cart = Cart::updateOrCreate(
-                [
+            $cart = Cart::where('user_id', Auth::id())
+                ->where('product_id', $request->product_id)
+                ->first();
+            
+            if ($cart) {
+                // Check if total quantity exceeds stock
+                if ($product->stock < ($cart->quantity + $request->quantity)) {
+                    return back()->with('error', 'Not enough stock available');
+                }
+                $cart->quantity += $request->quantity;
+                $cart->save();
+            } else {
+                Cart::create([
                     'user_id' => Auth::id(),
                     'product_id' => $request->product_id,
-                ],
-                [
-                    'quantity' => \DB::raw('quantity + ' . $request->quantity),
-                ]
-            );
+                    'quantity' => $request->quantity,
+                ]);
+            }
         } else {
             $sessionId = session()->getId();
-            $cart = Cart::updateOrCreate(
-                [
+            $cart = Cart::where('session_id', $sessionId)
+                ->where('product_id', $request->product_id)
+                ->first();
+            
+            if ($cart) {
+                // Check if total quantity exceeds stock
+                if ($product->stock < ($cart->quantity + $request->quantity)) {
+                    return back()->with('error', 'Not enough stock available');
+                }
+                $cart->quantity += $request->quantity;
+                $cart->save();
+            } else {
+                Cart::create([
                     'session_id' => $sessionId,
                     'product_id' => $request->product_id,
-                ],
-                [
-                    'quantity' => \DB::raw('quantity + ' . $request->quantity),
-                ]
-            );
+                    'quantity' => $request->quantity,
+                ]);
+            }
         }
 
         return back()->with('success', 'Product added to cart');

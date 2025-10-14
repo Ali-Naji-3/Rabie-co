@@ -347,6 +347,19 @@
 					<div class="col-lg-6 col-xl-3 order-lg-2 order-xl-3">
 						<div class="header-right-one">
 							<ul>
+								@auth
+									@php
+										$userHasOrders = \App\Models\Order::where('user_id', auth()->id())->exists();
+									@endphp
+									@if($userHasOrders)
+										<li>
+											<a href="{{ route('orders.index') }}" title="My Orders" style="display: flex; align-items: center; gap: 5px;">
+												<i class="fa fa-list-alt" aria-hidden="true"></i>
+												<span style="font-size: 13px; font-weight: 500;">My Orders</span>
+											</a>
+										</li>
+									@endif
+								@endauth
 								<li class="user-login" style="position: relative;">
 									@auth
 										<!-- Logged-in User -->
@@ -364,6 +377,11 @@
 												@if(auth()->user()->role === 'admin')
 													<a href="/admin" style="display: block; padding: 8px 0; color: #333;">
 														<i class="fa fa-shield"></i> Admin Dashboard
+													</a>
+												@endif
+												@if($userHasOrders)
+													<a href="{{ route('orders.index') }}" style="display: block; padding: 8px 0; color: #333;">
+														<i class="fa fa-list-alt"></i> My Orders
 													</a>
 												@endif
 												<a href="{{ route('cart') }}" style="display: block; padding: 8px 0; color: #333;">
@@ -384,55 +402,49 @@
 										</a>
 									@endauth
 								</li>
-								<li class="top-cart">
-									<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> (2)</a>
-									<div class="cart-drop">
+							<li class="top-cart">
+								<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> ({{ $globalCartCount }})</a>
+								<div class="cart-drop">
+									@forelse($globalCartItems as $item)
 										<div class="single-cart">
 											<div class="cart-img">
-												<img alt="" src="{{ asset('media/images/product/car1.jpg') }}">
+												<img alt="{{ $item->product->name }}" src="{{ $item->product->primary_image ? asset('storage/' . $item->product->primary_image) : asset('media/images/product/car1.jpg') }}">
 											</div>
 											<div class="cart-title">
-												<p><a href="">Aliquam Consequat</a></p>
+												<p><a href="{{ route('product.show', $item->product->slug) }}">{{ \Illuminate\Support\Str::limit($item->product->name, 30) }}</a></p>
 											</div>
 											<div class="cart-price">
-												<p>1 x $500</p>
+												<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
 											</div>
-											<a href="#"><i class="fa fa-times"></i></a>
+											<form method="POST" action="{{ route('cart.remove', $item->id) }}" style="display:inline;">
+												@csrf
+												@method('DELETE')
+												<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer;">
+													<i class="fa fa-times"></i>
+												</button>
+											</form>
 										</div>
-										<div class="single-cart">
-											<div class="cart-img">
-												<img alt="" src="{{ asset('media/images/product/car2.jpg') }}">
-											</div>
-											<div class="cart-title">
-												<p><a href="">Quisque In Arcuc</a></p>
-											</div>
-											<div class="cart-price">
-												<p>1 x $200</p>
-											</div>
-											<a href="#"><i class="fa fa-times"></i></a>
+									@empty
+										<div class="single-cart" style="text-align:center; padding:20px;">
+											<p>Your cart is empty</p>
 										</div>
+									@endforelse
+									
+									@if($globalCartItems->isNotEmpty())
 										<div class="cart-bottom">
 											<div class="cart-sub-total">
-												<p>Sub-Total <span>$700</span></p>
-											</div>
-											<div class="cart-sub-total">
-												<p>Eco Tax (-2.00)<span>$7.00</span></p>
-											</div>
-											<div class="cart-sub-total">
-												<p>VAT (20%) <span>$40.00</span></p>
-											</div>
-											<div class="cart-sub-total">
-												<p>Total <span>$244.00</span></p>
+												<p>Total <span>${{ number_format($globalCartTotal, 2) }}</span></p>
 											</div>
 											<div class="cart-checkout">
 												<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
 											</div>
 											<div class="cart-share">
-												<a href="#" class="checkout-btn"><i class="fa fa-share"></i>Checkout</a>
+												<a href="{{ route('checkout') }}" class="checkout-btn"><i class="fa fa-share"></i>Checkout</a>
 											</div>
 										</div>
-									</div>
-								</li>
+									@endif
+								</div>
+							</li>
 								<li class="top-search">
 									<a href="javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
 									</a>
@@ -469,57 +481,51 @@
 							</a>
 						</div>
 					</div>
-					<div class="col-4">
-						<div class="top-cart">
-							<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> (2)</a>
-							<div class="cart-drop">
+				<div class="col-4">
+					<div class="top-cart">
+						<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> ({{ $globalCartCount }})</a>
+						<div class="cart-drop">
+							@forelse($globalCartItems as $item)
 								<div class="single-cart">
 									<div class="cart-img">
-										<img alt="" src="{{ asset('media/images/product/car1.jpg') }}">
+										<img alt="{{ $item->product->name }}" src="{{ $item->product->primary_image ? asset('storage/' . $item->product->primary_image) : asset('media/images/product/car1.jpg') }}">
 									</div>
 									<div class="cart-title">
-										<p><a href="">Aliquam Consequat</a></p>
+										<p><a href="{{ route('product.show', $item->product->slug) }}">{{ \Illuminate\Support\Str::limit($item->product->name, 30) }}</a></p>
 									</div>
 									<div class="cart-price">
-										<p>1 x $500</p>
+										<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
 									</div>
-									<a href="#"><i class="fa fa-times"></i></a>
+									<form method="POST" action="{{ route('cart.remove', $item->id) }}" style="display:inline;">
+										@csrf
+										@method('DELETE')
+										<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer;">
+											<i class="fa fa-times"></i>
+										</button>
+									</form>
 								</div>
-								<div class="single-cart">
-									<div class="cart-img">
-										<img alt="" src="{{ asset('media/images/product/car2.jpg') }}">
-									</div>
-									<div class="cart-title">
-										<p><a href="">Quisque In Arcuc</a></p>
-									</div>
-									<div class="cart-price">
-										<p>1 x $200</p>
-									</div>
-									<a href="#"><i class="fa fa-times"></i></a>
+							@empty
+								<div class="single-cart" style="text-align:center; padding:20px;">
+									<p>Your cart is empty</p>
 								</div>
+							@endforelse
+							
+							@if($globalCartItems->isNotEmpty())
 								<div class="cart-bottom">
 									<div class="cart-sub-total">
-										<p>Sub-Total <span>$700</span></p>
-									</div>
-									<div class="cart-sub-total">
-										<p>Eco Tax (-2.00)<span>$7.00</span></p>
-									</div>
-									<div class="cart-sub-total">
-										<p>VAT (20%) <span>$40.00</span></p>
-									</div>
-									<div class="cart-sub-total">
-										<p>Total <span>$244.00</span></p>
+										<p>Total <span>${{ number_format($globalCartTotal, 2) }}</span></p>
 									</div>
 									<div class="cart-checkout">
-										<a href="#"><i class="fa fa-shopping-cart"></i>View Cart</a>
+										<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
 									</div>
 									<div class="cart-share">
-										<a href="#"><i class="fa fa-share"></i>Checkout</a>
+										<a href="{{ route('checkout') }}" class="checkout-btn"><i class="fa fa-share"></i>Checkout</a>
 									</div>
 								</div>
-							</div>
+							@endif
 						</div>
 					</div>
+				</div>
 				</div>
 				<!-- /.row end -->
 			</div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
@@ -16,6 +17,10 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+Route::get('/multiple-orders-guide', function () {
+    return view('multiple-orders-guide');
+})->name('multiple-orders-guide');
+
 // Products
 Route::get('/collection', [ProductController::class, 'index'])->name('collection');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
@@ -25,6 +30,17 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout (requires authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/order/success/{order}', [CheckoutController::class, 'success'])->name('order.success');
+    
+    // Customer Orders
+    Route::get('/my-orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/order/{order}', [App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
+});
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

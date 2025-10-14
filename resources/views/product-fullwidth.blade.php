@@ -127,18 +127,12 @@
 										
 										<div class="size-variation mb-3">
 											<span>Quantity :</span>
-											<input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" style="width: 80px; padding: 5px;">
+											<input type="number" name="quantity" value="1" min="1" max="10" style="width: 80px; padding: 5px;">
 										</div>
 
-										@if($product->stock > 0)
-											<button type="submit" class="btn btn-primary btn-lg">
-												<i class="fa fa-shopping-cart"></i> Add to Cart
-											</button>
-										@else
-											<button type="button" class="btn btn-secondary btn-lg" disabled>
-												Out of Stock
-											</button>
-										@endif
+										<button type="submit" class="btn btn-primary btn-lg">
+											<i class="fa fa-shopping-cart"></i> Add to Cart
+										</button>
 									</form>
 
 									<!-- Rating -->
