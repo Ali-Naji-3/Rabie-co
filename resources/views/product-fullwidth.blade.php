@@ -216,15 +216,29 @@
 										</a>
 									</div>
 									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product.show', $related->slug) }}">{{ $related->name }}</a></h5>
-										<p>
-											@if($related->sale_price)
-												<del>${{ number_format($related->price, 2) }}</del>
-												<span style="color: #e74c3c;">${{ number_format($related->sale_price, 2) }}</span>
+										<h5 class="pro-title" style="font-size: 16px; font-weight: 900; color: #222; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+											<a href="{{ route('product.show', $related->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $related->name }}</a>
+										</h5>
+										<div class="price-section">
+											@if($related->discount_percentage > 0)
+												<div class="mb-1">
+													<span style="color: #e74c3c; font-size: 14px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 2px;">
+														${{ number_format($related->price, 2) }}
+													</span>
+												</div>
+												<div class="mb-1">
+													<span style="color: #27ae60; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
+														${{ number_format($related->sale_price, 2) }}
+													</span>
+												</div>
 											@else
-												${{ number_format($related->price, 2) }}
+												<div class="mb-1">
+													<span style="color: #27ae60; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
+														${{ number_format($related->price, 2) }}
+													</span>
+												</div>
 											@endif
-										</p>
+										</div>
 									</div>
 								</div>
 							</div>

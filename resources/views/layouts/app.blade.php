@@ -152,6 +152,42 @@
 			visibility: visible;
 		}
 		
+		/* Enhanced icon visibility */
+		.flaticon-eye,
+		.flaticon-valentines-heart {
+			font-size: 18px !important;
+			color: #333 !important;
+			background: rgba(255, 255, 255, 0.95) !important;
+			border-radius: 50% !important;
+			width: 40px !important;
+			height: 40px !important;
+			display: flex !important;
+			align-items: center !important;
+			justify-content: center !important;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+			transition: all 0.3s ease !important;
+			border: 2px solid #fff !important;
+		}
+		.flaticon-eye:hover,
+		.flaticon-valentines-heart:hover {
+			background: #27ae60 !important;
+			color: #fff !important;
+			transform: scale(1.1) !important;
+			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3) !important;
+		}
+		.pro-icon ul {
+			display: flex !important;
+			gap: 10px !important;
+			justify-content: center !important;
+			padding: 10px 0 !important;
+		}
+		.pro-icon li {
+			list-style: none !important;
+		}
+		.pro-icon a {
+			text-decoration: none !important;
+		}
+		
 		/* Fix scroll-linked positioning warning */
 		#header {
 			position: relative !important;

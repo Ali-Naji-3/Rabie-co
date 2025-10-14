@@ -92,13 +92,18 @@
 								<!-- single product -->
 								<div class="grid-item col-6 col-md-6 col-lg-4 col-xl-3">
 									<div class="sin-product style-one">
-										<div class="pro-img">
+										<div class="pro-img" style="height: 250px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
 											<a href="{{ route('product.show', $product->slug) }}">
 												<img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/1.jpg') }}" 
 													alt="{{ $product->name }}"
 													loading="lazy"
-													style="max-width: 100%; height: auto;">
+													style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
 											</a>
+											@if($product->stock === 0)
+												<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10;">OUT OF STOCK</span>
+											@elseif($product->discount_percentage > 0)
+												<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold; color: white;">{{ $product->discount_percentage }}% OFF</span>
+											@endif
 										</div>
 										<div class="mid-wrapper">
 											<h5 class="pro-title" style="font-size: 20px; font-weight: 900; color: #222; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">

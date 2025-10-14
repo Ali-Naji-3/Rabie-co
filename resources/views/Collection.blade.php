@@ -78,7 +78,7 @@
 												@if($product->stock === 0)
 													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10;">OUT OF STOCK</span>
 												@elseif($product->discount_percentage > 0)
-													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold;">{{ $product->discount_percentage }}% OFF</span>
+													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold; color: white;">{{ $product->discount_percentage }}% OFF</span>
 												@endif
 												<div class="mid-wrapper">
 													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
