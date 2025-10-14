@@ -8,10 +8,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@yield('title', 'Fashion Shop')</title>
 
-	<!-- Fav Icon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/fav-icons/apple-touch-icon.png') }}">
-	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/fav-icons/favicon-32x32.png') }}">
-	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/fav-icons/favicon-16x16.png') }}">
+	<!-- Fav Icon (Dynamic from Site Settings) -->
+	@if($siteSettings->favicon)
+		<link rel="icon" type="image/png" href="{{ asset('storage/' . $siteSettings->favicon) }}">
+		<link rel="apple-touch-icon" href="{{ asset('storage/' . $siteSettings->favicon) }}">
+	@else
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/fav-icons/apple-touch-icon.png') }}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/img/fav-icons/favicon-32x32.png') }}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/fav-icons/favicon-16x16.png') }}">
+	@endif
 
 	<!-- Dependency Styles -->
 	<link rel="stylesheet" href="{{ asset('dependencies/bootstrap/css/bootstrap.min.css') }}" type="text/css">
@@ -107,21 +112,27 @@
 		}
 		
 		/* Fix will-change performance warning - Override carousel libraries */
-		.owl-carousel *, 
-		.slick-slider *, 
-		.slider-for *, 
-		.slider-nav *,
-		.grid-item *,
-		.sin-product *,
-		.pro-tab-filter * {
+		* {
 			will-change: auto !important;
 		}
 		
-		/* Only allow will-change on actively animating elements */
-		.owl-item.active,
-		.slick-active,
-		.slider-for .slick-current {
+		/* Only allow will-change on critical animating elements */
+		.owl-item.active.center,
+		.slick-current,
+		.animated:hover {
 			will-change: transform !important;
+		}
+		
+		/* Specifically disable on carousel stages */
+		.owl-stage,
+		.owl-item,
+		.owl-carousel,
+		.slick-track,
+		.slick-slide,
+		.slick-list,
+		.grid-item,
+		.isotope-item {
+			will-change: auto !important;
 		}
 		
 		/* Fix image hover effects */
@@ -323,13 +334,17 @@
 					<!-- Logo
 					============================================= -->
 
-					<div class="col-lg-6 col-xl-2">
-						<div class="logo">
-							<a href="{{ url('/') }}">
-								<img src="{{ asset('media/images/logo.png') }}" alt="">
-							</a>
-						</div>
+				<div class="col-lg-6 col-xl-2">
+					<div class="logo">
+						<a href="{{ url('/') }}">
+							@if($siteSettings->logo)
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@else
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@endif
+						</a>
 					</div>
+				</div>
 
 					<!-- Main menu
 					============================================= -->
@@ -474,13 +489,17 @@
 							<a href="#" class="mobile-open"><i class="flaticon-menu-1"></i></a>
 						</div>
 					</div>
-					<div class="col-4">
-						<div class="logo">
-							<a href="{{ url('/') }}">
-								<img src="{{ asset('media/images/logo.png') }}" alt="">
-							</a>
-						</div>
+				<div class="col-4">
+					<div class="logo">
+						<a href="{{ url('/') }}">
+							@if($siteSettings->logo)
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@else
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@endif
+						</a>
 					</div>
+				</div>
 				<div class="col-4">
 					<div class="top-cart">
 						<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> ({{ $globalCartCount }})</a>
@@ -539,7 +558,11 @@
 			<div id="mobilemenu" class="accordion">
 				<ul>
 					<li class="mob-logo"><a href="{{ url('/') }}">
-							<img src="{{ asset('media/images/logo.png') }}" alt="">
+							@if($siteSettings->logo)
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@else
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+							@endif
 						</a></li>
 					<li><a href="#" class="closeme"><i class="flaticon-close"></i></a></li>
 					<li class="out-link {{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
@@ -571,26 +594,44 @@
 		<footer class="footer-widget-area">
 			<div class="container-fluid custom-container">
 				<div class="row">
-					<div class="col-md-6 col-lg-3 col-xl-3">
-						<div class="footer-widget">
-							<div class="logo">
-								<a href="#">
-							<img src="{{ asset('media/images/logo2.png') }}" alt="">
-						</a>
-							</div>
-							<p>Autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum dolore eu olestie consequat Autem vel eum iriure dolor.</p>
-							<div class="social">
-								<ul>
-									<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-									<li><a href="#"><i class="fab fa-twitter"></i></a></li>
-									<li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
-									<li><a href="#"><i class="fab fa-instagram"></i></a></li>
-									<li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-									<li><a href="#"><i class="fab fa-dribbble"></i></a></li>
-								</ul>
-							</div>
+				<div class="col-md-6 col-lg-3 col-xl-3">
+					<div class="footer-widget">
+						<div class="logo">
+							<a href="{{ url('/') }}">
+								@if($siteSettings->footer_logo)
+									<img src="{{ asset('storage/' . $siteSettings->footer_logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								@elseif($siteSettings->logo)
+									<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								@else
+									<img src="{{ asset('media/images/logo2.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								@endif
+							</a>
+						</div>
+						<p>{{ $siteSettings->footer_description ?? 'Autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum dolore eu olestie consequat Autem vel eum iriure dolor.' }}</p>
+						<div class="social">
+							<ul>
+								@if($siteSettings->facebook_url)
+									<li><a href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a></li>
+								@endif
+								@if($siteSettings->twitter_url)
+									<li><a href="{{ $siteSettings->twitter_url }}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a></li>
+								@endif
+								@if($siteSettings->instagram_url)
+									<li><a href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a></li>
+								@endif
+								@if($siteSettings->linkedin_url)
+									<li><a href="{{ $siteSettings->linkedin_url }}" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a></li>
+								@endif
+								@if($siteSettings->youtube_url)
+									<li><a href="{{ $siteSettings->youtube_url }}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a></li>
+								@endif
+								@if($siteSettings->tiktok_url)
+									<li><a href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a></li>
+								@endif
+							</ul>
 						</div>
 					</div>
+				</div>
 					<!-- /.col-xl-3 -->
 					<div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
 						<div class="footer-widget">
@@ -636,16 +677,16 @@
 					</div>
 					<!-- /.col-xl-3 -->
 				</div>
-				<div class="footer-bottom">
-					<div class="row">
-						<div class="col-12">
-							<p>Copyright © <span>2024</span> ThemeIM Solution • Designed by <a href="#">ThemeIM</a></p>
-						</div>
-						<!-- /.col-xl-6 -->
-
+			<div class="footer-bottom">
+				<div class="row">
+					<div class="col-12">
+						<p>{{ $siteSettings->copyright_text ?? '© ' . date('Y') . ' Rabie-Co. All rights reserved.' }}</p>
 					</div>
-					<!-- /.row -->
+					<!-- /.col-xl-6 -->
+
 				</div>
+				<!-- /.row -->
+			</div>
 			</div>
 			<!-- container-fluid -->
 		</footer>
@@ -884,22 +925,73 @@
 	<script src="{{ asset('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('dependencies/owl.carousel/js/owl.carousel.min.js') }}"></script>
 	
-	<!-- Fix will-change memory warning from carousels -->
+	<!-- Fix will-change memory warning - Aggressive approach -->
 	<script>
-		// Override carousel libraries to reduce will-change usage
-		document.addEventListener('DOMContentLoaded', function() {
-			// Remove will-change from all carousel elements
-			const removeWillChange = () => {
-				document.querySelectorAll('.owl-stage, .owl-item, .slick-track, .slick-slide, .grid-item').forEach(el => {
-					el.style.willChange = 'auto';
-				});
+		// Aggressive will-change cleanup
+		(function() {
+			'use strict';
+			
+			const forceRemoveWillChange = () => {
+				// Method 1: Target all elements
+				const allElements = document.getElementsByTagName('*');
+				for (let i = 0; i < allElements.length; i++) {
+					const el = allElements[i];
+					if (el.style) {
+						el.style.willChange = 'auto';
+						el.style.setProperty('will-change', 'auto', 'important');
+					}
+				}
 			};
 			
-			// Run on load and after carousels initialize
-			removeWillChange();
-			setTimeout(removeWillChange, 500);
-			setTimeout(removeWillChange, 1000);
-		});
+			// Run immediately (before carousels initialize)
+			forceRemoveWillChange();
+			
+			// Override MutationObserver to catch dynamic additions
+			const observer = new MutationObserver((mutations) => {
+				mutations.forEach((mutation) => {
+					if (mutation.addedNodes.length) {
+						mutation.addedNodes.forEach((node) => {
+							if (node.nodeType === 1 && node.style) {
+								node.style.willChange = 'auto';
+							}
+						});
+					}
+				});
+			});
+			
+			// Start observing
+			if (document.body) {
+				observer.observe(document.body, {
+					childList: true,
+					subtree: true
+				});
+			} else {
+				document.addEventListener('DOMContentLoaded', () => {
+					observer.observe(document.body, {
+						childList: true,
+						subtree: true
+					});
+				});
+			}
+			
+			// Run cleanup on various events
+			const events = ['DOMContentLoaded', 'load', 'scroll', 'resize'];
+			events.forEach(event => {
+				window.addEventListener(event, () => {
+					setTimeout(forceRemoveWillChange, 50);
+				}, { passive: true, once: event !== 'scroll' && event !== 'resize' });
+			});
+			
+			// Continuous cleanup (every 2 seconds for first 10 seconds)
+			let cleanupCount = 0;
+			const continuousCleanup = setInterval(() => {
+				forceRemoveWillChange();
+				cleanupCount++;
+				if (cleanupCount >= 5) {
+					clearInterval(continuousCleanup);
+				}
+			}, 2000);
+		})();
 	</script>
 	<script src="{{ asset('dependencies/wow/js/wow.min.js') }}"></script>
 	<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>

@@ -57,12 +57,13 @@ class ContactResource extends Resource
                                         'complaint' => 'Complaint',
                                         'partnership_business' => 'Partnership/Business',
                                     ])
-                                    ->required()
+                                    ->default('order_inquiry')
                                     ->label('Subject'),
                             ]),
                         Forms\Components\Textarea::make('message')
                             ->required()
                             ->rows(5)
+                            ->minLength(4)
                             ->maxLength(1000)
                             ->label('Message'),
                         Forms\Components\Select::make('status')

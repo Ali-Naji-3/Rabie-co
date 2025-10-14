@@ -43,8 +43,8 @@ A fully functional, dynamic contact form that stores submissions in the database
 - First Name: Required, string, max 255 chars
 - Last Name: Required, string, max 255 chars
 - Phone: Required, string, max 20 chars
-- Subject: Required, must be one of the predefined options
-- Message: Required, 10-1000 characters
+- Subject: Optional (defaults to "Order Inquiry"), must be one of the predefined options
+- Message: Required, 4-1000 characters
 
 **Subject Options**:
 - Order Inquiry
@@ -133,8 +133,8 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
    - First Name (required)
    - Last Name (required)
    - Phone Number (required)
-   - Subject (required - select from dropdown)
-   - Message (required, min 10 chars)
+   - Subject (optional - defaults to "Order Inquiry")
+   - Message (required, min 4 chars)
 
 3. **Submit**:
    - Click "SUBMIT" button
@@ -303,11 +303,17 @@ For questions or issues with the contact form feature:
 
 **Latest Update**: October 14, 2025
 
+### Version 2.1 - User Experience Improvements
+- ✅ Changed: Message minimum length from 10 to 4 characters (more flexible)
+- ✅ Changed: Subject field is now optional (defaults to "Order Inquiry")
+- ✅ Improved: Better default selection for easier form submission
+- ✅ Updated: Database default value for subject column
+
 ### Version 2.0 - E-commerce Optimization
 - ✅ Removed: Email and Website fields
 - ✅ Added: Phone Number field (required)
 - ✅ Added: Subject/Category dropdown with 7 options:
-  - Order Inquiry
+  - Order Inquiry (default)
   - Product Question
   - Shipping Issue
   - Return/Refund
@@ -319,5 +325,5 @@ For questions or issues with the contact form feature:
 - ✅ Improved: Better categorization for customer service
 
 **Created**: October 14, 2025
-**Status**: ✅ Fully Implemented and Tested (Version 2.0)
+**Status**: ✅ Fully Implemented and Tested (Version 2.1)
 

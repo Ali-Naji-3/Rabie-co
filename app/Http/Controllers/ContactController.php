@@ -24,9 +24,14 @@ class ContactController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'subject' => 'required|in:order_inquiry,product_question,shipping_issue,return_refund,general_question,complaint,partnership_business',
-            'message' => 'required|string|min:10|max:1000',
+            'subject' => 'nullable|in:order_inquiry,product_question,shipping_issue,return_refund,general_question,complaint,partnership_business',
+            'message' => 'required|string|min:4|max:1000',
         ]);
+
+        // Set default subject if not provided
+        if (empty($validated['subject'])) {
+            $validated['subject'] = 'order_inquiry';
+        }
 
         Contact::create($validated);
 

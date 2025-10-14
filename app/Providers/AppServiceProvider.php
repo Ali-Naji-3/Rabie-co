@@ -5,7 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Cart;
+use App\Models\SiteSetting;
+use App\Observers\SiteSettingObserver;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,8 +25,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share cart data with all views
+        // Register observers
+        SiteSetting::observe(SiteSettingObserver::class);
+        
+        // Share cart data and site settings with all views
         View::composer('*', function ($view) {
+            // Cart data
             $cartItems = collect();
             $cartCount = 0;
             $cartTotal = 0;
@@ -46,10 +53,16 @@ class AppServiceProvider extends ServiceProvider
                 return $item->product->final_price * $item->quantity;
             });
 
+            // Site settings (cached for 1 hour)
+            $siteSettings = Cache::remember('site_settings', 3600, function () {
+                return SiteSetting::first() ?? new SiteSetting();
+            });
+
             $view->with([
                 'globalCartItems' => $cartItems,
                 'globalCartCount' => $cartCount,
-                'globalCartTotal' => $cartTotal
+                'globalCartTotal' => $cartTotal,
+                'siteSettings' => $siteSettings
             ]);
         });
     }

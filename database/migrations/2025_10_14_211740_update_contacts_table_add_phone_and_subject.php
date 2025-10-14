@@ -25,7 +25,7 @@ return new class extends Migration
                 'general_question',
                 'complaint',
                 'partnership_business'
-            ])->after('phone');
+            ])->default('order_inquiry')->after('phone');
         });
     }
 

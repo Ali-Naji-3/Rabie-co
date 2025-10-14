@@ -2,6 +2,91 @@
 
 @section('title', 'Contact Us - Fashion Shop')
 
+@push('styles')
+<style>
+	/* Contact Information Hover Effects */
+	.contact-info-item a:hover {
+		color: #000000 !important;
+	}
+	
+	.contact-info-item .icon-wrapper {
+		transition: all 0.3s ease;
+	}
+	
+	.contact-info-item:hover .icon-wrapper {
+		transform: scale(1.1);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+	}
+	
+	/* Social Media Hover Effects */
+	.contact-info-wrapper a[href*="facebook"]:hover,
+	.contact-info-wrapper a[href*="instagram"]:hover,
+	.contact-info-wrapper a[href*="twitter"]:hover,
+	.contact-info-wrapper a[href*="linkedin"]:hover,
+	.contact-info-wrapper a[href*="youtube"]:hover,
+	.contact-info-wrapper a[href*="tiktok"]:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important;
+	}
+	
+	/* Contact Form Styling */
+	.contact-form input[type="text"],
+	.contact-form input[type="tel"],
+	.contact-form select,
+	.contact-form textarea {
+		transition: all 0.3s ease;
+	}
+	
+	.contact-form input[type="text"]:focus,
+	.contact-form input[type="tel"]:focus,
+	.contact-form select:focus,
+	.contact-form textarea:focus {
+		border-color: #f53003 !important;
+		box-shadow: 0 0 8px rgba(245, 48, 3, 0.2);
+		outline: none;
+	}
+	
+	.contact-form input[type="submit"] {
+		transition: all 0.3s ease;
+		background: #000000 !important;
+		border: none;
+		color: white !important;
+		padding: 15px 60px;
+		font-size: 14px;
+		font-weight: 700;
+		border-radius: 5px;
+		cursor: pointer;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		min-width: 240px;
+		white-space: nowrap;
+	}
+	
+	.contact-form input[type="submit"]:hover {
+		background: #333333 !important;
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+	}
+	
+	/* Responsive Adjustments */
+	@media (max-width: 767px) {
+		.contact-info-item .icon-wrapper {
+			width: 50px !important;
+			height: 50px !important;
+		}
+		
+		.contact-info-item h6 {
+			font-size: 14px !important;
+		}
+		
+		.contact-info-item a,
+		.contact-info-item p {
+			font-size: 13px !important;
+		}
+	}
+</style>
+@endpush
+
 @section('content')
 
 		<!--=        Breadcrumb         =-->
@@ -32,8 +117,9 @@
 ============================================= -->
 	<section class="contact-area">
 		<div class="container-fluid custom-container">
-			<div class="section-heading pb-30">
-				<h3>join with <span>us</span></h3>
+			<div class="section-heading pb-30 text-center">
+				<h3>Get in <span>Touch</span></h3>
+				<p>We'd love to hear from you. Contact us for any questions or concerns.</p>
 			</div>
 
 			@if(session('success'))
@@ -60,8 +146,10 @@
 			@endif
 
 			<div class="row justify-content-center">
-				<div class="col-md-8 col-lg-8 col-xl-6">
-					<div class="contact-form">
+				<!-- Contact Form Section -->
+				<div class="col-lg-10 col-xl-8 mb-5">
+					<div class="contact-form" style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+						<h4 style="color: #1b1b18; font-size: 24px; font-weight: 700; margin-bottom: 25px;">Send us a Message</h4>
 						<form action="{{ route('contact.store') }}" method="POST">
 							@csrf
 							<div class="row">
@@ -90,10 +178,125 @@
 									<textarea name="message" placeholder="Message*" required>{{ old('message') }}</textarea>
 								</div>
 								<div class="col-xl-12">
-									<input type="submit" value="SUBMIT">
+									<input type="submit" value="SEND MESSAGE">
 								</div>
 							</div>
 						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Contact Information Section -->
+			<div class="row justify-content-center">
+				<div class="col-lg-10 col-xl-8">
+					<div class="contact-info-wrapper" style="background: #f8f9fa; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+						<h4 style="color: #1b1b18; font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; border-bottom: 3px solid #000000; display: inline-block; padding-bottom: 10px; width: 100%; text-align: center;">Contact Information</h4>
+						
+						<div class="row" style="margin-top: 30px;">
+							<!-- Phone -->
+							@if($siteSettings->phone)
+							<div class="col-md-6 col-lg-4 mb-4">
+								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+										<i class="fas fa-mobile-alt" style="font-size: 24px;"></i>
+									</div>
+									<h6 style="color: #333; font-weight: 600; margin-bottom: 8px; font-size: 16px;">Phone</h6>
+									<a href="tel:{{ $siteSettings->phone }}" style="color: #666; text-decoration: none; font-size: 15px; transition: all 0.3s;">{{ $siteSettings->phone }}</a>
+								</div>
+							</div>
+							@endif
+
+							<!-- Email -->
+							@if($siteSettings->email)
+							<div class="col-md-6 col-lg-4 mb-4">
+								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+										<i class="fas fa-envelope" style="font-size: 24px;"></i>
+									</div>
+									<h6 style="color: #333; font-weight: 600; margin-bottom: 8px; font-size: 16px;">Email</h6>
+									<a href="mailto:{{ $siteSettings->email }}" style="color: #666; text-decoration: none; font-size: 15px; word-break: break-word; transition: all 0.3s;">{{ $siteSettings->email }}</a>
+								</div>
+							</div>
+							@endif
+
+							<!-- WhatsApp -->
+							@if($siteSettings->whatsapp)
+							<div class="col-md-6 col-lg-4 mb-4">
+								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+										<i class="fab fa-whatsapp" style="font-size: 28px;"></i>
+									</div>
+									<h6 style="color: #333; font-weight: 600; margin-bottom: 8px; font-size: 16px;">WhatsApp</h6>
+									<a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $siteSettings->whatsapp) }}" target="_blank" style="color: #666; text-decoration: none; font-size: 15px; transition: all 0.3s;">{{ $siteSettings->whatsapp }}</a>
+								</div>
+							</div>
+							@endif
+
+							<!-- Address -->
+							@if($siteSettings->address)
+							<div class="col-md-6 col-lg-4 mb-4">
+								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+										<i class="fas fa-map-marker-alt" style="font-size: 24px;"></i>
+									</div>
+									<h6 style="color: #333; font-weight: 600; margin-bottom: 8px; font-size: 16px;">Address</h6>
+									<p style="color: #666; margin: 0; font-size: 15px; line-height: 1.6;">{{ $siteSettings->address }}</p>
+								</div>
+							</div>
+							@endif
+
+							<!-- Working Hours -->
+							@if($siteSettings->working_hours)
+							<div class="col-md-6 col-lg-4 mb-4">
+								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+										<i class="fas fa-clock" style="font-size: 24px;"></i>
+									</div>
+									<h6 style="color: #333; font-weight: 600; margin-bottom: 8px; font-size: 16px;">Working Hours</h6>
+									<p style="color: #666; margin: 0; font-size: 15px; line-height: 1.6; white-space: pre-line;">{{ $siteSettings->working_hours }}</p>
+								</div>
+							</div>
+							@endif
+						</div>
+
+						<!-- Social Media Links -->
+						@if($siteSettings->facebook_url || $siteSettings->instagram_url || $siteSettings->twitter_url || $siteSettings->linkedin_url || $siteSettings->youtube_url || $siteSettings->tiktok_url)
+						<div class="contact-info-item" style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 30px;">
+							<h6 style="color: #333; font-weight: 600; margin-bottom: 20px; font-size: 18px;">Follow Us</h6>
+							<div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+								@if($siteSettings->facebook_url)
+									<a href="{{ $siteSettings->facebook_url }}" target="_blank" style="background: #1877F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-facebook-f" style="font-size: 20px;"></i>
+									</a>
+								@endif
+								@if($siteSettings->instagram_url)
+									<a href="{{ $siteSettings->instagram_url }}" target="_blank" style="background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-instagram" style="font-size: 20px;"></i>
+									</a>
+								@endif
+								@if($siteSettings->twitter_url)
+									<a href="{{ $siteSettings->twitter_url }}" target="_blank" style="background: #1DA1F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-twitter" style="font-size: 20px;"></i>
+									</a>
+								@endif
+								@if($siteSettings->linkedin_url)
+									<a href="{{ $siteSettings->linkedin_url }}" target="_blank" style="background: #0A66C2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-linkedin-in" style="font-size: 20px;"></i>
+									</a>
+								@endif
+								@if($siteSettings->youtube_url)
+									<a href="{{ $siteSettings->youtube_url }}" target="_blank" style="background: #FF0000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-youtube" style="font-size: 20px;"></i>
+									</a>
+								@endif
+								@if($siteSettings->tiktok_url)
+									<a href="{{ $siteSettings->tiktok_url }}" target="_blank" style="background: #000000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+										<i class="fab fa-tiktok" style="font-size: 20px;"></i>
+									</a>
+								@endif
+							</div>
+						</div>
+						@endif
 					</div>
 				</div>
 			</div>

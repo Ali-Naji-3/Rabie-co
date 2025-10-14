@@ -11,65 +11,102 @@
 	<section class="slider-wrapper">
 		<div class="slider-start slider-1 owl-carousel owl-theme">
 
-			<div class="item">
-				<img src="{{ asset('media/images/banner/f1.jpg') }}" alt="">
-				<div class="container-fluid custom-container slider-content">
+		@forelse($heroSliders as $slider)
+		<div class="item">
+			<img src="{{ asset('storage/' . $slider->image) }}" alt="{{ $slider->main_title }}" style="width: 100%; display: block;">
+			<div class="container-fluid custom-container slider-content">
 					<div class="row align-items-center">
-
 						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-							<div class="slider-text ">
+							<div class="slider-text" style="{{ $slider->text_alignment === 'center' ? 'text-align: center;' : ($slider->text_alignment === 'right' ? 'text-align: right;' : '') }}">
+								@if($slider->small_title)
+								<h4 class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
+									<span>{{ $slider->small_title }}</span>
+								</h4>
+								@endif
+								<h1 class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
+									{{ $slider->main_title }}
+								</h1>
+								@if($slider->description)
+								<p class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
+									{{ $slider->description }}
+								</p>
+								@endif
+								<a class="animated {{ $slider->animation }} btn-two" href="{{ $slider->button_link }}">
+									{{ $slider->button_text }}
+								</a>
+							</div>
+						</div>
+						<!-- Col End -->
+					</div>
+					<!-- Row End -->
+				</div>
+			</div>
+			@empty
+		<!-- Fallback to default slider if no sliders in database -->
+		<div class="item">
+			<img src="{{ asset('media/images/banner/f1.jpg') }}" alt="" style="width: 100%; display: block;">
+			<div class="container-fluid custom-container slider-content">
+					<div class="row align-items-center">
+						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
+							<div class="slider-text">
 								<h4 class="animated fadeInUp"><span>BRAND NEW</span> COLLECTION</h4>
 								<h1 class="animated fadeInUp">COMERCIO SHOP</h1>
 								<p class="animated fadeInUp">Autem vel eum iriure dolor in molestie consequat vel illum dolore eu feugiat nulla facilisis at vero eros.</p>
-								<a class="animated fadeInUp btn-two" href="#">SHOP NOW</a>
+								<a class="animated fadeInUp btn-two" href="{{ route('collection') }}">SHOP NOW</a>
 							</div>
 						</div>
-						<!-- Col End -->
 					</div>
-					<!-- Row End -->
 				</div>
 			</div>
-
-			<div class="item">
-				<img src="{{ asset('media/images/banner/f2.jpg') }}" alt="">
-				<div class="container-fluid custom-container slider-content">
-					<div class="row align-items-center">
-
-						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-							<div class="slider-text ">
-								<h4 class="animated fadeIn"><span>BRAND NEW</span> COLLECTION</h4>
-								<h1 class="animated fadeIn">NEW ARRIVALS</h1>
-								<p class="animated fadeIn">Autem vel eum iriure dolor in hendrerit molestie consequat vel illum dolore eu feugiat nulla facilisis at vero eros.</p>
-								<a class="animated fadeIn btn-two" href="#">SHOP NOW</a>
-							</div>
-						</div>
-						<!-- Col End -->
-					</div>
-					<!-- Row End -->
-				</div>
-			</div>
-
-			<div class="item">
-				<img src="{{ asset('media/images/banner/f3.jpg') }}" alt="">
-				<div class="container-fluid custom-container slider-content">
-					<div class="row align-items-center">
-						<div class="col-12 col-sm-8 col-md-8 offset-md-1 col-lg-6 offset-xl-2 col-xl-5 mr-auto">
-							<div class="slider-text mob-align-left">
-								<h4 class="animated fadeIn"><span>LATEST COLLECTION </span> 2024 </h4>
-								<h1 class="animated fadeIn">STYLE & GRACE </h1>
-								<p class="animated fadeIn">Autem vel eum iriure dolor molestie consequat vel illum dolore eu feugiat nulla facilisis at vero eros.</p>
-								<a class="animated fadeIn btn-two" href="#">SHOP NOW</a>
-							</div>
-						</div>
-						<!-- Col End -->
-					</div>
-					<!-- Row End -->
-				</div>
-			</div>
+			@endforelse
 
 		</div>
 	</section>
 	<!-- Slides end -->
+
+	<!--=========================-->
+	<!--=   Feature Icons (Dynamic)   =-->
+	<!--=========================-->
+
+	@if($featureIcons->count() > 0)
+	<section class="feature-icons-section" style="padding: 60px 0; background: #f8f9fa;">
+		<div class="container">
+			<div class="row">
+				@foreach($featureIcons as $feature)
+				<div class="col-6 col-md-3 mb-4">
+					<div class="feature-icon-box text-center" style="padding: 30px 15px; background: {{ $feature->background_color ?? 'transparent' }}; border-radius: 8px; transition: all 0.3s ease;">
+						@if($feature->link_url)
+							<a href="{{ $feature->link_url }}" {{ $feature->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="text-decoration: none; color: inherit;">
+						@endif
+						
+						<div class="feature-icon mb-3" style="font-size: {{ $feature->icon_size }}px; color: {{ $feature->icon_color }};">
+							@if($feature->icon_type === 'image' && $feature->icon_image)
+								<img src="{{ asset('storage/' . $feature->icon_image) }}" alt="{{ $feature->title }}" style="width: {{ $feature->icon_size }}px; height: {{ $feature->icon_size }}px; object-fit: contain;">
+							@else
+								<i class="{{ $feature->icon_class }}"></i>
+							@endif
+						</div>
+						
+						<h4 style="font-size: 18px; font-weight: 700; margin-bottom: 10px; color: {{ $feature->text_color }};">
+							{{ $feature->title }}
+						</h4>
+						
+						@if($feature->description)
+						<p style="font-size: 14px; color: {{ $feature->text_color }}; opacity: 0.8; margin: 0;">
+							{{ $feature->description }}
+						</p>
+						@endif
+						
+						@if($feature->link_url)
+							</a>
+						@endif
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+	</section>
+	@endif
 
 	<!--=========================-->
 	<!--=        Product Filter      =-->
@@ -148,12 +185,54 @@
 	<!-- main-product -->
 
 	<!--=========================-->
-	<!--=   Discount Countdown area   =-->
+	<!--=   Promotional Banners (Dynamic)   =-->
 	<!--=========================-->
 
-	<section class="add-area">
-		<a href="#"><img src="{{ asset('media/images/banner/add.jpg') }}" alt=""></a>
+	@foreach($promoBannersAfterProducts as $banner)
+	<section class="add-area" style="position: relative;">
+		@if($banner->link_url && !$banner->button_text)
+			<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+				<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+			</a>
+		@else
+			<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+		@endif
+		
+		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
+		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none;">
+			<div class="row align-items-center">
+				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
+					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">
+						@if($banner->small_title)
+						<h4 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 18px; text-transform: uppercase; margin-bottom: 10px;">
+							<span>{{ $banner->small_title }}</span>
+						</h4>
+						@endif
+						
+						@if($banner->main_title)
+						<h1 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 48px; font-weight: 700; margin-bottom: 15px; line-height: 1.2;">
+							{{ $banner->main_title }}
+						</h1>
+						@endif
+						
+						@if($banner->description)
+						<p class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 16px; margin-bottom: 20px; line-height: 1.6;">
+							{{ $banner->description }}
+						</p>
+						@endif
+						
+						@if($banner->button_text && $banner->link_url)
+						<a class="animated fadeInUp btn-two" href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }}>
+							{{ $banner->button_text }}
+						</a>
+						@endif
+					</div>
+				</div>
+			</div>
+		</div>
+		@endif
 	</section>
+	@endforeach
 
 	<!--=========================-->
 	<!--=   Small Product area    =-->
@@ -256,5 +335,55 @@
 		</div>
 		<!-- container-fluid End-->
 	</section>
+
+	<!--=========================-->
+	<!--=   Promotional Banners After Reviews (Dynamic)   =-->
+	<!--=========================-->
+
+	@foreach($promoBannersAfterReviews as $banner)
+	<section class="add-area" style="position: relative;">
+		@if($banner->link_url && !$banner->button_text)
+			<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+				<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+			</a>
+		@else
+			<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+		@endif
+		
+		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
+		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none;">
+			<div class="row align-items-center">
+				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
+					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">
+						@if($banner->small_title)
+						<h4 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 18px; text-transform: uppercase; margin-bottom: 10px;">
+							<span>{{ $banner->small_title }}</span>
+						</h4>
+						@endif
+						
+						@if($banner->main_title)
+						<h1 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 48px; font-weight: 700; margin-bottom: 15px; line-height: 1.2;">
+							{{ $banner->main_title }}
+						</h1>
+						@endif
+						
+						@if($banner->description)
+						<p class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 16px; margin-bottom: 20px; line-height: 1.6;">
+							{{ $banner->description }}
+						</p>
+						@endif
+						
+						@if($banner->button_text && $banner->link_url)
+						<a class="animated fadeInUp btn-two" href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }}>
+							{{ $banner->button_text }}
+						</a>
+						@endif
+					</div>
+				</div>
+			</div>
+		</div>
+		@endif
+	</section>
+	@endforeach
 
 @endsection
