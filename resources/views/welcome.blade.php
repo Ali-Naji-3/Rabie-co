@@ -88,112 +88,38 @@
 							<li class="filter active" data-filter="*">ALL</li>
 						</ul>
 						<div class="grid row">
-							<!-- single product -->
-							<div class=" grid-item two col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/1.jpg') }}" alt=""></a>
+							@forelse($featuredProducts as $product)
+								<!-- single product -->
+								<div class="grid-item col-6 col-md-6 col-lg-4 col-xl-3">
+									<div class="sin-product style-one">
+										<div class="pro-img">
+											<a href="{{ route('product.show', $product->slug) }}">
+												<img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/1.jpg') }}" 
+													alt="{{ $product->name }}"
+													loading="lazy"
+													style="max-width: 100%; height: auto;">
+											</a>
+										</div>
+										<div class="mid-wrapper">
+											<h5 class="pro-title">
+												<a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+											</h5>
+											<span>
+												@if($product->sale_price)
+													<del>${{ number_format($product->price, 2) }}</del> 
+													<strong class="text-danger">${{ number_format($product->sale_price, 2) }}</strong>
+												@else
+													${{ number_format($product->price, 2) }}
+												@endif
+											</span>
+										</div>
 									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Embellished print dress</a></h5>
-										<span>$60.00</span>
-									</div>
-
 								</div>
-							</div>
-							<!-- single product -->
-							<div class=" grid-item three col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/2.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Shirt for men</a></h5>
-										<span>$60.00</span>
-									</div>
-
+							@empty
+								<div class="col-12 text-center">
+									<p>No featured products available at the moment.</p>
 								</div>
-							</div>
-							<!-- single product -->
-							<div class=" grid-item four col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/3.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Embellished print t-shirt  </a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
-							<!-- single product -->
-							<div class=" grid-item five col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/4.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Laptop carry bag</a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
-							<!-- single product -->
-							<div class=" grid-item one col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/5.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Sleeve detail dress</a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
-							<!-- single product -->
-							<div class=" grid-item two col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/6.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Jeans cloth dress</a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
-
-							<!-- single product -->
-							<div class=" grid-item three col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/7.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Winter dress</a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
-
-							<!-- single product -->
-							<div class=" grid-item four col-6 col-md-6  col-lg-4 col-xl-3">
-								<div class="sin-product style-one">
-									<div class="pro-img">
-										<a href="{{ route('product') }}"><img src="{{ asset('media/images/product/8.jpg') }}" alt=""></a>
-									</div>
-									<div class="mid-wrapper">
-										<h5 class="pro-title"><a href="{{ route('product') }}">Mens Jacket</a></h5>
-										<span>$60.00</span>
-									</div>
-
-								</div>
-							</div>
+							@endforelse
 						</div>
 					</div>
 				</div>

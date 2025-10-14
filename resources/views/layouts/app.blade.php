@@ -98,6 +98,31 @@
 			left: 100%;
 			width: 200px;
 			height: 2px;
+		}
+		
+		/* User dropdown menu */
+		.user-login:hover .cart-drop {
+			opacity: 1;
+			visibility: visible;
+		}
+		
+		/* Fix will-change performance warning - Override carousel libraries */
+		.owl-carousel *, 
+		.slick-slider *, 
+		.slider-for *, 
+		.slider-nav *,
+		.grid-item *,
+		.sin-product *,
+		.pro-tab-filter * {
+			will-change: auto !important;
+		}
+		
+		/* Only allow will-change on actively animating elements */
+		.owl-item.active,
+		.slick-active,
+		.slider-for .slick-current,
+		img:hover {
+			will-change: transform !important;
 			background-color: #ddd;
 			transform: translateY(-50%);
 		}
@@ -217,8 +242,42 @@
 					<div class="col-lg-6 col-xl-3 order-lg-2 order-xl-3">
 						<div class="header-right-one">
 							<ul>
-								<li class="user-login">
-									<a href="#"><i class="fa fa-user" aria-hidden="true"></i></a>
+								<li class="user-login" style="position: relative;">
+									@auth
+										<!-- Logged-in User -->
+										<a href="#" style="display: flex; align-items: center; gap: 8px;">
+											<div style="width: 35px; height: 35px; border-radius: 50%; background: #FFD700; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;">
+												{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+											</div>
+										</a>
+										<!-- Dropdown Menu -->
+										<div class="cart-drop" style="min-width: 200px; right: 0; left: auto;">
+											<div style="padding: 15px;">
+												<p style="font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+													{{ auth()->user()->name }}
+												</p>
+												@if(auth()->user()->role === 'admin')
+													<a href="/admin" style="display: block; padding: 8px 0; color: #333;">
+														<i class="fa fa-shield"></i> Admin Dashboard
+													</a>
+												@endif
+												<a href="{{ route('cart') }}" style="display: block; padding: 8px 0; color: #333;">
+													<i class="fa fa-shopping-cart"></i> My Cart
+												</a>
+												<form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+													@csrf
+													<button type="submit" style="display: block; width: 100%; text-align: left; padding: 8px 0; border: none; background: none; color: #d9534f; cursor: pointer;">
+														<i class="fa fa-sign-out"></i> Logout
+													</button>
+												</form>
+											</div>
+										</div>
+									@else
+										<!-- Guest User -->
+										<a href="{{ route('login') }}" title="Login">
+											<i class="fa fa-user" aria-hidden="true"></i>
+										</a>
+									@endauth
 								</li>
 								<li class="top-cart">
 									<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> (2)</a>
@@ -568,7 +627,7 @@
 
 					<div class="col-md-6">
 						<div class="product-details">
-							<h5 class="pro-title"><a href="{{ route('product') }}">Woman fashion dress</a></h5>
+							<h5 class="pro-title"><a href="{{ route('collection') }}">Woman fashion dress</a></h5>
 							<span class="price">Price : $387</span>
 							<div class="size-variation">
 								<span>size :</span>
@@ -713,6 +772,24 @@
 	<script src="{{ asset('dependencies/popper.js/popper.min.js') }}"></script>
 	<script src="{{ asset('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('dependencies/owl.carousel/js/owl.carousel.min.js') }}"></script>
+	
+	<!-- Fix will-change memory warning from carousels -->
+	<script>
+		// Override carousel libraries to reduce will-change usage
+		document.addEventListener('DOMContentLoaded', function() {
+			// Remove will-change from all carousel elements
+			const removeWillChange = () => {
+				document.querySelectorAll('.owl-stage, .owl-item, .slick-track, .slick-slide, .grid-item').forEach(el => {
+					el.style.willChange = 'auto';
+				});
+			};
+			
+			// Run on load and after carousels initialize
+			removeWillChange();
+			setTimeout(removeWillChange, 500);
+			setTimeout(removeWillChange, 1000);
+		});
+	</script>
 	<script src="{{ asset('dependencies/wow/js/wow.min.js') }}"></script>
 	<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>
 	<script src="{{ asset('dependencies/imagesloaded/js/imagesloaded.pkgd.min.js') }}"></script>
@@ -723,7 +800,7 @@
 	<script src="{{ asset('dependencies/headroom/js/headroom.js') }}"></script>
 	<script src="{{ asset('dependencies/jquery-ui/js/jquery-ui.min.js') }}"></script>
 	<!--Google map api -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&loading=async" async defer></script>
 
 	<!-- Site Scripts -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>
