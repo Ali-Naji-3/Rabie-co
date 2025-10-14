@@ -7,7 +7,32 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://maps.googleapis.com https://maps.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob: https:;">
-	<title>@yield('title', 'Fashion Shop')</title>
+	
+	<!-- SEO Meta Tags -->
+	<title>@yield('title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')</title>
+	<meta name="description" content="@yield('description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co. Premium clothing, accessories, and exclusive collections.')">
+	<meta name="keywords" content="@yield('keywords', $siteSettings->meta_keywords ?? 'fashion, clothing, accessories, online store, premium brands, style')">
+	<meta name="author" content="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+	<meta name="robots" content="index, follow">
+	
+	<!-- Open Graph Meta Tags (Social Media) -->
+	<meta property="og:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')">
+	<meta property="og:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co. Premium clothing, accessories, and exclusive collections.')">
+	<meta property="og:image" content="@yield('og_image', $siteSettings->og_image ? asset('storage/' . $siteSettings->og_image) : asset('media/images/logo.png'))">
+	<meta property="og:url" content="{{ url()->current() }}">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+	
+	<!-- Twitter Card Meta Tags -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')">
+	<meta name="twitter:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co.')">
+	<meta name="twitter:image" content="@yield('og_image', $siteSettings->og_image ? asset('storage/' . $siteSettings->og_image) : asset('media/images/logo.png'))">
+	
+	<!-- Additional SEO Meta Tags -->
+	<meta name="theme-color" content="#f53003">
+	<meta name="msapplication-TileColor" content="#f53003">
+	<link rel="canonical" href="{{ url()->current() }}">
 
 	<!-- Fav Icon (Dynamic from Site Settings) -->
 	@if($siteSettings->favicon)
@@ -87,24 +112,6 @@
 			margin-bottom: 30px;
 		}
 
-		/* Center REVIEW title with ::after pseudo-element */
-		.small-sec-title.text-center {
-			position: relative;
-			text-align: center;
-		}
-		.small-sec-title.text-center h6 {
-			display: inline-block;
-			position: relative;
-			padding: 0 20px;
-		}
-		.small-sec-title.text-center h6::after {
-			content: '';
-			position: absolute;
-			top: 50%;
-			left: 100%;
-			width: 200px;
-			height: 2px;
-		}
 		
 		/* User dropdown menu */
 		.user-login:hover .cart-drop {
@@ -136,20 +143,6 @@
 			will-change: auto !important;
 		}
 		
-		/* Fix image hover effects */
-		.sin-product .pro-img {
-			overflow: hidden;
-			position: relative;
-		}
-		.sin-product .pro-img img {
-			transition: transform 0.3s ease;
-			display: block;
-			width: 100%;
-			height: auto;
-		}
-		.sin-product:hover .pro-img img {
-			transform: scale(1.1);
-		}
 		
 		/* Footer Social Media Hover Effects */
 		.social-media-section a:hover {
@@ -177,6 +170,18 @@
 			box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
 			position: relative !important;
 			overflow: hidden !important;
+		}
+		
+		/* Individual Social Media Colors */
+		.social-facebook { background: #1877F2 !important; color: white !important; }
+		.social-instagram { background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4) !important; color: white !important; }
+		.social-twitter { background: #1DA1F2 !important; color: white !important; }
+		.social-linkedin { background: #0A66C2 !important; color: white !important; }
+		.social-youtube { background: #FF0000 !important; color: white !important; }
+		.social-tiktok { background: #000000 !important; color: white !important; }
+		
+		.social-icons-grid a i {
+			font-size: 20px !important;
 		}
 		
 		.social-icons-grid a::before {
@@ -720,35 +725,35 @@
 							<!-- Professional Social Media Links -->
 							@if($siteSettings->facebook_url || $siteSettings->instagram_url || $siteSettings->twitter_url || $siteSettings->linkedin_url || $siteSettings->youtube_url || $siteSettings->tiktok_url)
 							<div class="social-media-section" style="margin-top: 20px;">
-								<div class="social-icons-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 180px;">
+								<div class="social-icons-grid">
 									@if($siteSettings->facebook_url)
-										<a href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noopener" style="background: #1877F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Facebook">
-											<i class="fab fa-facebook-f" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noopener" class="social-facebook" title="Follow us on Facebook">
+											<i class="fab fa-facebook-f"></i>
 										</a>
 									@endif
 									@if($siteSettings->instagram_url)
-										<a href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noopener" style="background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Instagram">
-											<i class="fab fa-instagram" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noopener" class="social-instagram" title="Follow us on Instagram">
+											<i class="fab fa-instagram"></i>
 										</a>
 									@endif
 									@if($siteSettings->twitter_url)
-										<a href="{{ $siteSettings->twitter_url }}" target="_blank" rel="noopener" style="background: #1DA1F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Twitter">
-											<i class="fab fa-twitter" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->twitter_url }}" target="_blank" rel="noopener" class="social-twitter" title="Follow us on Twitter">
+											<i class="fab fa-twitter"></i>
 										</a>
 									@endif
 									@if($siteSettings->linkedin_url)
-										<a href="{{ $siteSettings->linkedin_url }}" target="_blank" rel="noopener" style="background: #0A66C2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Connect with us on LinkedIn">
-											<i class="fab fa-linkedin-in" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->linkedin_url }}" target="_blank" rel="noopener" class="social-linkedin" title="Connect with us on LinkedIn">
+											<i class="fab fa-linkedin-in"></i>
 										</a>
 									@endif
 									@if($siteSettings->youtube_url)
-										<a href="{{ $siteSettings->youtube_url }}" target="_blank" rel="noopener" style="background: #FF0000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Subscribe to our YouTube channel">
-											<i class="fab fa-youtube" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->youtube_url }}" target="_blank" rel="noopener" class="social-youtube" title="Subscribe to our YouTube channel">
+											<i class="fab fa-youtube"></i>
 										</a>
 									@endif
 									@if($siteSettings->tiktok_url)
-										<a href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noopener" style="background: #000000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on TikTok">
-											<i class="fab fa-tiktok" style="font-size: 20px;"></i>
+										<a href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noopener" class="social-tiktok" title="Follow us on TikTok">
+											<i class="fab fa-tiktok"></i>
 										</a>
 									@endif
 								</div>
@@ -1174,6 +1179,44 @@
 	</script>
 
 	@stack('scripts')
+
+	<!-- Google Analytics -->
+	@if($siteSettings->google_analytics_id)
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id={{ $siteSettings->google_analytics_id }}"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', '{{ $siteSettings->google_analytics_id }}');
+		</script>
+	@endif
+
+	<!-- Google Tag Manager -->
+	@if($siteSettings->google_tag_manager_id)
+		<!-- Google Tag Manager (noscript) -->
+		<noscript>
+			<iframe src="https://www.googletagmanager.com/ns.html?id={{ $siteSettings->google_tag_manager_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+		</noscript>
+		
+		<!-- Google Tag Manager -->
+		<script>
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','{{ $siteSettings->google_tag_manager_id }}');
+		</script>
+	@endif
+
+	<!-- Custom Scripts from Site Settings -->
+	@if($siteSettings->header_scripts)
+		{!! $siteSettings->header_scripts !!}
+	@endif
+
+	@if($siteSettings->footer_scripts)
+		{!! $siteSettings->footer_scripts !!}
+	@endif
 
 </body>
 
