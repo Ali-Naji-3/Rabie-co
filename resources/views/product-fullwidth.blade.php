@@ -77,24 +77,35 @@
 									<h5 class="pro-title">{{ $product->name }}</h5>
 									
 									<!-- Price -->
-									<span class="price">
-										@if($product->sale_price)
-											<del style="color: #999; font-size: 18px;">${{ number_format($product->price, 2) }}</del>
-											<span style="color: #e74c3c; font-size: 24px; font-weight: bold;"> ${{ number_format($product->sale_price, 2) }}</span>
-											<span class="badge bg-success ms-2">SAVE ${{ number_format($product->price - $product->sale_price, 2) }}</span>
+									<div class="price-section my-3">
+										@if($product->discount_percentage > 0)
+											@php
+												$finalPrice = $product->sale_price;
+												$savings = $product->price - $finalPrice;
+											@endphp
+											<div class="mb-2">
+												<span style="color: #666; font-size: 16px;">Original Price: </span>
+												<span style="color: #e74c3c; font-size: 22px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 2px;">
+													${{ number_format($product->price, 2) }}
+												</span>
+												<span class="badge bg-danger ms-2" style="color: white;">{{ $product->discount_percentage }}% OFF</span>
+											</div>
+											<div class="mb-2">
+												<span style="color: #666; font-size: 16px;">Final Price: </span>
+												<span style="color: #27ae60; font-size: 36px; font-weight: bold; letter-spacing: 1px;">
+													${{ number_format($finalPrice, 2) }}
+												</span>
+											</div>
 										@else
-											Price : ${{ number_format($product->price, 2) }}
-										@endif
-									</span>
-
-									<!-- Stock Status -->
-									<div class="my-3">
-										@if($product->stock > 0)
-											<span class="badge bg-success">✓ In Stock ({{ $product->stock }} available)</span>
-										@else
-											<span class="badge bg-danger">✗ Out of Stock</span>
+											<div class="mb-2">
+												<span style="color: #666; font-size: 16px;">Price: </span>
+												<span style="color: #27ae60; font-size: 36px; font-weight: bold; letter-spacing: 1px;">
+													${{ number_format($product->price, 2) }}
+												</span>
+											</div>
 										@endif
 									</div>
+
 
 									<!-- Category & SKU -->
 									<p>

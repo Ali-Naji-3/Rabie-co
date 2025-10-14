@@ -14,6 +14,7 @@ class Product extends Model
         'slug',
         'description',
         'price',
+        'discount_percentage',
         'sale_price',
         'stock',
         'primary_image',
@@ -44,5 +45,24 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+    
+    // Auto-calculate sale price from percentage
+    public function getSalePriceAttribute($value)
+    {
+        // If discount percentage is set, calculate sale price
+        if ($this->attributes['discount_percentage'] > 0) {
+            $discount = $this->attributes['price'] * ($this->attributes['discount_percentage'] / 100);
+            return round($this->attributes['price'] - $discount, 2);
+        }
+        
+        // Otherwise return the stored sale_price
+        return $value;
+    }
+    
+    // Get final price (sale price if available, otherwise regular price)
+    public function getFinalPriceAttribute()
+    {
+        return $this->sale_price ?? $this->price;
     }
 }

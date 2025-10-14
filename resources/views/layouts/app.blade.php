@@ -120,11 +120,44 @@
 		/* Only allow will-change on actively animating elements */
 		.owl-item.active,
 		.slick-active,
-		.slider-for .slick-current,
-		img:hover {
+		.slider-for .slick-current {
 			will-change: transform !important;
-			background-color: #ddd;
-			transform: translateY(-50%);
+		}
+		
+		/* Fix image hover effects */
+		.sin-product .pro-img {
+			overflow: hidden;
+			position: relative;
+		}
+		.sin-product .pro-img img {
+			transition: transform 0.3s ease;
+			display: block;
+			width: 100%;
+			height: auto;
+		}
+		.sin-product:hover .pro-img img {
+			transform: scale(1.1);
+		}
+		.sin-product .icon-wrapper {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+		}
+		.sin-product:hover .icon-wrapper {
+			opacity: 1;
+			visibility: visible;
+		}
+		
+		/* Fix scroll-linked positioning warning */
+		#header {
+			position: relative !important;
+		}
+		* {
+			scroll-behavior: auto !important;
 		}
 		.small-sec-title.text-center h6::before {
 			content: '';
@@ -794,13 +827,16 @@
 	<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>
 	<script src="{{ asset('dependencies/imagesloaded/js/imagesloaded.pkgd.min.js') }}"></script>
 	<script src="{{ asset('dependencies/jquery.countdown/js/jquery.countdown.min.js') }}"></script>
-	<script src="{{ asset('dependencies/gmap3/js/gmap3.min.js') }}"></script>
 	<script src="{{ asset('dependencies/venobox/js/venobox.min.js') }}"></script>
 	<script src="{{ asset('dependencies/slick-carousel/js/slick.js') }}"></script>
 	<script src="{{ asset('dependencies/headroom/js/headroom.js') }}"></script>
 	<script src="{{ asset('dependencies/jquery-ui/js/jquery-ui.min.js') }}"></script>
-	<!--Google map api -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&loading=async" async defer></script>
+	
+	<!-- Google Maps - Only load on contact page to avoid CORS warning -->
+	@if(request()->routeIs('contact'))
+		<script src="{{ asset('dependencies/gmap3/js/gmap3.min.js') }}"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&loading=async" async defer></script>
+	@endif
 
 	<!-- Site Scripts -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>

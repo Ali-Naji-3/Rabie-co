@@ -96,13 +96,31 @@ class ProductResource extends Resource
                             ->numeric()
                             ->prefix('$')
                             ->minValue(0)
-                            ->step(0.01),
-                        Forms\Components\TextInput::make('sale_price')
-                            ->numeric()
-                            ->prefix('$')
-                            ->minValue(0)
                             ->step(0.01)
-                            ->helperText('Leave empty if no sale'),
+                            ->live()
+                            ->label('Original Price'),
+                        Forms\Components\TextInput::make('discount_percentage')
+                            ->numeric()
+                            ->suffix('%')
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->default(0)
+                            ->live()
+                            ->helperText('Enter discount percentage (0-100%). Final price will be auto-calculated.'),
+                        Forms\Components\Placeholder::make('calculated_sale_price')
+                            ->label('Final Price (After Discount)')
+                            ->content(function (Forms\Get $get) {
+                                $price = floatval($get('price') ?? 0);
+                                $discount = intval($get('discount_percentage') ?? 0);
+                                
+                                if ($discount > 0 && $price > 0) {
+                                    $salePrice = $price - ($price * ($discount / 100));
+                                    return '$' . number_format($salePrice, 2) . ' (Save $' . number_format($price - $salePrice, 2) . ')';
+                                }
+                                
+                                return $price > 0 ? '$' . number_format($price, 2) : 'Enter price first';
+                            })
+                            ->helperText('💡 This is calculated automatically from price and discount %'),
                         Forms\Components\TextInput::make('stock')
                             ->required()
                             ->numeric()
@@ -110,7 +128,7 @@ class ProductResource extends Resource
                             ->minValue(0)
                             ->helperText('Available quantity'),
                     ])
-                    ->columns(3),
+                    ->columns(2),
                     
                 Forms\Components\Section::make('Product Details')
                     ->schema([
@@ -159,8 +177,11 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('usd')
                     ->sortable()
+                    ->label('Price')
                     ->description(fn (Product $record): ?string => 
-                        $record->sale_price ? 'Sale: $' . number_format($record->sale_price, 2) : null
+                        $record->discount_percentage > 0 
+                            ? $record->discount_percentage . '% OFF → $' . number_format($record->sale_price, 2) 
+                            : null
                     ),
                 Tables\Columns\TextColumn::make('stock')
                     ->badge()
