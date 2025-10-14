@@ -134,20 +134,20 @@
 						<!-- /.cart-table -->
 						<div class="row cart-btn-section">
 							<div class="col-12">
-								<div class="cart-btn-right" style="text-align: center;">
-									<a href="{{ route('collection') }}" class="btn btn-secondary mr-3" style="padding: 12px 30px;">
-										<i class="fas fa-arrow-left"></i> Continue Shopping
-									</a>
-									@auth
-										<a href="{{ route('checkout') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
-											<i class="fas fa-lock"></i> Checkout
-										</a>
-									@else
-										<a href="{{ route('login') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
-											<i class="fas fa-sign-in-alt"></i> Login to Checkout
-										</a>
-									@endauth
-								</div>
+					<div class="cart-btn-right" style="text-align: center; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+						<a href="{{ route('collection') }}" class="btn btn-secondary" style="padding: 15px 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+							<i class="fas fa-arrow-left"></i> <span>Continue Shopping</span>
+						</a>
+						@auth
+							<a href="{{ route('checkout') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
+								<i class="fas fa-lock"></i> <span>Checkout</span>
+							</a>
+						@else
+							<a href="{{ route('login') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
+								<i class="fas fa-sign-in-alt"></i> <span>Login to Checkout</span>
+							</a>
+						@endauth
+					</div>
 							</div>
 						</div>
 						<!-- /.row -->
@@ -186,18 +186,18 @@
 							</li>
 						</ul>
 
-						<!-- Checkout Button -->
-						@auth
-							<a href="{{ route('checkout') }}" class="checkout-button">
-								<i class="fas fa-lock" style="margin-right: 8px;"></i>
-								Proceed To Checkout
-							</a>
-						@else
-							<a href="{{ route('login') }}" class="checkout-button">
-								<i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
-								Login to Checkout
-							</a>
-						@endauth
+					<!-- Checkout Button -->
+					@auth
+						<a href="{{ route('checkout') }}" class="checkout-button">
+							<i class="fas fa-lock"></i>
+							<span>Proceed To Checkout</span>
+						</a>
+					@else
+						<a href="{{ route('login') }}" class="checkout-button">
+							<i class="fas fa-sign-in-alt"></i>
+							<span>Login to Checkout</span>
+						</a>
+					@endauth
 						</div>
 						<!-- /.cart-subtotal -->
 					@endif
@@ -501,10 +501,13 @@
 	
 	/* Checkout Button */
 	.checkout-button {
-		display: block;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
 		background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
 		color: #FFD700;
-		padding: 16px 25px;
+		padding: 18px 30px;
 		text-decoration: none;
 		border-radius: 10px;
 		font-weight: 700;
@@ -519,11 +522,12 @@
 	}
 	
 	.checkout-button:hover {
-		background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-		color: #000;
+		background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+		color: #fff;
 		transform: translateY(-2px);
-		box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+		box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
 		text-decoration: none;
+		border-color: #FFD700;
 	}
 	
 	/* Cart Count Badge */
