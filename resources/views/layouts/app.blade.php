@@ -119,28 +119,16 @@
 			visibility: visible;
 		}
 		
-		/* Fix will-change performance warning - Override carousel libraries */
+		/* Fix will-change performance warning - Remove from all elements */
 		* {
 			will-change: auto !important;
 		}
 		
-		/* Only allow will-change on critical animating elements */
-		.owl-item.active.center,
-		.slick-current,
-		.animated:hover {
+		/* Only use will-change on actively interacting elements */
+		.social-icons-grid a:active,
+		.btn:active,
+		button:active {
 			will-change: transform !important;
-		}
-		
-		/* Specifically disable on carousel stages */
-		.owl-stage,
-		.owl-item,
-		.owl-carousel,
-		.slick-track,
-		.slick-slide,
-		.slick-list,
-		.grid-item,
-		.isotope-item {
-			will-change: auto !important;
 		}
 		
 		
@@ -1011,72 +999,50 @@
 	<script src="{{ asset('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('dependencies/owl.carousel/js/owl.carousel.min.js') }}"></script>
 	
-	<!-- Fix will-change memory warning - Aggressive approach -->
+	<!-- Fix will-change memory warning - Targeted approach -->
 	<script>
-		// Aggressive will-change cleanup
+		// Targeted will-change cleanup - only fix carousel/slider libraries
 		(function() {
 			'use strict';
 			
-			const forceRemoveWillChange = () => {
-				// Method 1: Target all elements
-				const allElements = document.getElementsByTagName('*');
-				for (let i = 0; i < allElements.length; i++) {
-					const el = allElements[i];
-					if (el.style) {
-						el.style.willChange = 'auto';
-						el.style.setProperty('will-change', 'auto', 'important');
-					}
-				}
-			};
-			
-			// Run immediately (before carousels initialize)
-			forceRemoveWillChange();
-			
-			// Override MutationObserver to catch dynamic additions
-			const observer = new MutationObserver((mutations) => {
-				mutations.forEach((mutation) => {
-					if (mutation.addedNodes.length) {
-						mutation.addedNodes.forEach((node) => {
-							if (node.nodeType === 1 && node.style) {
-								node.style.willChange = 'auto';
-							}
-						});
-					}
-				});
-			});
-			
-			// Start observing
-			if (document.body) {
-				observer.observe(document.body, {
-					childList: true,
-					subtree: true
-				});
-			} else {
-				document.addEventListener('DOMContentLoaded', () => {
-					observer.observe(document.body, {
-						childList: true,
-						subtree: true
+			const removeWillChangeFromCarousels = () => {
+				// Only target specific carousel/slider elements that abuse will-change
+				const selectors = [
+					'.owl-stage',
+					'.owl-item',
+					'.owl-carousel',
+					'.slick-track',
+					'.slick-slide',
+					'.slick-list',
+					'.grid-item',
+					'.isotope-item',
+					'.hero-slider',
+					'.product-slider'
+				];
+				
+				selectors.forEach(selector => {
+					const elements = document.querySelectorAll(selector);
+					elements.forEach(el => {
+						if (el.style) {
+							el.style.willChange = 'auto';
+						}
 					});
 				});
+			};
+			
+			// Run after DOM is ready and carousels are initialized
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', () => {
+					setTimeout(removeWillChangeFromCarousels, 500);
+				});
+			} else {
+				setTimeout(removeWillChangeFromCarousels, 500);
 			}
 			
-			// Run cleanup on various events
-			const events = ['DOMContentLoaded', 'load', 'scroll', 'resize'];
-			events.forEach(event => {
-				window.addEventListener(event, () => {
-					setTimeout(forceRemoveWillChange, 50);
-				}, { passive: true, once: event !== 'scroll' && event !== 'resize' });
-			});
-			
-			// Continuous cleanup (every 2 seconds for first 10 seconds)
-			let cleanupCount = 0;
-			const continuousCleanup = setInterval(() => {
-				forceRemoveWillChange();
-				cleanupCount++;
-				if (cleanupCount >= 5) {
-					clearInterval(continuousCleanup);
-				}
-			}, 2000);
+			// Run once more after everything loads
+			window.addEventListener('load', () => {
+				setTimeout(removeWillChangeFromCarousels, 1000);
+			}, { once: true });
 		})();
 	</script>
 	<script src="{{ asset('dependencies/wow/js/wow.min.js') }}"></script>

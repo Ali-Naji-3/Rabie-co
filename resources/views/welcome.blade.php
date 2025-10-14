@@ -12,8 +12,64 @@
 		<div class="slider-start slider-1 owl-carousel owl-theme">
 
 		@forelse($heroSliders as $slider)
-		<div class="item">
-			<img src="{{ asset('storage/' . $slider->image) }}" alt="{{ $slider->main_title }}" style="width: 100%; display: block;">
+		<div class="item" style="position: relative;">
+			@if($slider->media_type === 'video')
+				{{-- Video Slider --}}
+				@if($slider->video_url)
+					{{-- External Video (YouTube/Vimeo) --}}
+					@php
+						$videoId = '';
+						$videoType = '';
+						if (strpos($slider->video_url, 'youtube.com') !== false || strpos($slider->video_url, 'youtu.be') !== false) {
+							preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $slider->video_url, $matches);
+							$videoId = $matches[1] ?? '';
+							$videoType = 'youtube';
+						} elseif (strpos($slider->video_url, 'vimeo.com') !== false) {
+							preg_match('/vimeo\.com\/(\d+)/', $slider->video_url, $matches);
+							$videoId = $matches[1] ?? '';
+							$videoType = 'vimeo';
+						}
+					@endphp
+					
+					@if($videoType === 'youtube' && $videoId)
+						<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+							<iframe 
+								src="https://www.youtube.com/embed/{{ $videoId }}?{{ $slider->autoplay ? 'autoplay=1&' : '' }}{{ $slider->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $slider->muted ? 'mute=1&' : '' }}{{ $slider->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
+								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+								allowfullscreen>
+							</iframe>
+						</div>
+					@elseif($videoType === 'vimeo' && $videoId)
+						<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+							<iframe 
+								src="https://player.vimeo.com/video/{{ $videoId }}?{{ $slider->autoplay ? 'autoplay=1&' : '' }}{{ $slider->loop ? 'loop=1&' : '' }}{{ $slider->muted ? 'muted=1&' : '' }}{{ $slider->show_controls ? '' : 'controls=0&' }}" 
+								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+								allow="autoplay; fullscreen; picture-in-picture" 
+								allowfullscreen>
+							</iframe>
+						</div>
+					@endif
+				@elseif($slider->video)
+					{{-- Uploaded Video File --}}
+					<video 
+						style="width: 100%; height: 100%; object-fit: cover; display: block;"
+						{{ $slider->autoplay ? 'autoplay' : '' }}
+						{{ $slider->loop ? 'loop' : '' }}
+						{{ $slider->muted ? 'muted' : '' }}
+						{{ $slider->show_controls ? 'controls' : '' }}
+						{{ $slider->video_thumbnail ? 'poster=' . asset('storage/' . $slider->video_thumbnail) : '' }}
+						playsinline>
+						<source src="{{ asset('storage/' . $slider->video) }}" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+				@endif
+			@else
+				{{-- Image Slider --}}
+				@if($slider->image)
+					<img src="{{ asset('storage/' . $slider->image) }}" alt="{{ $slider->main_title }}" style="width: 100%; display: block;">
+				@endif
+			@endif
 			<div class="container-fluid custom-container slider-content">
 					<div class="row align-items-center">
 						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
@@ -189,17 +245,89 @@
 	<!--=========================-->
 
 	@foreach($promoBannersAfterProducts as $banner)
-	<section class="add-area" style="position: relative;">
-		@if($banner->link_url && !$banner->button_text)
-			<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-				<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-			</a>
+	<section class="add-area" style="position: relative; overflow: hidden;">
+		@if($banner->media_type === 'video')
+			{{-- Video Banner --}}
+			@if($banner->video_url)
+				{{-- External Video (YouTube/Vimeo) --}}
+				@php
+					$videoId = '';
+					$videoType = '';
+					if (strpos($banner->video_url, 'youtube.com') !== false || strpos($banner->video_url, 'youtu.be') !== false) {
+						preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $banner->video_url, $matches);
+						$videoId = $matches[1] ?? '';
+						$videoType = 'youtube';
+					} elseif (strpos($banner->video_url, 'vimeo.com') !== false) {
+						preg_match('/vimeo\.com\/(\d+)/', $banner->video_url, $matches);
+						$videoId = $matches[1] ?? '';
+						$videoType = 'vimeo';
+					}
+				@endphp
+				
+				@if($videoType === 'youtube' && $videoId)
+					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+						<iframe 
+							src="https://www.youtube.com/embed/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $banner->muted ? 'mute=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
+							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+							allowfullscreen>
+						</iframe>
+					</div>
+				@elseif($videoType === 'vimeo' && $videoId)
+					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+						<iframe 
+							src="https://player.vimeo.com/video/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&' : '' }}{{ $banner->muted ? 'muted=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}" 
+							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+							allow="autoplay; fullscreen; picture-in-picture" 
+							allowfullscreen>
+						</iframe>
+					</div>
+				@endif
+			@elseif($banner->video)
+				{{-- Uploaded Video File --}}
+				@if($banner->link_url && !$banner->button_text)
+					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+						<video 
+							style="width: 100%; display: block; object-fit: cover;"
+							{{ $banner->autoplay ? 'autoplay' : '' }}
+							{{ $banner->loop ? 'loop' : '' }}
+							{{ $banner->muted ? 'muted' : '' }}
+							{{ $banner->show_controls ? 'controls' : '' }}
+							{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
+							playsinline>
+							<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+					</a>
+				@else
+					<video 
+						style="width: 100%; display: block; object-fit: cover;"
+						{{ $banner->autoplay ? 'autoplay' : '' }}
+						{{ $banner->loop ? 'loop' : '' }}
+						{{ $banner->muted ? 'muted' : '' }}
+						{{ $banner->show_controls ? 'controls' : '' }}
+						{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
+						playsinline>
+						<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+				@endif
+			@endif
 		@else
-			<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+			{{-- Image Banner --}}
+			@if($banner->image)
+				@if($banner->link_url && !$banner->button_text)
+					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+						<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+					</a>
+				@else
+					<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+				@endif
+			@endif
 		@endif
 		
 		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
-		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none;">
+		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 10;">
 			<div class="row align-items-center">
 				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
 					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">
@@ -341,17 +469,89 @@
 	<!--=========================-->
 
 	@foreach($promoBannersAfterReviews as $banner)
-	<section class="add-area" style="position: relative;">
-		@if($banner->link_url && !$banner->button_text)
-			<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-				<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-			</a>
+	<section class="add-area" style="position: relative; overflow: hidden;">
+		@if($banner->media_type === 'video')
+			{{-- Video Banner --}}
+			@if($banner->video_url)
+				{{-- External Video (YouTube/Vimeo) --}}
+				@php
+					$videoId = '';
+					$videoType = '';
+					if (strpos($banner->video_url, 'youtube.com') !== false || strpos($banner->video_url, 'youtu.be') !== false) {
+						preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $banner->video_url, $matches);
+						$videoId = $matches[1] ?? '';
+						$videoType = 'youtube';
+					} elseif (strpos($banner->video_url, 'vimeo.com') !== false) {
+						preg_match('/vimeo\.com\/(\d+)/', $banner->video_url, $matches);
+						$videoId = $matches[1] ?? '';
+						$videoType = 'vimeo';
+					}
+				@endphp
+				
+				@if($videoType === 'youtube' && $videoId)
+					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+						<iframe 
+							src="https://www.youtube.com/embed/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $banner->muted ? 'mute=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
+							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+							allowfullscreen>
+						</iframe>
+					</div>
+				@elseif($videoType === 'vimeo' && $videoId)
+					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
+						<iframe 
+							src="https://player.vimeo.com/video/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&' : '' }}{{ $banner->muted ? 'muted=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}" 
+							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+							allow="autoplay; fullscreen; picture-in-picture" 
+							allowfullscreen>
+						</iframe>
+					</div>
+				@endif
+			@elseif($banner->video)
+				{{-- Uploaded Video File --}}
+				@if($banner->link_url && !$banner->button_text)
+					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+						<video 
+							style="width: 100%; display: block; object-fit: cover;"
+							{{ $banner->autoplay ? 'autoplay' : '' }}
+							{{ $banner->loop ? 'loop' : '' }}
+							{{ $banner->muted ? 'muted' : '' }}
+							{{ $banner->show_controls ? 'controls' : '' }}
+							{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
+							playsinline>
+							<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+					</a>
+				@else
+					<video 
+						style="width: 100%; display: block; object-fit: cover;"
+						{{ $banner->autoplay ? 'autoplay' : '' }}
+						{{ $banner->loop ? 'loop' : '' }}
+						{{ $banner->muted ? 'muted' : '' }}
+						{{ $banner->show_controls ? 'controls' : '' }}
+						{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
+						playsinline>
+						<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+				@endif
+			@endif
 		@else
-			<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+			{{-- Image Banner --}}
+			@if($banner->image)
+				@if($banner->link_url && !$banner->button_text)
+					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
+						<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+					</a>
+				@else
+					<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
+				@endif
+			@endif
 		@endif
 		
 		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
-		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none;">
+		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 10;">
 			<div class="row align-items-center">
 				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
 					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">

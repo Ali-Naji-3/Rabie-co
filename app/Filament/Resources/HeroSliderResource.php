@@ -29,13 +29,28 @@ class HeroSliderResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Media Type')
+                    ->description('Choose between image or video slider')
+                    ->schema([
+                        Forms\Components\Select::make('media_type')
+                            ->label('Media Type')
+                            ->options([
+                                'image' => 'Image Slider',
+                                'video' => 'Video Slider',
+                            ])
+                            ->default('image')
+                            ->required()
+                            ->live()
+                            ->helperText('Select whether to use an image or video for this hero slider'),
+                    ]),
+                    
                 Forms\Components\Section::make('Slider Images')
                     ->description('Upload slider images. Desktop image is required.')
                     ->schema([
                         Forms\Components\FileUpload::make('image')
                             ->label('Desktop Image')
                             ->image()
-                            ->required()
+                            ->required(fn (Forms\Get $get) => $get('media_type') === 'image')
                             ->directory('hero-sliders')
                             ->imageEditor()
                             ->imageEditorAspectRatios([
@@ -54,7 +69,81 @@ class HeroSliderResource extends Resource
                             ->helperText('Recommended size: 800x600px. If not provided, desktop image will be used.')
                             ->columnSpanFull(),
                     ])
+                    ->visible(fn (Forms\Get $get) => $get('media_type') === 'image')
                     ->columns(2),
+                    
+                Forms\Components\Section::make('Slider Video')
+                    ->description('Upload slider video or provide external video URL')
+                    ->schema([
+                        Forms\Components\Placeholder::make('video_editor_info')
+                            ->label('')
+                            ->content(new \Illuminate\Support\HtmlString('
+                                <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                                    <div style="display: flex; align-items: start; gap: 10px;">
+                                        <svg style="width: 20px; height: 20px; flex-shrink: 0; color: #0ea5e9; margin-top: 2px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <div style="flex: 1;">
+                                            <strong style="color: #0369a1; display: block; margin-bottom: 4px;">💡 Video Editing Tips:</strong>
+                                            <ul style="margin: 0; padding-left: 20px; color: #0c4a6e; font-size: 13px; line-height: 1.6;">
+                                                <li>Use <a href="https://clipchamp.com/en/video-trimmer/" target="_blank" style="color: #0284c7; text-decoration: underline;">Clipchamp</a> or <a href="https://www.kapwing.com/tools/trim-video" target="_blank" style="color: #0284c7; text-decoration: underline;">Kapwing</a> to trim videos before upload</li>
+                                                <li>Desktop tools: VLC Media Player, HandBrake, or DaVinci Resolve</li>
+                                                <li>Hero videos work best with autoplay, loop, and muted enabled</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            '))
+                            ->columnSpanFull(),
+                        Forms\Components\FileUpload::make('video')
+                            ->label('Video File')
+                            ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
+                            ->directory('hero-sliders/videos')
+                            ->maxSize(51200) // 50MB
+                            ->helperText('Upload video file (MP4, WebM, or OGG). Max size: 50MB. 💡 Tip: Videos can be manually compressed after upload for faster loading (see documentation).')
+                            ->downloadable()
+                            ->previewable()
+                            ->openable()
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('video_url')
+                            ->label('Or External Video URL')
+                            ->url()
+                            ->placeholder('https://www.youtube.com/watch?v=...')
+                            ->helperText('Alternatively, provide YouTube or Vimeo URL')
+                            ->columnSpanFull(),
+                        Forms\Components\FileUpload::make('video_thumbnail')
+                            ->label('Video Thumbnail (Optional)')
+                            ->image()
+                            ->directory('hero-sliders/thumbnails')
+                            ->imageEditor()
+                            ->maxSize(1024)
+                            ->helperText('Thumbnail shown before video loads')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (Forms\Get $get) => $get('media_type') === 'video'),
+                    
+                Forms\Components\Section::make('Video Settings')
+                    ->description('Configure video playback options')
+                    ->schema([
+                        Forms\Components\Toggle::make('autoplay')
+                            ->label('Autoplay')
+                            ->default(true)
+                            ->helperText('Start playing automatically (recommended for hero videos)'),
+                        Forms\Components\Toggle::make('loop')
+                            ->label('Loop')
+                            ->default(true)
+                            ->helperText('Repeat video continuously (recommended for hero videos)'),
+                        Forms\Components\Toggle::make('muted')
+                            ->label('Muted')
+                            ->default(true)
+                            ->helperText('Start with sound off (required for autoplay)'),
+                        Forms\Components\Toggle::make('show_controls')
+                            ->label('Show Controls')
+                            ->default(false)
+                            ->helperText('Display play/pause controls (usually hidden for hero videos)'),
+                    ])
+                    ->columns(2)
+                    ->visible(fn (Forms\Get $get) => $get('media_type') === 'video'),
                     
                 Forms\Components\Section::make('Content')
                     ->schema([

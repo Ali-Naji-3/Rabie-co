@@ -9,6 +9,14 @@ class HeroSlider extends Model
     protected $fillable = [
         'image',
         'mobile_image',
+        'video',
+        'video_thumbnail',
+        'media_type',
+        'video_url',
+        'autoplay',
+        'loop',
+        'muted',
+        'show_controls',
         'small_title',
         'main_title',
         'description',
@@ -25,6 +33,10 @@ class HeroSlider extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'autoplay' => 'boolean',
+        'loop' => 'boolean',
+        'muted' => 'boolean',
+        'show_controls' => 'boolean',
         'order' => 'integer',
         'overlay_opacity' => 'integer',
     ];
