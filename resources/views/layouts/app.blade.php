@@ -6,6 +6,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://maps.googleapis.com https://maps.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob: https:;">
 	<title>@yield('title', 'Fashion Shop')</title>
 
 	<!-- Fav Icon (Dynamic from Site Settings) -->
@@ -148,6 +149,72 @@
 		}
 		.sin-product:hover .pro-img img {
 			transform: scale(1.1);
+		}
+		
+		/* Footer Social Media Hover Effects */
+		.social-media-section a:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 6px 16px rgba(0,0,0,0.3) !important;
+		}
+		
+		/* Professional Social Media Grid */
+		.social-icons-grid {
+			display: grid !important;
+			grid-template-columns: repeat(3, 1fr) !important;
+			gap: 12px !important;
+			max-width: 180px !important;
+		}
+		
+		.social-icons-grid a {
+			width: 50px !important;
+			height: 50px !important;
+			border-radius: 50% !important;
+			display: flex !important;
+			align-items: center !important;
+			justify-content: center !important;
+			text-decoration: none !important;
+			transition: all 0.3s ease !important;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+			position: relative !important;
+			overflow: hidden !important;
+		}
+		
+		.social-icons-grid a::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+			transition: left 0.5s;
+		}
+		
+		.social-icons-grid a:hover::before {
+			left: 100%;
+		}
+		
+		.social-icons-grid a:hover {
+			transform: translateY(-3px) scale(1.05) !important;
+			box-shadow: 0 8px 20px rgba(0,0,0,0.3) !important;
+		}
+		
+		/* Responsive adjustments */
+		@media (max-width: 768px) {
+			.social-icons-grid {
+				grid-template-columns: repeat(2, 1fr) !important;
+				max-width: 120px !important;
+				gap: 10px !important;
+			}
+			
+			.social-icons-grid a {
+				width: 45px !important;
+				height: 45px !important;
+			}
+			
+			.social-icons-grid a i {
+				font-size: 18px !important;
+			}
 		}
 		.sin-product .icon-wrapper {
 			position: absolute;
@@ -594,54 +661,38 @@
 		<footer class="footer-widget-area">
 			<div class="container-fluid custom-container">
 				<div class="row">
-				<div class="col-md-6 col-lg-3 col-xl-3">
-					<div class="footer-widget">
-						<div class="logo">
-							<a href="{{ url('/') }}">
-								@if($siteSettings->footer_logo)
-									<img src="{{ asset('storage/' . $siteSettings->footer_logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
-								@elseif($siteSettings->logo)
-									<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
-								@else
-									<img src="{{ asset('media/images/logo2.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
-								@endif
-							</a>
-						</div>
-						<p>{{ $siteSettings->footer_description ?? 'Autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum dolore eu olestie consequat Autem vel eum iriure dolor.' }}</p>
-						<div class="social">
-							<ul>
-								@if($siteSettings->facebook_url)
-									<li><a href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a></li>
-								@endif
-								@if($siteSettings->twitter_url)
-									<li><a href="{{ $siteSettings->twitter_url }}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a></li>
-								@endif
-								@if($siteSettings->instagram_url)
-									<li><a href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a></li>
-								@endif
-								@if($siteSettings->linkedin_url)
-									<li><a href="{{ $siteSettings->linkedin_url }}" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a></li>
-								@endif
-								@if($siteSettings->youtube_url)
-									<li><a href="{{ $siteSettings->youtube_url }}" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a></li>
-								@endif
-								@if($siteSettings->tiktok_url)
-									<li><a href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a></li>
-								@endif
-							</ul>
+					<div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
+						<div class="footer-widget">
+							<div class="logo">
+								<a href="{{ url('/') }}">
+									@if($siteSettings->footer_logo)
+										<img src="{{ asset('storage/' . $siteSettings->footer_logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+									@elseif($siteSettings->logo)
+										<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+									@else
+										<img src="{{ asset('media/images/logo2.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+									@endif
+								</a>
+							</div>
+							@if($siteSettings->footer_description)
+								<p>{{ $siteSettings->footer_description }}</p>
+							@endif
 						</div>
 					</div>
-				</div>
 					<!-- /.col-xl-3 -->
 					<div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
 						<div class="footer-widget">
-							<h3>our shop</h3>
+							<h3>Quick Links</h3>
 							<div class="footer-menu">
 								<ul>
-									<li><a href="#">About Us</a></li>
-									<li><a href="#">Browse Products</a></li>
-									<li><a href="#">Read Our Blog</a></li>
-									<li><a href="#">Contact Us</a></li>
+									<li><a href="{{ url('/') }}">Home</a></li>
+									<li><a href="{{ route('collection') }}">All Products</a></li>
+									<li><a href="{{ route('contact') }}">Contact Us</a></li>
+									@auth
+										<li><a href="{{ route('orders.index') }}">My Orders</a></li>
+									@else
+										<li><a href="{{ route('login') }}">Login</a></li>
+									@endauth
 								</ul>
 							</div>
 						</div>
@@ -649,30 +700,60 @@
 					<!-- /.col-xl-3 -->
 					<div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
 						<div class="footer-widget">
-							<h3>COLLECTIONS</h3>
+							<h3>Customer Service</h3>
 							<div class="footer-menu">
 								<ul>
-									<li><a href="#">Summer 2024</a></li>
-									<li><a href="#">Women's Dresses</a></li>
-									<li><a href="#">Women's Jackets</a></li>
-									<li><a href="#">Men's Shirts</a></li>
+									<li><a href="{{ route('contact') }}">Help & Support</a></li>
+									<li><a href="{{ route('contact') }}">Shipping Info</a></li>
+									<li><a href="{{ route('contact') }}">Returns & Exchanges</a></li>
+									<li><a href="{{ route('contact') }}">Size Guide</a></li>
 								</ul>
 							</div>
 						</div>
 					</div>
 					<!-- /.col-xl-3 -->
-					<div class="col-md-6 col-lg-3 col-xl-3">
+					<div class="col-sm-6 col-md-6 col-lg-3 col-xl-3">
 						<div class="footer-widget">
-							<h3>Payment Methods</h3>
-							<p>Autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum</p>
-							<div class="payment-link">
-								<ul>
-									<li><a href="#"><img src="{{ asset('media/images/p1.png') }}" alt=""></a></li>
-									<li><a href="#"><img src="{{ asset('media/images/p2.png') }}" alt=""></a></li>
-									<li><a href="#"><img src="{{ asset('media/images/p3.png') }}" alt=""></a></li>
-									<li><a href="#"><img src="{{ asset('media/images/p4.png') }}" alt=""></a></li>
-								</ul>
+							<h3>Follow Us</h3>
+							<p>Stay connected with us on social media for the latest updates, news, and exclusive offers.</p>
+							
+							<!-- Professional Social Media Links -->
+							@if($siteSettings->facebook_url || $siteSettings->instagram_url || $siteSettings->twitter_url || $siteSettings->linkedin_url || $siteSettings->youtube_url || $siteSettings->tiktok_url)
+							<div class="social-media-section" style="margin-top: 20px;">
+								<div class="social-icons-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 180px;">
+									@if($siteSettings->facebook_url)
+										<a href="{{ $siteSettings->facebook_url }}" target="_blank" rel="noopener" style="background: #1877F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Facebook">
+											<i class="fab fa-facebook-f" style="font-size: 20px;"></i>
+										</a>
+									@endif
+									@if($siteSettings->instagram_url)
+										<a href="{{ $siteSettings->instagram_url }}" target="_blank" rel="noopener" style="background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Instagram">
+											<i class="fab fa-instagram" style="font-size: 20px;"></i>
+										</a>
+									@endif
+									@if($siteSettings->twitter_url)
+										<a href="{{ $siteSettings->twitter_url }}" target="_blank" rel="noopener" style="background: #1DA1F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on Twitter">
+											<i class="fab fa-twitter" style="font-size: 20px;"></i>
+										</a>
+									@endif
+									@if($siteSettings->linkedin_url)
+										<a href="{{ $siteSettings->linkedin_url }}" target="_blank" rel="noopener" style="background: #0A66C2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Connect with us on LinkedIn">
+											<i class="fab fa-linkedin-in" style="font-size: 20px;"></i>
+										</a>
+									@endif
+									@if($siteSettings->youtube_url)
+										<a href="{{ $siteSettings->youtube_url }}" target="_blank" rel="noopener" style="background: #FF0000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Subscribe to our YouTube channel">
+											<i class="fab fa-youtube" style="font-size: 20px;"></i>
+										</a>
+									@endif
+									@if($siteSettings->tiktok_url)
+										<a href="{{ $siteSettings->tiktok_url }}" target="_blank" rel="noopener" style="background: #000000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" title="Follow us on TikTok">
+											<i class="fab fa-tiktok" style="font-size: 20px;"></i>
+										</a>
+									@endif
+								</div>
 							</div>
+							@endif
 						</div>
 					</div>
 					<!-- /.col-xl-3 -->
@@ -1004,8 +1085,31 @@
 	
 	<!-- Google Maps - Only load on contact page to avoid CORS warning -->
 	@if(request()->routeIs('contact'))
-		<script src="{{ asset('dependencies/gmap3/js/gmap3.min.js') }}"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&loading=async" async defer></script>
+		<script>
+			// Load Google Maps API with proper error handling
+			function loadGoogleMaps() {
+				if (typeof google === 'undefined') {
+					const script = document.createElement('script');
+					script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&callback=initMap&libraries=places';
+					script.async = true;
+					script.defer = true;
+					script.onerror = function() {
+						console.warn('Google Maps API failed to load. This is normal if no map is being used.');
+					};
+					document.head.appendChild(script);
+				}
+			}
+			
+			// Initialize map function (can be called from contact page if needed)
+			window.initMap = function() {
+				console.log('Google Maps API loaded successfully');
+			};
+			
+			// Load maps when document is ready
+			$(document).ready(function() {
+				loadGoogleMaps();
+			});
+		</script>
 	@endif
 
 	<!-- Site Scripts -->

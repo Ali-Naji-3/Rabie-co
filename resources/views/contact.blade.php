@@ -259,44 +259,6 @@
 							@endif
 						</div>
 
-						<!-- Social Media Links -->
-						@if($siteSettings->facebook_url || $siteSettings->instagram_url || $siteSettings->twitter_url || $siteSettings->linkedin_url || $siteSettings->youtube_url || $siteSettings->tiktok_url)
-						<div class="contact-info-item" style="margin-top: 40px; text-align: center; border-top: 1px solid #ddd; padding-top: 30px;">
-							<h6 style="color: #333; font-weight: 600; margin-bottom: 20px; font-size: 18px;">Follow Us</h6>
-							<div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-								@if($siteSettings->facebook_url)
-									<a href="{{ $siteSettings->facebook_url }}" target="_blank" style="background: #1877F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-facebook-f" style="font-size: 20px;"></i>
-									</a>
-								@endif
-								@if($siteSettings->instagram_url)
-									<a href="{{ $siteSettings->instagram_url }}" target="_blank" style="background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-instagram" style="font-size: 20px;"></i>
-									</a>
-								@endif
-								@if($siteSettings->twitter_url)
-									<a href="{{ $siteSettings->twitter_url }}" target="_blank" style="background: #1DA1F2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-twitter" style="font-size: 20px;"></i>
-									</a>
-								@endif
-								@if($siteSettings->linkedin_url)
-									<a href="{{ $siteSettings->linkedin_url }}" target="_blank" style="background: #0A66C2; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-linkedin-in" style="font-size: 20px;"></i>
-									</a>
-								@endif
-								@if($siteSettings->youtube_url)
-									<a href="{{ $siteSettings->youtube_url }}" target="_blank" style="background: #FF0000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-youtube" style="font-size: 20px;"></i>
-									</a>
-								@endif
-								@if($siteSettings->tiktok_url)
-									<a href="{{ $siteSettings->tiktok_url }}" target="_blank" style="background: #000000; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-										<i class="fab fa-tiktok" style="font-size: 20px;"></i>
-									</a>
-								@endif
-							</div>
-						</div>
-						@endif
 					</div>
 				</div>
 			</div>
