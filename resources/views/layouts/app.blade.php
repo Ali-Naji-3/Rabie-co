@@ -271,6 +271,42 @@
 
 	@stack('styles')
 
+	<!-- Active Navigation Highlighting -->
+	<style>
+		/* Desktop Navigation Active State */
+		#navigation li a.active {
+			color: #FFD700 !important;
+			font-weight: 700 !important;
+			position: relative;
+		}
+		
+		#navigation li a.active::after {
+			content: '';
+			position: absolute;
+			bottom: -5px;
+			left: 0;
+			width: 100%;
+			height: 3px;
+			background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+			border-radius: 2px;
+			box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+		}
+		
+		/* Mobile Navigation Active State */
+		#mobilemenu .out-link.active a {
+			color: #FFD700 !important;
+			font-weight: 700 !important;
+			background: rgba(255, 215, 0, 0.1);
+			padding-left: 20px !important;
+			border-left: 4px solid #FFD700;
+		}
+		
+		/* Hover effect for non-active items */
+		#navigation li a:not(.active):hover {
+			color: #FFA500 !important;
+		}
+	</style>
+
 </head>
 
 <body id="home-version-1" class="home-version-1" data-style="default">
@@ -301,9 +337,9 @@
 					<div class="col-lg-12 col-xl-7 order-lg-3 order-xl-2 menu-container">
 						<div class="mainmenu">
 							<ul id="navigation">
-								<li><a href="{{ url('/') }}" class="active">home</a></li>
-								<li><a href="{{ route('collection') }}">COLLECTION</a></li>
-								<li><a href="{{ route('contact') }}">CONTACT</a></li>
+								<li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">home</a></li>
+								<li><a href="{{ route('collection') }}" class="{{ request()->is('collection*') || request()->is('product/*') ? 'active' : '' }}">COLLECTION</a></li>
+								<li><a href="{{ route('contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">CONTACT</a></li>
 							</ul>
 						</div>
 					</div>
@@ -500,11 +536,11 @@
 							<img src="{{ asset('media/images/logo.png') }}" alt="">
 						</a></li>
 					<li><a href="#" class="closeme"><i class="flaticon-close"></i></a></li>
-					<li class="out-link"><a href="{{ url('/') }}">Home</a></li>
+					<li class="out-link {{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
 
-					<li class="out-link"><a href="{{ route('collection') }}">COLLECTION</a></li>
+					<li class="out-link {{ request()->is('collection*') || request()->is('product/*') ? 'active' : '' }}"><a href="{{ route('collection') }}">COLLECTION</a></li>
 
-					<li class="out-link"><a href="{{ route('contact') }}">CONTACT</a></li>
+					<li class="out-link {{ request()->is('contact') ? 'active' : '' }}"><a href="{{ route('contact') }}">CONTACT</a></li>
 
 
 				</ul>

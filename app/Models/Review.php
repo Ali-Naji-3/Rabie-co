@@ -11,12 +11,15 @@ class Review extends Model
         'user_id',
         'product_id',
         'rating',
+        'title',
         'comment',
         'is_approved',
+        'is_featured',
     ];
 
     protected $casts = [
         'is_approved' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     public function user(): BelongsTo

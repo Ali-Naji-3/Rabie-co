@@ -17,14 +17,7 @@
 					<!-- Form Header -->
 					<div class="form-header text-center mb-5">
 						<h2 style="color: #1b1b18; font-weight: 700; margin-bottom: 10px;">
-							Write a review for 
-							<select id="productSelect" style="border: none; background: transparent; color: #f53003; font-weight: 700; font-size: inherit; cursor: pointer; outline: none;">
-								<option value="ali">Ali</option>
-								<option value="product1">Product 1</option>
-								<option value="product2">Product 2</option>
-								<option value="product3">Product 3</option>
-								<option value="custom">Custom Product</option>
-							</select>
+							Write a review for <span style="color: #f53003;">{{ $product->name }}</span>
 						</h2>
 						<p style="color: #666; font-size: 16px;">Share your experience with other customers</p>
 						
@@ -32,19 +25,20 @@
 						<div id="productInfo" class="product-info-display mt-3" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #f53003;">
 							<div class="row align-items-center">
 								<div class="col-md-2">
-									<img id="productImage" src="{{ asset('media/images/product/s1.jpg') }}" alt="Product" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+									<img id="productImage" src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/s1.jpg') }}" alt="{{ $product->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
 								</div>
 								<div class="col-md-10">
-									<h6 id="productName" style="margin: 0; color: #1b1b18; font-weight: 600;">Ali - Premium Product</h6>
-									<p id="productDescription" style="margin: 0; color: #666; font-size: 14px;">High-quality product with excellent features</p>
+									<h6 id="productName" style="margin: 0; color: #1b1b18; font-weight: 600;">{{ $product->name }}</h6>
+									<p id="productDescription" style="margin: 0; color: #666; font-size: 14px;">{{ $product->description ? Str::limit($product->description, 80) : 'Share your experience with this product' }}</p>
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<!-- Review Form -->
-					<form id="reviewForm" method="POST" action="#">
+					<form id="reviewForm" method="POST" action="{{ route('review.store') }}">
 						@csrf
+						<input type="hidden" name="product_id" value="{{ $product->id }}">
 						
 						<!-- Overall Rating -->
 						<div class="form-group mb-4">
@@ -80,22 +74,27 @@
 
 						<!-- Review Content -->
 						<div class="form-group mb-4">
-							<label for="review" style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; display: block;">
+							<label for="comment" style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; display: block;">
 								Your review <span style="color: #f53003;">*</span>
 							</label>
-							<textarea id="review" 
-									  name="review" 
+							<textarea id="comment" 
+									  name="comment" 
 									  class="form-control" 
 									  rows="6" 
-									  maxlength="2000"
+									  maxlength="1000"
 									  placeholder="Write your review to help others learn about this product"
 									  required
 									  style="border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; font-size: 16px; resize: vertical; transition: border-color 0.3s;"></textarea>
 							<div class="character-count" style="text-align: right; margin-top: 5px;">
-								<span id="charCount" style="color: #666; font-size: 14px;">0/2000 characters</span>
+								<span id="charCount" style="color: #666; font-size: 14px;">0/1000 characters</span>
 							</div>
 						</div>
 
+						@guest
+						<div class="alert alert-info">
+							<i class="fas fa-info-circle"></i> Please <a href="{{ route('login') }}">login</a> to write a review.
+						</div>
+						@else
 						<!-- Terms and Conditions -->
 						<div class="form-group mb-4">
 							<div class="form-check">
@@ -106,42 +105,29 @@
 									   required
 									   style="transform: scale(1.2);">
 								<label class="form-check-label" for="terms" style="color: #1b1b18; font-size: 16px; margin-left: 10px;">
-									I agree to the <a href="#" style="color: #007bff; text-decoration: none;">Terms and Conditions</a> and <a href="#" style="color: #007bff; text-decoration: none;">Privacy Policy</a>
+									I agree to the Terms and Conditions
 								</label>
 							</div>
 						</div>
-
-						<!-- Security Verification -->
-						<div class="form-group mb-4">
-							<label style="color: #1b1b18; font-weight: 600; margin-bottom: 10px; display: block;">
-								Security Verification <span style="color: #f53003;">*</span>
-							</label>
-							<div class="recaptcha-container" style="background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; padding: 20px; text-align: center;">
-								<div class="recaptcha-widget" style="display: inline-flex; align-items: center; background: white; border: 1px solid #ddd; border-radius: 4px; padding: 10px 15px; cursor: pointer; transition: all 0.3s;">
-									<input type="checkbox" id="recaptcha" name="recaptcha" style="margin-right: 10px; transform: scale(1.2);">
-									<span style="color: #1b1b18; font-weight: 500;">I'm not a robot</span>
-									<div style="margin-left: 10px; display: flex; align-items: center;">
-										<div style="width: 20px; height: 20px; background: linear-gradient(45deg, #4285f4, #ea4335); border-radius: 50%; margin-right: 5px;"></div>
-										<span style="font-size: 12px; color: #666;">reCAPTCHA</span>
-									</div>
-								</div>
-								<div style="margin-top: 10px; font-size: 12px; color: #666;">
-									<a href="#" style="color: #007bff; text-decoration: none;">Privacy</a> - <a href="#" style="color: #007bff; text-decoration: none;">Terms</a>
-								</div>
-								<div style="margin-top: 5px; font-size: 11px; color: #999;">
-									reCAPTCHA Site Key: 6LdyCtwrAAAAAGMGHpw50sy0xMBye7lIDp7BLvsY
-								</div>
-							</div>
-						</div>
+						@endguest
 
 						<!-- Submit Button -->
 						<div class="form-group text-center">
+							@auth
 							<button type="submit" 
 									id="submitBtn"
 									class="btn btn-primary btn-lg" 
 									style="background: #007bff; border: none; padding: 15px 40px; font-size: 18px; font-weight: 600; border-radius: 8px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">
 								Submit review
 							</button>
+							@else
+							<button type="button" 
+									class="btn btn-secondary btn-lg" 
+									onclick="window.location.href='{{ route('login') }}'"
+									style="background: #6c757d; border: none; padding: 15px 40px; font-size: 18px; font-weight: 600; border-radius: 8px;">
+								Login to Submit Review
+							</button>
+							@endauth
 						</div>
 
 					</form>
@@ -455,23 +441,21 @@
 		}
 
 		// Character Counter
-		$('#review').on('input', function() {
+		$('#comment').on('input', function() {
 			const length = $(this).val().length;
-			$('#charCount').text(length + '/2000 characters');
+			$('#charCount').text(length + '/1000 characters');
 			
-			if (length > 1800) {
+			if (length > 900) {
 				$('#charCount').css('color', '#dc3545');
-			} else if (length > 1500) {
+			} else if (length > 750) {
 				$('#charCount').css('color', '#ffc107');
 			} else {
 				$('#charCount').css('color', '#666');
 			}
 		});
 
-		// Enhanced Form Validation and Submission
+		// Form Validation and Submission
 		$('#reviewForm').on('submit', function(e) {
-			e.preventDefault();
-			
 			let isValid = true;
 			let errorMessages = [];
 			
@@ -482,7 +466,7 @@
 			}
 			
 			// Check review content
-			if ($('#review').val().trim().length === 0) {
+			if ($('#comment').val().trim().length === 0) {
 				errorMessages.push('Please write your review');
 				isValid = false;
 			}
@@ -493,61 +477,19 @@
 				isValid = false;
 			}
 			
-			// Check recaptcha
-			if (!$('#recaptcha').is(':checked')) {
-				errorMessages.push('Please complete the security verification');
-				isValid = false;
+			if (!isValid) {
+				e.preventDefault();
+				alert('Please fix the following issues:\n\n• ' + errorMessages.join('\n• '));
+				return false;
 			}
 			
-			if (isValid) {
-				// Collect all form data
-				const formData = {
-					product: $('#productSelect').val(),
-					productName: productData[$('#productSelect').val()].name,
-					rating: currentRating,
-					detailedRatings: detailedRatings,
-					title: $('#title').val(),
-					review: $('#review').val(),
-					purchaseDate: $('#purchaseDate').val(),
-					usageDuration: $('#usageDuration').val(),
-					recommend: $('input[name="recommend"]:checked').val(),
-					pros: $('#pros').val(),
-					cons: $('#cons').val(),
-					termsAccepted: $('#terms').is(':checked'),
-					submittedAt: new Date().toISOString()
-				};
-				
-				// Show loading state
-				const submitBtn = $('#submitBtn');
-				const originalText = submitBtn.html();
-				submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...').prop('disabled', true);
-				
-				// Simulate form submission (replace with actual AJAX call)
-				setTimeout(function() {
-					// Show detailed success message
-					let successMessage = `Thank you for your review of ${formData.productName}!\n\n`;
-					successMessage += `Rating: ${formData.rating}/5 stars\n`;
-					successMessage += `Recommendation: ${formData.recommend || 'Not specified'}\n`;
-					if (formData.usageDuration) {
-						successMessage += `Usage Duration: ${formData.usageDuration.replace('-', ' ')}\n`;
-					}
-					successMessage += `\nYour feedback has been submitted successfully and will help other customers make informed decisions.`;
-					
-					alert(successMessage);
-					
-					// Reset form
-					resetForm();
-					
-					// Clear saved draft
-					localStorage.removeItem('reviewDraft');
-					
-					// Restore button
-					submitBtn.html(originalText).prop('disabled', false);
-				}, 2000);
-			} else {
-				// Show all error messages at once
-				alert('Please fix the following issues:\n\n• ' + errorMessages.join('\n• '));
-			}
+			// Show loading state
+			const submitBtn = $('#submitBtn');
+			const originalText = submitBtn.html();
+			submitBtn.html('<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...').prop('disabled', true);
+			
+			// Allow form to submit normally
+			return true;
 		});
 
 		// Function to reset the entire form

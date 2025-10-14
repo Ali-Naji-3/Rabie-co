@@ -142,7 +142,7 @@
 									</form>
 
 									<!-- Rating -->
-									<div class="rating my-3">
+									<div class="rating my-3" style="cursor: pointer;" onclick="document.getElementById('reviews-section').scrollIntoView({behavior: 'smooth'});">
 										<span>Rating: </span>
 										@php
 											$avgRating = $product->reviews()->where('is_approved', true)->avg('rating') ?? 0;
@@ -151,50 +151,91 @@
 										@for($i = 1; $i <= 5; $i++)
 											<i class="fas fa-star {{ $i <= round($avgRating) ? 'text-warning' : 'text-muted' }}"></i>
 										@endfor
-										<span>({{ $reviewCount }} {{ Str::plural('review', $reviewCount) }})</span>
 									</div>
 
-									<!-- Social Share -->
-									<div class="pro-social">
-										<span>Share :</span>
-										<ul>
-											<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-											<li><a href="#"><i class="fab fa-twitter"></i></a></li>
-											<li><a href="#"><i class="fab fa-instagram"></i></a></li>
-										</ul>
-									</div>
+									
 								</div>
 							</div>
 						</div>
 
 						<!-- Product Reviews Section -->
-						<div class="row mt-5">
+						<div class="row mt-5" id="reviews-section">
 							<div class="col-12">
 								<div class="card">
-									<div class="card-header">
-										<h4>Customer Reviews ({{ $reviewCount }})</h4>
-										@auth
-											<a href="{{ route('review.create', $product->id) }}" class="btn btn-primary btn-sm float-end">Write a Review</a>
-										@else
-											<a href="{{ route('login') }}" class="btn btn-primary btn-sm float-end">Login to Write Review</a>
-										@endauth
+									<div class="card-header d-flex justify-content-between align-items-center">
+										<div>
+											<h4 class="mb-1">Customer Reviews </h4>
+											
+										</div>
+										<div>
+											@auth
+												<a href="{{ route('review.create', $product->id) }}" 
+												   class="btn btn-dark" 
+												   style="background: #000000; 
+												          color: #FFD700;
+												          border: 2px solid #FFD700; 
+												          padding: 12px 30px; 
+												          font-size: 16px; 
+												          font-weight: 700; 
+												          border-radius: 8px; 
+												          box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+												          transition: all 0.3s ease;
+												          text-transform: uppercase;
+												          letter-spacing: 1px;">
+													<i class="fas fa-edit me-2" style="color: #FFD700;"></i> Review
+												</a>
+											@else
+												<a href="{{ route('login') }}" 
+												   class="btn btn-dark" 
+												   style="background: #000000; 
+												          color: #FFD700;
+												          border: 2px solid #FFD700; 
+												          padding: 12px 30px; 
+												          font-size: 16px; 
+												          font-weight: 700; 
+												          border-radius: 8px; 
+												          box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+												          transition: all 0.3s ease;
+												          text-transform: uppercase;
+												          letter-spacing: 1px;">
+													<i class="fas fa-sign-in-alt me-2" style="color: #FFD700;"></i>Login to Write Review
+												</a>
+											@endauth
+										</div>
 									</div>
 									<div class="card-body">
-										@forelse($product->reviews()->where('is_approved', true)->latest()->get() as $review)
-											<div class="mb-3 p-3 border-bottom">
-												<div class="d-flex justify-content-between">
-													<strong>{{ $review->user->name }}</strong>
-													<small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+										@forelse($product->reviews()->where('is_approved', true)->orderBy('rating', 'desc')->latest()->take(5)->get() as $index => $review)
+											<div class="review-item mb-4 p-4 border rounded" style="background-color: #f8f9fa; position: relative;">
+												<!-- Top 5 Badge for each review -->
+												<span class="badge position-absolute" style="top: 10px; right: 10px; background: #28a745; color: white; font-size: 10px; padding: 4px 8px;">
+													#{{ $index + 1 }} Top Rated
+												</span>
+												
+												@if($review->title)
+													<h6 style="color: #2c3e50; font-weight: 600; margin-bottom: 8px;">{{ $review->title }}</h6>
+												@endif
+												<div class="d-flex justify-content-between align-items-start mb-3">
+													<div>
+														<strong style="color: #333; font-size: 16px;">{{ $review->user->name }}</strong>
+														<div class="mt-1">
+															@for($i = 1; $i <= 5; $i++)
+																<i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}" style="font-size: 14px;"></i>
+															@endfor
+															<span class="ms-2 text-muted" style="font-size: 14px;">{{ $review->rating }}/5</span>
+														</div>
+													</div>
+													<small class="text-muted" style="font-size: 12px;">{{ $review->created_at->format('M d, Y') }}</small>
 												</div>
-												<div class="my-2">
-													@for($i = 1; $i <= 5; $i++)
-														<i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
-													@endfor
+												<div class="review-comment">
+													<p style="color: #555; line-height: 1.6; margin: 0;">{{ $review->comment }}</p>
 												</div>
-												<p>{{ $review->comment }}</p>
 											</div>
 										@empty
-											<p class="text-muted">No reviews yet. Be the first to review this product!</p>
+											<div class="text-center py-5">
+												<i class="fas fa-comments fa-3x text-muted mb-3"></i>
+												<h5 class="text-muted">No reviews yet</h5>
+												<p class="text-muted">Be the first to review this product!</p>
+											</div>
 										@endforelse
 									</div>
 								</div>
@@ -251,3 +292,15 @@
 		</section>
 
 @endsection
+
+@push('styles')
+<style>
+	/* Write Review Button Hover Effects - Black & Gold Theme */
+	.btn-dark:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6) !important;
+		background: #1a1a1a !important;
+		border-color: #FFD700 !important;
+	}
+</style>
+@endpush

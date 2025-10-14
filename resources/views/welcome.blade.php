@@ -164,172 +164,93 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="small-sec-title text-center">
-						<h6><span style="color: #FFD700;">REVIEW</span></h6>
+						<h6><span style="color: #FFD700;">⭐ FEATURED CUSTOMER REVIEWS</span></h6>
+						<p style="color: #666; font-size: 14px; margin-top: 10px;">See what our customers are saying about their favorite products</p>
 					</div>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s9.jpg') }}" alt="">
+				@forelse($featuredReviews as $review)
+				<div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+					<!-- Featured Review Card -->
+					<div class="featured-review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%; position: relative; transition: all 0.3s ease;">
+						<!-- Pin Badge -->
+						<div class="pin-badge" style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);">
+							📌 FEATURED
 						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#" class="quick-view-btn" data-name="Sunglass dark color" data-image="{{ asset('media/images/product/s9.jpg') }}" data-price="$60">Sunglass dark color</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-								</ul>
+						
+						<!-- Product Info -->
+						<div class="review-product-info" style="margin-bottom: 20px;">
+							<a href="{{ route('product.show', $review->product->slug) }}" style="text-decoration: none;">
+								<div class="product-image" style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+									<img src="{{ $review->product->primary_image ? asset('storage/' . $review->product->primary_image) : asset('media/images/product/default.jpg') }}" 
+									     alt="{{ $review->product->name }}"
+									     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
+									     onmouseover="this.style.transform='scale(1.05)'"
+									     onmouseout="this.style.transform='scale(1)'">
+								</div>
+								<h6 style="color: #222; font-size: 16px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase;">{{ $review->product->name }}</h6>
+							</a>
+						</div>
+						
+						<!-- Rating -->
+						<div class="review-rating" style="margin-bottom: 15px;">
+							@for($i = 1; $i <= 5; $i++)
+								<i class="fas fa-star" style="color: {{ $i <= $review->rating ? '#FFD700' : '#ddd' }}; font-size: 18px;"></i>
+							@endfor
+							<span style="color: #666; font-size: 14px; margin-left: 8px; font-weight: 600;">{{ $review->rating }}/5</span>
+						</div>
+						
+						<!-- Review Title -->
+						@if($review->title)
+						<h5 style="color: #333; font-size: 15px; font-weight: 700; margin-bottom: 12px; line-height: 1.4;">
+							"{{ Str::limit($review->title, 50) }}"
+						</h5>
+						@endif
+						
+						<!-- Review Comment -->
+						<p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+							{{ Str::limit($review->comment, 120) }}
+						</p>
+						
+						<!-- Reviewer Info -->
+						<div class="reviewer-info" style="display: flex; align-items: center; padding-top: 15px; border-top: 2px solid #f0f0f0;">
+							<div class="reviewer-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; margin-right: 12px;">
+								{{ strtoupper(substr($review->user->name, 0, 1)) }}
 							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Sunglass dark color" data-image="{{ asset('media/images/product/s9.jpg') }}" data-price="$60">QUICK VIEW</a>
+							<div>
+								<p style="margin: 0; color: #333; font-weight: 600; font-size: 14px;">{{ $review->user->name }}</p>
+								<p style="margin: 0; color: #999; font-size: 12px;">{{ $review->created_at->format('M d, Y') }}</p>
+							</div>
 						</div>
+						
+						<!-- View Product Button -->
+						<a href="{{ route('product.show', $review->product->slug) }}" 
+						   style="display: block; text-align: center; margin-top: 20px; background: #000; color: #FFD700; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;"
+						   onmouseover="this.style.background='#FFD700'; this.style.color='#000'"
+						   onmouseout="this.style.background='#000'; this.style.color='#FFD700'">
+							VIEW PRODUCT
+						</a>
 					</div>
 				</div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s1.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#" class="quick-view-btn" data-name="Blue girls cap" data-image="{{ asset('media/images/product/s1.jpg') }}" data-price="$60">Blue girls cap</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-								</ul>
-							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
+				
+				@empty
+				<div class="col-12">
+					<div style="text-align: center; padding: 60px 20px; background: #f8f9fa; border-radius: 12px;">
+						<i class="fas fa-star" style="font-size: 60px; color: #ddd; margin-bottom: 20px;"></i>
+						<h4 style="color: #666; margin-bottom: 15px;">No Featured Reviews Yet</h4>
+						<p style="color: #999; font-size: 16px;">Pin reviews from the admin dashboard to showcase them here!</p>
+						@auth
+							@if(auth()->user()->role === 'admin')
+								<a href="{{ url('/admin/reviews') }}" style="display: inline-block; margin-top: 20px; background: #000; color: #FFD700; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 700;">
+									GO TO ADMIN DASHBOARD
+								</a>
+							@endif
+						@endauth
 					</div>
 				</div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s9.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#">Contrasting T-Shirt</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-                    </ul>
-							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s6.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#">Contrasting T-Shirt</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-                    </ul>
-                </div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s2.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#">Top dress</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-								</ul>
-							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s11.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#">Red tops</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-								</ul>
-							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
-                </div>
-        </div>
-
-				<div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-					<!-- Single product-->
-					<div class="sin-product-s">
-						<div class="sp-img">
-							<img src="{{ asset('media/images/product/s4.jpg') }}" alt="">
-						</div>
-						<div class="small-pro-details">
-							<h5 class="title"><a href="#">Sunglas</a></h5>
-							<div class="rating">
-								<ul>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-									<li><a href="#"><i class="fas fa-star"></i></a></li>
-								</ul>
-							</div>
-							<span>$60</span>
-							<a href="#" class="quick-view-btn" data-name="Product Name" data-image="{{ asset("media/images/product/s1.jpg") }}" data-price="$60">QUICK VIEW</a>
-						</div>
-					</div>
-				</div>
+				@endforelse
 			</div>
 			<!-- row -->
 		</div>

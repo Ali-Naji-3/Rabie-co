@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -21,6 +22,13 @@ class HomeController extends Controller
             ->withCount('products')
             ->get();
 
-        return view('welcome', compact('featuredProducts', 'categories'));
+        $featuredReviews = Review::where('is_featured', true)
+            ->where('is_approved', true)
+            ->with(['user', 'product'])
+            ->latest()
+            ->take(6)
+            ->get();
+
+        return view('welcome', compact('featuredProducts', 'categories', 'featuredReviews'));
     }
 }

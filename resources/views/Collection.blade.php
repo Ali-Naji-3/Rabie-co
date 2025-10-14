@@ -82,34 +82,27 @@
 												@endif
 												<div class="mid-wrapper">
 													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
-													<div class="color-variation">
-														<ul>
-															<li><i class="fas fa-circle"></i></li>
-															<li><i class="fas fa-circle"></i></li>
-															<li><i class="fas fa-circle"></i></li>
-														</ul>
+													<p style="font-size: 16px; color: #555; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">{{ $product->category->name }}</p>
+													<div class="price-section">
+														@if($product->discount_percentage > 0)
+															<div class="mb-1">
+																<span style="color: #e74c3c; font-size: 20px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
+																	${{ number_format($product->price, 2) }}
+																</span>
+															</div>
+															<div class="mb-1">
+																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
+																	${{ number_format($product->sale_price, 2) }}
+																</span>
+															</div>
+														@else
+															<div class="mb-1">
+																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
+																	${{ number_format($product->price, 2) }}
+																</span>
+															</div>
+														@endif
 													</div>
-												<p style="font-size: 16px; color: #555; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">{{ $product->category->name }}</p>
-												<div class="price-section">
-													@if($product->discount_percentage > 0)
-														<div class="mb-1">
-															<span style="color: #e74c3c; font-size: 20px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
-																${{ number_format($product->price, 2) }}
-															</span>
-														</div>
-														<div class="mb-1">
-															<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																${{ number_format($product->sale_price, 2) }}
-															</span>
-														</div>
-													@else
-														<div class="mb-1">
-															<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																${{ number_format($product->price, 2) }}
-															</span>
-														</div>
-													@endif
-												</div>
 												</div>
 												<div class="icon-wrapper">
 													<div class="pro-icon">
