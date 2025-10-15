@@ -2,6 +2,31 @@
 
 @section('title', $product->name . ' - Fashion Shop')
 
+@push('styles')
+<style>
+	/* Performance optimizations for product page */
+	.product-image {
+		will-change: transform;
+		transform: translateZ(0);
+		backface-visibility: hidden;
+	}
+	
+	/* Optimize image loading */
+	img {
+		contain: layout style paint;
+	}
+	
+	/* Fast transitions */
+	.product-card {
+		transition: transform 0.2s ease;
+	}
+	
+	.product-card:hover {
+		transform: translateZ(0) translateY(-2px);
+	}
+</style>
+@endpush
+
 @section('content')
 
 		<!--=        Breadcrumb         =-->
@@ -33,6 +58,7 @@
 												<img src="{{ asset('storage/' . $product->primary_image) }}" 
 													alt="{{ $product->name }}"
 													loading="eager"
+													decoding="async"
 													style="max-width: 100%; height: auto;">
 											</div>
 										@endif
@@ -42,6 +68,7 @@
 													<img src="{{ asset('storage/' . $image) }}" 
 														alt="{{ $product->name }}"
 														loading="lazy"
+														decoding="async"
 														style="max-width: 100%; height: auto;">
 												</div>
 											@endforeach
@@ -247,7 +274,11 @@
 								<div class="sin-product style-two">
 									<div class="pro-img">
 										<a href="{{ route('product.show', $related->slug) }}">
-											<img src="{{ $related->primary_image ? asset('storage/' . $related->primary_image) : asset('media/images/product/sp1.jpg') }}" alt="{{ $related->name }}">
+											<img src="{{ $related->primary_image ? asset('storage/' . $related->primary_image) : asset('media/images/product/sp1.jpg') }}" 
+												alt="{{ $related->name }}"
+												loading="lazy"
+												decoding="async"
+												style="max-width: 100%; height: auto;">
 										</a>
 									</div>
 									<div class="mid-wrapper">

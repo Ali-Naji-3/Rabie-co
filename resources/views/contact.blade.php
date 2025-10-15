@@ -92,7 +92,7 @@
 		<!--=        Breadcrumb         =-->
 		<!--=========================-->
 
-		<section class="breadcrumb-area">
+		<section class="breadcrumb-area" data-aos="fade-down" data-aos-duration="600">
 			<div class="container-fluid custom-container">
 				<div class="row">
 					<div class="col-xl-12">
@@ -115,9 +115,9 @@
 
 	<!--Contact area
 ============================================= -->
-	<section class="contact-area">
+	<section class="contact-area" data-aos="fade-up" data-aos-duration="800">
 		<div class="container-fluid custom-container">
-			<div class="section-heading pb-30 text-center">
+			<div class="section-heading pb-30 text-center" data-aos="fade-down" data-aos-duration="600">
 				<h3>Get in <span>Touch</span></h3>
 				<p>We'd love to hear from you. Contact us for any questions or concerns.</p>
 			</div>
@@ -147,7 +147,7 @@
 
 			<div class="row justify-content-center">
 				<!-- Contact Form Section -->
-				<div class="col-lg-10 col-xl-8 mb-5">
+				<div class="col-lg-10 col-xl-8 mb-5" data-aos="zoom-in" data-aos-duration="800">
 					<div class="contact-form" style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
 						<h4 style="color: #1b1b18; font-size: 24px; font-weight: 700; margin-bottom: 25px;">Send us a Message</h4>
 						<form action="{{ route('contact.store') }}" method="POST">
@@ -188,14 +188,14 @@
 
 			<!-- Contact Information Section -->
 			<div class="row justify-content-center">
-				<div class="col-lg-10 col-xl-8">
+				<div class="col-lg-10 col-xl-8" data-aos="fade-up" data-aos-duration="800">
 					<div class="contact-info-wrapper" style="background: #f8f9fa; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-						<h4 style="color: #1b1b18; font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; border-bottom: 3px solid #000000; display: inline-block; padding-bottom: 10px; width: 100%; text-align: center;">Contact Information</h4>
+						<h4 style="color: #1b1b18; font-size: 24px; font-weight: 700; margin-bottom: 30px; text-align: center; border-bottom: 3px solid #000000; display: inline-block; padding-bottom: 10px; width: 100%; text-align: center;" data-aos="fade-down" data-aos-duration="600">Contact Information</h4>
 						
 						<div class="row" style="margin-top: 30px;">
 							<!-- Phone -->
 							@if($siteSettings->phone)
-							<div class="col-md-6 col-lg-4 mb-4">
+							<div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="100" data-aos-duration="600">
 								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
 										<i class="fas fa-mobile-alt" style="font-size: 24px;"></i>
@@ -208,7 +208,7 @@
 
 							<!-- Email -->
 							@if($siteSettings->email)
-							<div class="col-md-6 col-lg-4 mb-4">
+							<div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="200" data-aos-duration="600">
 								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
 										<i class="fas fa-envelope" style="font-size: 24px;"></i>
@@ -221,7 +221,7 @@
 
 							<!-- WhatsApp -->
 							@if($siteSettings->whatsapp)
-							<div class="col-md-6 col-lg-4 mb-4">
+							<div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="300" data-aos-duration="600">
 								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
 										<i class="fab fa-whatsapp" style="font-size: 28px;"></i>
@@ -234,7 +234,7 @@
 
 							<!-- Address -->
 							@if($siteSettings->address)
-							<div class="col-md-6 col-lg-4 mb-4">
+							<div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="400" data-aos-duration="600">
 								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
 										<i class="fas fa-map-marker-alt" style="font-size: 24px;"></i>
@@ -247,7 +247,7 @@
 
 							<!-- Working Hours -->
 							@if($siteSettings->working_hours)
-							<div class="col-md-6 col-lg-4 mb-4">
+							<div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="500" data-aos-duration="600">
 								<div class="contact-info-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 									<div class="icon-wrapper" style="background: #000000; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
 										<i class="fas fa-clock" style="font-size: 24px;"></i>

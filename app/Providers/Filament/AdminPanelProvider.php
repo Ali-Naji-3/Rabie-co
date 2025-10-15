@@ -31,6 +31,54 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->renderHook(
+                'panels::head.end',
+                fn (): string => '
+                    <style>
+                        /* Fast admin dashboard transitions */
+                        body { transition: opacity 0.15s ease; }
+                        
+                        /* Navigation hover effects */
+                        .fi-sidebar-nav-item a,
+                        .fi-topbar-nav-item a,
+                        .fi-breadcrumbs-item a {
+                            transition: all 0.15s ease;
+                        }
+                        
+                        .fi-sidebar-nav-item a:hover,
+                        .fi-topbar-nav-item a:hover,
+                        .fi-breadcrumbs-item a:hover {
+                            transform: translateY(-1px);
+                        }
+                    </style>
+                '
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn (): string => '
+                    <script>
+                        // Fast admin navigation
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const navLinks = document.querySelectorAll(".fi-sidebar-nav-item a, .fi-topbar-nav-item a, .fi-breadcrumbs-item a");
+                            
+                            navLinks.forEach(link => {
+                                link.addEventListener("click", function(e) {
+                                    const href = this.getAttribute("href");
+                                    if (href && (href.startsWith("/admin") || href.startsWith("admin"))) {
+                                        document.body.style.transition = "opacity 0.1s ease";
+                                        document.body.style.opacity = "0.95";
+                                    }
+                                });
+                            });
+                            
+                            window.addEventListener("load", function() {
+                                document.body.style.transition = "opacity 0.15s ease";
+                                document.body.style.opacity = "1";
+                            });
+                        });
+                    </script>
+                '
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

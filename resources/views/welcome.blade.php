@@ -8,7 +8,7 @@
 	<!--=        Slider         =-->
 	<!--=========================-->
 
-	<section class="slider-wrapper">
+	<section class="slider-wrapper" data-aos="fade-in" data-aos-duration="1000">
 		<div class="slider-start slider-1 owl-carousel owl-theme">
 
 		@forelse($heroSliders as $slider)
@@ -125,11 +125,11 @@
 	<!--=========================-->
 
 	@if($featureIcons->count() > 0)
-	<section class="feature-icons-section" style="padding: 60px 0; background: #f8f9fa;">
+	<section class="feature-icons-section" style="padding: 60px 0; background: #f8f9fa;" data-aos="fade-up" data-aos-duration="800">
 		<div class="container">
 			<div class="row">
 				@foreach($featureIcons as $feature)
-				<div class="col-6 col-md-3 mb-4">
+				<div class="col-6 col-md-3 mb-4" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}" data-aos-duration="600">
 					<div class="feature-icon-box text-center" style="padding: 30px 15px; background: {{ $feature->background_color ?? 'transparent' }}; border-radius: 8px; transition: all 0.3s ease;">
 						@if($feature->link_url)
 							<a href="{{ $feature->link_url }}" {{ $feature->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="text-decoration: none; color: inherit;">
@@ -168,9 +168,9 @@
 	<!--=        Product Filter      =-->
 	<!--=========================-->
 
-	<section class="main-product">
+	<section class="main-product" data-aos="fade-up" data-aos-duration="800">
 		<div class="container container-two">
-			<div class="section-heading">
+			<div class="section-heading" data-aos="fade-down" data-aos-duration="600">
 				<h3>Welcome to <span>product</span></h3>
 			</div>
 			<!-- /.section-heading-->
@@ -183,7 +183,7 @@
 						<div class="grid row">
 							@forelse($featuredProducts as $product)
 								<!-- single product -->
-								<div class="grid-item col-6 col-md-6 col-lg-4 col-xl-3">
+								<div class="grid-item col-6 col-md-6 col-lg-4 col-xl-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 150 }}" data-aos-duration="600">
 									<div class="sin-product style-one">
 										<div class="pro-img" style="height: 250px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
 											<a href="{{ route('product.show', $product->slug) }}">
@@ -245,7 +245,7 @@
 	<!--=========================-->
 
 	@foreach($promoBannersAfterProducts as $banner)
-	<section class="add-area" style="position: relative; overflow: hidden;">
+	<section class="add-area" style="position: relative; overflow: hidden;" data-aos="fade-up" data-aos-duration="800">
 		@if($banner->media_type === 'video')
 			{{-- Video Banner --}}
 			@if($banner->video_url)
@@ -366,11 +366,11 @@
 	<!--=   Small Product area    =-->
 	<!--=========================-->
 
-	<section class="product-small">
+	<section class="product-small" data-aos="fade-up" data-aos-duration="800">
 		<div class="container-fluid  custom-container">
 			<div class="row">
 				<div class="col-12">
-					<div class="small-sec-title text-center">
+					<div class="small-sec-title text-center" data-aos="fade-down" data-aos-duration="600">
 						<h6><span style="color: #FFD700;">⭐ FEATURED CUSTOMER REVIEWS</span></h6>
 						<p style="color: #666; font-size: 14px; margin-top: 10px;">See what our customers are saying about their favorite products</p>
 					</div>
@@ -379,7 +379,7 @@
 			
 			<div class="row">
 				@forelse($featuredReviews as $review)
-				<div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+				<div class="col-lg-4 col-md-6 col-sm-12 mb-4" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 200 }}" data-aos-duration="600">
 					<!-- Featured Review Card -->
 					<div class="featured-review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%; position: relative; transition: all 0.3s ease;">
 						<!-- Pin Badge -->
@@ -469,7 +469,7 @@
 	<!--=========================-->
 
 	@foreach($promoBannersAfterReviews as $banner)
-	<section class="add-area" style="position: relative; overflow: hidden;">
+	<section class="add-area" style="position: relative; overflow: hidden;" data-aos="fade-up" data-aos-duration="800">
 		@if($banner->media_type === 'video')
 			{{-- Video Banner --}}
 			@if($banner->video_url)

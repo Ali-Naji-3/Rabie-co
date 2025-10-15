@@ -61,7 +61,7 @@
 					@else
 						<div class="cart-table">
 							<table class="tables">
-								<thead>
+								<thead>	
 									<tr>
 										<th></th>
 										<th>Image</th>
@@ -136,15 +136,15 @@
 							<div class="col-12">
 					<div class="cart-btn-right" style="text-align: center; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
 						<a href="{{ route('collection') }}" class="btn btn-secondary" style="padding: 15px 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-							<i class="fas fa-arrow-left"></i> <span>Continue Shopping</span>
+						 <span>Continue Shopping</span>
 						</a>
 						@auth
 							<a href="{{ route('checkout') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
-								<i class="fas fa-lock"></i> <span>Checkout</span>
+								 <span>Checkout</span>
 							</a>
 						@else
-							<a href="{{ route('login') }}" class="checkout-btn-animated" style="background: #6c757d; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
-								<i class="fas fa-sign-in-alt"></i> <span>Login to Checkout</span>
+							<a href="{{ route('login') }}" class="checkout-btn-animated" style="background:rgb(243, 168, 30); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; line-height: 1; transition: all 0.4s ease; border: 2px solid transparent;">
+								 <span>Login to Checkout</span>
 							</a>
 						@endauth
 					</div>
@@ -194,7 +194,6 @@
 						</a>
 					@else
 						<a href="{{ route('login') }}" class="checkout-button">
-							<i class="fas fa-sign-in-alt"></i>
 							<span>Login to Checkout</span>
 						</a>
 					@endauth

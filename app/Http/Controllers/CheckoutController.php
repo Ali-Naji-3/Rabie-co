@@ -56,11 +56,11 @@ class CheckoutController extends Controller
             'postal_code' => 'nullable|string|max:20',
             'country' => 'required|string|max:100',
             'billing_same' => 'nullable|in:on,off,1,0,true,false',
-            'billing_address' => 'nullable|required_if:billing_same,false|string',
-            'billing_city' => 'nullable|required_if:billing_same,false|string',
-            'billing_state' => 'nullable|required_if:billing_same,false|string',
-            'billing_postal_code' => 'nullable|required_if:billing_same,false|string',
-            'billing_country' => 'nullable|required_if:billing_same,false|string',
+            'billing_address' => 'nullable|string',
+            'billing_city' => 'nullable|string',
+            'billing_state' => 'nullable|string',
+            'billing_postal_code' => 'nullable|string',
+            'billing_country' => 'nullable|string',
             'payment_method' => 'required|in:cod,card,bank_transfer',
             'notes' => 'nullable|string|max:500',
         ]);
@@ -101,16 +101,11 @@ class CheckoutController extends Controller
             'phone' => $validated['phone'],
         ];
 
-        $billingSame = in_array($request->billing_same, ['on', '1', 'true', 1, true]);
-        $billingAddress = $billingSame ? $shippingAddress : [
-            'name' => $validated['name'],
-            'address' => $validated['billing_address'],
-            'city' => $validated['billing_city'],
-            'state' => $validated['billing_state'],
-            'postal_code' => $validated['billing_postal_code'],
-            'country' => $validated['billing_country'],
-            'phone' => $validated['phone'],
-        ];
+        // Check if billing is same as shipping (default to true if not specified)
+        $billingSame = in_array($request->billing_same, ['on', '1', 'true', 1, true]) || !$request->has('billing_same');
+        
+        // Use shipping address as billing address (simplified checkout)
+        $billingAddress = $shippingAddress;
 
         try {
             DB::beginTransaction();

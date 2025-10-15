@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://maps.googleapis.com https://maps.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob: https:;">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://maps.googleapis.com https://maps.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://maps.googleapis.com https://maps.gstatic.com;">
 	
 	<!-- SEO Meta Tags -->
 	<title>@yield('title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')</title>
@@ -54,6 +54,7 @@
 	<link rel="stylesheet" href="{{ asset('dependencies/jquery-ui/css/jquery-ui.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/venobox/css/venobox.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/slick-carousel/css/slick.css') }}" type="text/css">
+	<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" type="text/css">
 
 	<!-- Site Stylesheet -->
 	<link rel="stylesheet" href="{{ asset('assets/css/app.css') }}" type="text/css">
@@ -81,36 +82,7 @@
 			pointer-events: auto;
 		}
 
-		/* Order Completed Modal Styling */
-		#checkoutModal .modal-content {
-			border-radius: 12px;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-			border: none;
-		}
-		#checkoutModal .modal-header {
-			position: absolute;
-			top: 0;
-			right: 0;
-			z-index: 1050;
-			border: none;
-			background: transparent;
-		}
-		#checkoutModal .close {
-			position: relative;
-			z-index: 1051;
-			opacity: 0.8;
-			transition: opacity 0.3s ease;
-		}
-		#checkoutModal .close:hover {
-			opacity: 1;
-		}
-		#checkoutModal .modal-body {
-			padding: 50px 30px;
-			background-color: #ffffff;
-		}
-		#checkoutModal .success-icon {
-			margin-bottom: 30px;
-		}
+		/* Checkout Modal CSS Removed - No longer needed */
 
 		
 		/* User dropdown menu */
@@ -265,6 +237,20 @@
 		}
 		* {
 			scroll-behavior: auto !important;
+		}
+		
+		/* Fast page transitions */
+		body {
+			transition: opacity 0.15s ease;
+		}
+		
+		/* Fast navigation link hover effects */
+		#navigation a, #mobilemenu a {
+			transition: all 0.15s ease;
+		}
+		
+		#navigation a:hover, #mobilemenu a:hover {
+			transform: translateY(-1px);
 		}
 		.small-sec-title.text-center h6::before {
 			content: '';
@@ -912,25 +898,7 @@
 	</div>
 	<!-- /#site -->
 
-	<!-- Order Completed Modal -->
-	<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header border-0">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true" style="font-size: 24px; color: #999;">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body text-center">
-					<div class="success-icon mb-4">
-						<i class="fa fa-check-circle" style="font-size: 80px; color: #66BB6A;"></i>
-					</div>
-					<h2 style="color: #333333; font-weight: bold; margin-bottom: 15px;">Order completed!</h2>
-					<p style="color: #666666; font-size: 16px; margin-bottom: 0;">You will receive a confirmation email soon!</p>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!-- Checkout Modal Removed - Checkout now goes directly to checkout page -->
 
 	<!-- Quick View Modal -->
 	<div class="modal fade" id="quickViewModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1053,32 +1021,19 @@
 	<script src="{{ asset('dependencies/slick-carousel/js/slick.js') }}"></script>
 	<script src="{{ asset('dependencies/headroom/js/headroom.js') }}"></script>
 	<script src="{{ asset('dependencies/jquery-ui/js/jquery-ui.min.js') }}"></script>
+	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 	
-	<!-- Google Maps - Only load on contact page to avoid CORS warning -->
+	<!-- Google Maps - Disabled to prevent loading errors -->
 	@if(request()->routeIs('contact'))
 		<script>
-			// Load Google Maps API with proper error handling
-			function loadGoogleMaps() {
-				if (typeof google === 'undefined') {
-					const script = document.createElement('script');
-					script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBsBrMPsyNtpwKXPPpG54XwJXnyobfMAIc&callback=initMap&libraries=places';
-					script.async = true;
-					script.defer = true;
-					script.onerror = function() {
-						console.warn('Google Maps API failed to load. This is normal if no map is being used.');
-					};
-					document.head.appendChild(script);
-				}
-			}
+			// Google Maps API is disabled to prevent loading errors
+			// This prevents the "Loading failed" error from appearing
+			console.log('Google Maps API disabled to prevent loading errors');
 			
-			// Initialize map function (can be called from contact page if needed)
-			window.initMap = function() {
-				console.log('Google Maps API loaded successfully');
-			};
-			
-			// Load maps when document is ready
+			// Optional: Add a static map or contact information instead
 			$(document).ready(function() {
-				loadGoogleMaps();
+				// You can add static contact information or a simple map placeholder here
+				console.log('Contact page loaded - Maps API disabled for better performance');
 			});
 		</script>
 	@endif
@@ -1086,14 +1041,95 @@
 	<!-- Site Scripts -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>
 
+	<!-- AOS Animation Library Initialization -->
+	<script>
+		// Initialize AOS with smooth settings
+		AOS.init({
+			duration: 800, // Animation duration in ms
+			easing: 'ease-in-out', // Easing function
+			once: true, // Animation only happens once
+			offset: 50, // Offset from original trigger point
+			delay: 0, // Delay in ms
+			anchorPlacement: 'top-bottom', // Defines which position of the element regarding to window should trigger the animation
+			disable: false, // Disable AOS on mobile devices
+			startEvent: 'DOMContentLoaded', // Name of the event dispatched on the document
+			initClassName: 'aos-init', // Class applied after initialization
+			animatedClassName: 'aos-animate', // Class applied on animation
+			useClassNames: false, // If true, will add content of `data-aos` as classes
+			disableMutationObserver: false, // Disable automatic mutations' detections
+			debounceDelay: 50, // The delay on debounce used while resizing window
+			throttleDelay: 99, // The delay on throttle used while scrolling the page
+		});
+
+		// Fast page navigation with optimized transitions
+		document.addEventListener('DOMContentLoaded', function() {
+			// Add smooth scrolling to all anchor links
+			const links = document.querySelectorAll('a[href^="#"]');
+			links.forEach(link => {
+				link.addEventListener('click', function(e) {
+					const targetId = this.getAttribute('href');
+					if (targetId === '#') return;
+					
+					const targetElement = document.querySelector(targetId);
+					if (targetElement) {
+						e.preventDefault();
+						targetElement.scrollIntoView({
+							behavior: 'smooth',
+							block: 'start'
+						});
+					}
+				});
+			});
+
+			// Fast page navigation for main navigation links
+			const navLinks = document.querySelectorAll('#navigation a, #mobilemenu a');
+			navLinks.forEach(link => {
+				link.addEventListener('click', function(e) {
+					const href = this.getAttribute('href');
+					
+					// Only handle internal links (not external or anchor links)
+					if (href && href.startsWith('/') && !href.includes('#') && !href.includes('http')) {
+						e.preventDefault();
+						
+						// Fast fade out effect
+						document.body.style.transition = 'opacity 0.15s ease';
+						document.body.style.opacity = '0.9';
+						
+						// Navigate immediately with minimal delay
+						setTimeout(() => {
+							window.location.href = href;
+						}, 50);
+					}
+				});
+			});
+
+			// Fast transitions for page load
+			window.addEventListener('load', function() {
+				// Quick fade in effect
+				document.body.style.transition = 'opacity 0.2s ease';
+				document.body.style.opacity = '1';
+			});
+
+			// Add hover effects to navigation links
+			navLinks.forEach(link => {
+				link.addEventListener('mouseenter', function() {
+					this.style.transform = 'translateY(-1px)';
+					this.style.transition = 'all 0.15s ease';
+				});
+				
+				link.addEventListener('mouseleave', function() {
+					this.style.transform = 'translateY(0)';
+				});
+			});
+		});
+
+	</script>
+
 	<!-- Checkout Confirmation Script -->
 	<script>
 		$(document).ready(function() {
-			// Handle checkout button click
-			$('.checkout-btn').on('click', function(e) {
-				e.preventDefault();
-				$('#checkoutModal').modal('show');
-			});
+			// Checkout buttons now work directly without modal interference
+			// Removed the preventDefault() that was blocking checkout navigation
 		});
 	</script>
 

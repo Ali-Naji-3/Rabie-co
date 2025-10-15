@@ -8,7 +8,7 @@
 		<!--=        Breadcrumb         =-->
 		<!--=========================-->
 
-		<section class="breadcrumb-area">
+		<section class="breadcrumb-area" data-aos="fade-down" data-aos-duration="600">
 			<div class="container-fluid custom-container">
 				<div class="row">
 					<div class="col-xl-12">
@@ -27,12 +27,12 @@
 		<!--=        Shop area          =-->
 		<!--=========================-->
 
-		<section class="shop-area">
+		<section class="shop-area" data-aos="fade-up" data-aos-duration="800">
 			<div class="container-fluid custom-container">
 				<div class="row">
 
 					<div class="col-12">
-						<div class="shop-sorting-area row">
+						<div class="shop-sorting-area row" data-aos="fade-down" data-aos-duration="600">
 							<div class="col-4 col-sm-4 col-md-6">
 								<ul class="nav nav-tabs shop-btn" id="myTab" role="tablist">
 									<li class="nav-item ">
@@ -65,7 +65,7 @@
 								<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 									<div class="row">
 										@forelse($products as $product)
-										<div class="col-sm-6 col-xl-3">
+										<div class="col-sm-6 col-xl-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}" data-aos-duration="600">
 											<div class="sin-product style-two">
 												<div class="pro-img">
 													<a href="{{ route('product.show', $product->slug) }}">
@@ -133,7 +133,7 @@
 												</div>
 									<!-- Pagination -->
 									<div class="row mt-4">
-										<div class="col-12 d-flex justify-content-center">
+										<div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-duration="600">
 											{{ $products->links() }}
 										</div>
 									</div>
@@ -144,7 +144,7 @@
 								<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 									<div class="row no-gutters">
 										@forelse($products as $product)
-										<div class="col-xl-9">
+										<div class="col-xl-9" data-aos="fade-left" data-aos-delay="{{ $loop->index * 150 }}" data-aos-duration="600">
 											<div class="sin-product list-pro">
 												<div class="row">
 													<div class="col-md-5 col-lg-6 col-xl-4">
@@ -220,7 +220,7 @@
 													</div>
 									<!-- Pagination -->
 									<div class="row mt-4">
-										<div class="col-12 d-flex justify-content-center">
+										<div class="col-12 d-flex justify-content-center" data-aos="fade-up" data-aos-duration="600">
 											{{ $products->links() }}
 										</div>
 									</div>
