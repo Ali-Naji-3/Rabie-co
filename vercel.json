@@ -2,22 +2,22 @@
   "version": 2,
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "public",
+  "outputDirectory": "dist",
   "installCommand": "npm install",
   "builds": [
     {
-      "src": "public/index.php",
+      "src": "dist/index.php",
       "use": "@vercel/php"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "public/index.php"
+      "dest": "dist/index.php"
     }
   ],
   "functions": {
-    "public/index.php": {
+    "dist/index.php": {
       "runtime": "php@8.2"
     }
   },
