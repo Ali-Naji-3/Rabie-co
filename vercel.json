@@ -1,7 +1,9 @@
 {
   "version": 2,
+  "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "public",
+  "installCommand": "npm install",
   "builds": [
     {
       "src": "public/index.php",
