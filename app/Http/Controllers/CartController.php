@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,14 +23,10 @@ class CartController extends Controller
                 ->get();
         }
 
-        $subtotal = $cartItems->sum(function($item) {
-            return $item->product->final_price * $item->quantity;
-        });
+        ['subtotal' => $subtotal, 'shipping' => $shipping, 'tax' => $tax, 'total' => $total]
+            = (new PricingService())->calculate($cartItems);
 
-        $shipping = $subtotal >= 100 ? 0 : 10; // Free shipping over $100
-        $total = $subtotal + $shipping; // Total without tax
-
-        return view('cart', compact('cartItems', 'subtotal', 'shipping', 'total'));
+        return view('cart', compact('cartItems', 'subtotal', 'shipping', 'tax', 'total'));
     }
 
     public function add(Request $request)
@@ -95,8 +92,8 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cart = Cart::findOrFail($id);
-        
+        $cart = $this->resolveOwnedCart($id);
+
         if ($cart->product->stock < $request->quantity) {
             return back()->with('error', 'Not enough stock available');
         }
@@ -108,9 +105,20 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = Cart::findOrFail($id);
+        $cart = $this->resolveOwnedCart($id);
         $cart->delete();
 
         return back()->with('success', 'Item removed from cart');
+    }
+
+    private function resolveOwnedCart(int $id): Cart
+    {
+        return Cart::where('id', $id)
+            ->when(
+                Auth::check(),
+                fn ($q) => $q->where('user_id', Auth::id()),
+                fn ($q) => $q->where('session_id', session()->getId())
+            )
+            ->firstOrFail();
     }
 }

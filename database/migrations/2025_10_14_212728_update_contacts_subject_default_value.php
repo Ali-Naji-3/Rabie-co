@@ -12,8 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Update the subject column to have a default value
-        DB::statement("ALTER TABLE contacts MODIFY COLUMN subject ENUM('order_inquiry', 'product_question', 'shipping_issue', 'return_refund', 'general_question', 'complaint', 'partnership_business') DEFAULT 'order_inquiry'");
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->string('subject')->default('order_inquiry')->change();
+        });
     }
 
     /**
@@ -21,7 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Remove the default value
-        DB::statement("ALTER TABLE contacts MODIFY COLUMN subject ENUM('order_inquiry', 'product_question', 'shipping_issue', 'return_refund', 'general_question', 'complaint', 'partnership_business')");
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->string('subject')->default(null)->change();
+        });
     }
 };

@@ -7,11 +7,13 @@ use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 class CategoryResource extends Resource
 {
@@ -63,10 +65,34 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Category $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->products()->exists()) {
+                            Notification::make()
+                                ->title('Category cannot be deleted')
+                                ->body('Move or deactivate all products in this category first.')
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Collection $records, Tables\Actions\DeleteBulkAction $action) {
+                            $blocked = $records->filter(fn (Category $c) => $c->products()->exists());
+                            if ($blocked->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('Cannot delete ' . $blocked->count() . ' category/categories')
+                                    ->body('Move or deactivate all products in the selected categories first.')
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+                                $action->cancel();
+                            }
+                        }),
                 ]),
             ]);
     }

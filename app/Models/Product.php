@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class Product extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'category_id',
         'name',
@@ -64,5 +68,52 @@ class Product extends Model
     public function getFinalPriceAttribute()
     {
         return $this->sale_price ?? $this->price;
+    }
+
+    public function setDescriptionAttribute(?string $value): void
+    {
+        if ($value === null) {
+            $this->attributes['description'] = null;
+            return;
+        }
+
+        static $sanitizer;
+        $sanitizer ??= new HtmlSanitizer(
+            (new HtmlSanitizerConfig())
+                ->allowElement('p')
+                ->allowElement('br')
+                ->allowElement('strong')
+                ->allowElement('em')
+                ->allowElement('u')
+                ->allowElement('s')
+                ->allowElement('ul')
+                ->allowElement('ol')
+                ->allowElement('li')
+                ->allowElement('a', ['href'])
+                ->allowLinkSchemes(['http', 'https'])
+                ->dropElement('script')
+                ->dropElement('iframe')
+                ->dropElement('object')
+                ->dropElement('embed')
+                ->dropElement('svg')
+                ->withMaxInputLength(500000)
+        );
+
+        // RFC 3986 §3.1: schemes are case-insensitive. Symfony's allowLinkSchemes
+        // check is strict-case, so normalize href schemes to lowercase first.
+        $value = (string) preg_replace_callback(
+            '/href="([^"]*)"/i',
+            static function (array $m): string {
+                $url = preg_replace_callback(
+                    '/^([a-zA-Z][a-zA-Z0-9+\-.]*):/u',
+                    static fn (array $n): string => strtolower($n[0]),
+                    $m[1],
+                ) ?? $m[1];
+                return 'href="' . $url . '"';
+            },
+            $value,
+        ) ?? $value;
+
+        $this->attributes['description'] = $sanitizer->sanitize($value);
     }
 }

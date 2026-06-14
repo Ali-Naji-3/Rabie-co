@@ -14,8 +14,7 @@ return [
     | persist session data. Database storage is a great default choice.
     |
     | Supported: "file", "cookie", "database", "memcached",
-    |            "redis", "dynamodb", "array"
-    |
+/home/ali-naji/Documents/Prompt-Ai/Claude/CLAUDE.md/home/ali-naji/Documents/Prompt-Ai/Claude/CLAUDE.md    |
     */
 
     'driver' => env('SESSION_DRIVER', 'database'),

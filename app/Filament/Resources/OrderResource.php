@@ -334,6 +334,16 @@ class OrderResource extends Resource
             ->with(['user', 'items.product']);
     }
 
+    public static function canDelete($record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
+
     public static function getPages(): array
     {
         return [

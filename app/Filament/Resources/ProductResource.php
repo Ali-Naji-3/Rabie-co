@@ -7,11 +7,13 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 class ProductResource extends Resource
 {
@@ -221,11 +223,34 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Product $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->orderItems()->exists()) {
+                            Notification::make()
+                                ->title('Product cannot be deleted')
+                                ->body('This product has order history. Set "Active = Off" to hide it from the store instead.')
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Collection $records, Tables\Actions\DeleteBulkAction $action) {
+                            $blocked = $records->filter(fn (Product $p) => $p->orderItems()->exists());
+                            if ($blocked->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('Cannot delete ' . $blocked->count() . ' product(s)')
+                                    ->body('Products with order history cannot be deleted. Deactivate them instead.')
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+                                $action->cancel();
+                            }
+                        }),
                 ]),
             ]);
     }

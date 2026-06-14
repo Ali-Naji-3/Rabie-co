@@ -36,7 +36,9 @@ class UserResource extends Resource
                     ->default('customer')
                     ->required()
                     ->native(false)
-                    ->helperText('Select role: Admin for store management, Customer for shopping'),
+                    ->helperText('Select role: Admin for store management, Customer for shopping')
+                    ->hidden()
+                    ->dehydrated(fn (string $operation) => $operation === 'create'),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),

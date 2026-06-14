@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,15 +32,10 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty');
         }
 
-        // Calculate totals
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->product->final_price * $item->quantity;
-        });
+        ['subtotal' => $subtotal, 'shipping' => $shipping, 'tax' => $tax, 'total' => $total]
+            = (new PricingService())->calculate($cartItems);
 
-        $shipping = $subtotal >= 100 ? 0 : 10; // Free shipping over $100
-        $total = $subtotal + $shipping; // No tax
-
-        return view('checkout', compact('cartItems', 'subtotal', 'shipping', 'total'));
+        return view('checkout', compact('cartItems', 'subtotal', 'shipping', 'tax', 'total'));
     }
 
     public function process(Request $request)
@@ -81,13 +77,8 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty');
         }
 
-        // Calculate totals
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->product->final_price * $item->quantity;
-        });
-
-        $shipping = $subtotal >= 100 ? 0 : 10;
-        $total = $subtotal + $shipping; // No tax
+        ['subtotal' => $subtotal, 'shipping' => $shipping, 'tax' => $tax, 'total' => $total]
+            = (new PricingService())->calculate($cartItems);
 
         // Prepare addresses
         $shippingAddress = [
@@ -95,8 +86,8 @@ class CheckoutController extends Controller
             'address' => $validated['address'],
             'address_2' => $validated['address_2'] ?? null,
             'city' => $validated['city'],
-            'state' => $validated['state'],
-            'postal_code' => $validated['postal_code'],
+            'state' => $validated['state'] ?? null,
+            'postal_code' => $validated['postal_code'] ?? null,
             'country' => $validated['country'],
             'phone' => $validated['phone'],
         ];
@@ -113,9 +104,10 @@ class CheckoutController extends Controller
             // Create order
             $order = Order::create([
                 'user_id' => Auth::id(),
+                'customer_email' => $validated['email'],
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'subtotal' => $subtotal,
-                'tax' => 0, // No tax
+                'tax' => $tax,
                 'shipping' => $shipping,
                 'total' => $total,
                 'status' => 'pending',
@@ -126,8 +118,27 @@ class CheckoutController extends Controller
                 'notes' => $validated['notes'] ?? null,
             ]);
 
-            // Create order items and reduce stock
+            // Lock products in deterministic ID order to prevent deadlocks
+            $productIds = $cartItems->pluck('product_id')->sort()->values()->all();
+            $products = Product::whereIn('id', $productIds)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            // Re-validate stock under lock before any mutation
             foreach ($cartItems as $cartItem) {
+                $product = $products->get($cartItem->product_id);
+                if ($product->stock < $cartItem->quantity) {
+                    DB::rollBack();
+                    return back()->with('error',
+                        "Sorry, \"{$product->name}\" only has {$product->stock} unit(s) left.");
+                }
+            }
+
+            // All stock checks passed — create order items and atomically decrement
+            foreach ($cartItems as $cartItem) {
+                $product = $products->get($cartItem->product_id);
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cartItem->product_id,
@@ -135,11 +146,7 @@ class CheckoutController extends Controller
                     'price' => $cartItem->product->final_price,
                     'subtotal' => $cartItem->product->final_price * $cartItem->quantity,
                 ]);
-
-                // Reduce product stock
-                $product = Product::find($cartItem->product_id);
-                $product->stock -= $cartItem->quantity;
-                $product->save();
+                $product->decrement('stock', $cartItem->quantity);
             }
 
             // Clear cart
@@ -150,6 +157,8 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
+
+            session(['last_completed_order_id' => $order->id]);
 
             // Redirect to success page
             return redirect()->route('order.success', $order->id)
@@ -165,9 +174,15 @@ class CheckoutController extends Controller
     {
         $order = Order::with('items.product')->findOrFail($orderId);
 
-        // Verify order belongs to current user
-        if (Auth::check() && $order->user_id !== Auth::id()) {
-            abort(403);
+        $isOwner = Auth::id() !== null && $order->user_id === Auth::id();
+
+        if (!$isOwner) {
+            // Allow one-time session-authorized access (covers the post-checkout
+            // redirect and future guest checkout). pull() consumes the key so the
+            // URL cannot be revisited without re-owning the order.
+            if ((int) session()->pull('last_completed_order_id') !== $order->id) {
+                abort(403);
+            }
         }
 
         return view('order-success', compact('order'));
