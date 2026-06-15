@@ -9,6 +9,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PageController;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -17,9 +18,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-Route::get('/multiple-orders-guide', function () {
-    return view('multiple-orders-guide');
-})->name('multiple-orders-guide');
+Route::get('/multiple-orders-guide', [PageController::class, 'multipleOrdersGuide'])->name('multiple-orders-guide');
 
 // Products
 Route::get('/collection', [ProductController::class, 'index'])->name('collection');
@@ -30,11 +29,6 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
-// Order Success Page (public access)
-Route::get('/order-success', function () {
-    return view('order-success');
-})->name('order.success.page');
 
 // Checkout (requires authentication)
 Route::middleware('auth')->group(function () {
@@ -49,30 +43,18 @@ Route::middleware('auth')->group(function () {
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:10,1');
 
 // Dashboard - Redirect to Filament for admins
-Route::get('/dashboard', function() {
-    if (auth()->check()) {
-        // If admin, redirect to Filament
-        if (auth()->user()->role === 'admin') {
-            return redirect('/admin');
-        }
-        // Regular users go to homepage (no separate dashboard)
-        return redirect('/')->with('info', 'Welcome back, ' . auth()->user()->name . '!');
-    }
-    return redirect()->route('login');
-})->name('dashboard');
+Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     // Reviews
-    Route::get('/write-review', function () {
-        return view('write-review');
-    })->name('write-review');
+    Route::get('/write-review', [PageController::class, 'writeReview'])->name('write-review');
     Route::get('/review/create/{product}', [ReviewController::class, 'create'])->name('review.create');
     Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 });

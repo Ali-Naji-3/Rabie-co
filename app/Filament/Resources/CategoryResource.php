@@ -75,6 +75,7 @@ class CategoryResource extends Resource
                                 ->persistent()
                                 ->send();
                             $action->cancel();
+                            return;
                         }
                     }),
             ])
@@ -91,6 +92,7 @@ class CategoryResource extends Resource
                                     ->persistent()
                                     ->send();
                                 $action->cancel();
+                                return;
                             }
                         }),
                 ]),

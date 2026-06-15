@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -93,6 +95,8 @@ class OrderController extends Controller
 
         $customerEmail = $validated['email'] ?? $request->user()->email;
 
+        $order = null;
+
         DB::beginTransaction();
 
         try {
@@ -101,6 +105,7 @@ class OrderController extends Controller
                 ->get();
 
             if ($cartItems->isEmpty()) {
+                DB::rollBack();
                 return response()->json(['error' => 'Cart is empty'], 400);
             }
 
@@ -129,7 +134,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id'          => $request->user()->id,
                 'customer_email'   => $customerEmail,
-                'order_number'     => 'ORD-' . strtoupper(uniqid()),
+                'order_number'     => 'ORD-' . date('Ymd') . '-' . Str::upper(Str::random(10)),
                 'subtotal'         => $subtotal,
                 'tax'              => $tax,
                 'shipping'         => $shipping,
@@ -159,14 +164,24 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'message' => 'Order placed successfully',
-                'order'   => $order->load('items.product'),
-            ], 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Failed to create order'], 500);
         }
+
+        try {
+            AuditLog::record('order_created', $order, [], [
+                'order_number'   => $order->order_number,
+                'total'          => $order->total,
+                'customer_email' => $order->customer_email,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        return response()->json([
+            'message' => 'Order placed successfully',
+            'order'   => $order->load('items.product'),
+        ], 201);
     }
 }

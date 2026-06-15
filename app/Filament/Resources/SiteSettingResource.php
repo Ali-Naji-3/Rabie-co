@@ -270,40 +270,6 @@ class SiteSettingResource extends Resource
                                     ->columns(2),
                             ]),
                             
-                        // Advanced Tab
-                        Forms\Components\Tabs\Tab::make('Advanced')
-                            ->icon('heroicon-o-code-bracket')
-                            ->schema([
-                                Forms\Components\Section::make('Custom Code')
-                                    ->description('Add custom CSS and JavaScript')
-                                    ->schema([
-                                        Forms\Components\Textarea::make('custom_css')
-                                            ->label('Custom CSS')
-                                            ->rows(5)
-                                            ->helperText('Custom CSS code (without <style> tags)')
-                                            ->columnSpanFull(),
-                                        Forms\Components\Textarea::make('custom_js')
-                                            ->label('Custom JavaScript')
-                                            ->rows(5)
-                                            ->helperText('Custom JS code (without <script> tags)')
-                                            ->columnSpanFull(),
-                                    ]),
-                                    
-                                Forms\Components\Section::make('Header & Footer Scripts')
-                                    ->description('Add tracking codes or custom scripts')
-                                    ->schema([
-                                        Forms\Components\Textarea::make('header_scripts')
-                                            ->label('Header Scripts')
-                                            ->rows(4)
-                                            ->helperText('Scripts to add in <head> section')
-                                            ->columnSpanFull(),
-                                        Forms\Components\Textarea::make('footer_scripts')
-                                            ->label('Footer Scripts')
-                                            ->rows(4)
-                                            ->helperText('Scripts to add before </body> tag')
-                                            ->columnSpanFull(),
-                                    ]),
-                            ]),
                     ])
                     ->columnSpanFull(),
             ]);

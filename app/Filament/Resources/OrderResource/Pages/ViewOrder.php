@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
+use App\Models\AuditLog;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
@@ -20,21 +21,33 @@ class ViewOrder extends ViewRecord
                 ->label('Mark Processing')
                 ->icon('heroicon-o-arrow-path')
                 ->color('primary')
-                ->action(fn () => $this->record->update(['status' => 'processing']))
+                ->action(function () {
+                    $old = $this->record->status;
+                    $this->record->update(['status' => 'processing']);
+                    AuditLog::record('order_status_changed', $this->record, ['status' => $old], ['status' => 'processing']);
+                })
                 ->visible(fn (): bool => $this->record->status === 'pending'),
-            
+
             Actions\Action::make('mark_shipped')
                 ->label('Mark Shipped')
                 ->icon('heroicon-o-truck')
                 ->color('info')
-                ->action(fn () => $this->record->update(['status' => 'shipped']))
+                ->action(function () {
+                    $old = $this->record->status;
+                    $this->record->update(['status' => 'shipped']);
+                    AuditLog::record('order_status_changed', $this->record, ['status' => $old], ['status' => 'shipped']);
+                })
                 ->visible(fn (): bool => $this->record->status === 'processing'),
-            
+
             Actions\Action::make('mark_delivered')
                 ->label('Mark Delivered')
                 ->icon('heroicon-o-check-circle')
                 ->color('success')
-                ->action(fn () => $this->record->update(['status' => 'delivered']))
+                ->action(function () {
+                    $old = $this->record->status;
+                    $this->record->update(['status' => 'delivered']);
+                    AuditLog::record('order_status_changed', $this->record, ['status' => $old], ['status' => 'delivered']);
+                })
                 ->visible(fn (): bool => $this->record->status === 'shipped'),
         ];
     }

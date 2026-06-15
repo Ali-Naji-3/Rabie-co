@@ -1211,14 +1211,6 @@
 		</script>
 	@endif
 
-	<!-- Custom Scripts from Site Settings -->
-	@if($siteSettings->header_scripts)
-		{!! $siteSettings->header_scripts !!}
-	@endif
-
-	@if($siteSettings->footer_scripts)
-		{!! $siteSettings->footer_scripts !!}
-	@endif
 
 </body>
 

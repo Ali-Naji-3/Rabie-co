@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReviewResource\Pages;
 use App\Filament\Resources\ReviewResource\RelationManagers;
+use App\Models\AuditLog;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Product;
@@ -196,13 +197,19 @@ class ReviewResource extends Resource
                 Tables\Actions\Action::make('approve')
                     ->icon('heroicon-o-check')
                     ->color('success')
-                    ->action(fn (Review $record) => $record->update(['is_approved' => true]))
+                    ->action(function (Review $record) {
+                        $record->update(['is_approved' => true]);
+                        AuditLog::record('review_moderated', $record, [], ['action' => 'approved']);
+                    })
                     ->visible(fn (Review $record) => !$record->is_approved),
-                
+
                 Tables\Actions\Action::make('reject')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
-                    ->action(fn (Review $record) => $record->update(['is_approved' => false]))
+                    ->action(function (Review $record) {
+                        $record->update(['is_approved' => false]);
+                        AuditLog::record('review_moderated', $record, [], ['action' => 'rejected']);
+                    })
                     ->visible(fn (Review $record) => $record->is_approved),
             ])
             ->bulkActions([
@@ -213,13 +220,29 @@ class ReviewResource extends Resource
                         ->label('Approve Selected')
                         ->icon('heroicon-o-check')
                         ->color('success')
-                        ->action(fn ($records) => $records->each->update(['is_approved' => true])),
-                    
+                        ->action(function ($records) {
+                            $ids = $records->pluck('id')->all();
+                            $records->each->update(['is_approved' => true]);
+                            AuditLog::record('review_moderated', null, [], [
+                                'action'     => 'bulk_approved',
+                                'review_ids' => $ids,
+                                'count'      => count($ids),
+                            ]);
+                        }),
+
                     Tables\Actions\BulkAction::make('reject_selected')
                         ->label('Reject Selected')
                         ->icon('heroicon-o-x-mark')
                         ->color('danger')
-                        ->action(fn ($records) => $records->each->update(['is_approved' => false])),
+                        ->action(function ($records) {
+                            $ids = $records->pluck('id')->all();
+                            $records->each->update(['is_approved' => false]);
+                            AuditLog::record('review_moderated', null, [], [
+                                'action'     => 'bulk_rejected',
+                                'review_ids' => $ids,
+                                'count'      => count($ids),
+                            ]);
+                        }),
                     
                     Tables\Actions\BulkAction::make('pin_selected')
                         ->label('📌 Pin to Homepage')

@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\AuditLog;
 use App\Models\User;
 use Filament\Forms;
+use Illuminate\Support\Collection;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -167,11 +169,29 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (User $record) {
+                        AuditLog::record('user_deleted', $record, [
+                            'id'    => $record->id,
+                            'email' => $record->email,
+                            'name'  => $record->name,
+                            'role'  => $record->role,
+                        ], []);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Collection $records) {
+                            foreach ($records as $record) {
+                                AuditLog::record('user_deleted', $record, [
+                                    'id'    => $record->id,
+                                    'email' => $record->email,
+                                    'name'  => $record->name,
+                                    'role'  => $record->role,
+                                ], []);
+                            }
+                        }),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')

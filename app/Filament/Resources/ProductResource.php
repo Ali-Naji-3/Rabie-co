@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\AuditLog;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -233,7 +234,14 @@ class ProductResource extends Resource
                                 ->persistent()
                                 ->send();
                             $action->cancel();
+                            return;
                         }
+                        AuditLog::record('product_deleted', $record, [
+                            'id'    => $record->id,
+                            'name'  => $record->name,
+                            'price' => $record->price,
+                            'sku'   => $record->sku,
+                        ], []);
                     }),
             ])
             ->bulkActions([
@@ -249,6 +257,15 @@ class ProductResource extends Resource
                                     ->persistent()
                                     ->send();
                                 $action->cancel();
+                                return;
+                            }
+                            foreach ($records as $record) {
+                                AuditLog::record('product_deleted', $record, [
+                                    'id'    => $record->id,
+                                    'name'  => $record->name,
+                                    'price' => $record->price,
+                                    'sku'   => $record->sku,
+                                ], []);
                             }
                         }),
                 ]),

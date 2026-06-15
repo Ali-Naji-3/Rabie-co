@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class OrderFactory extends Factory
 {
@@ -12,7 +13,7 @@ class OrderFactory extends Factory
         return [
             'user_id'          => User::factory(),
             'customer_email'   => fake()->unique()->safeEmail(),
-            'order_number'     => 'ORD-' . strtoupper(uniqid()),
+            'order_number'     => 'ORD-' . date('Ymd') . '-' . Str::upper(Str::random(10)),
             'subtotal'         => 100.00,
             'tax'              => 0.00,
             'shipping'         => 10.00,

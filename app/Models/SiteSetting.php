@@ -37,10 +37,6 @@ class SiteSetting extends Model
         'copyright_text',
         'footer_background_color',
         'footer_text_color',
-        'custom_css',
-        'custom_js',
-        'header_scripts',
-        'footer_scripts',
     ];
 
     protected $casts = [

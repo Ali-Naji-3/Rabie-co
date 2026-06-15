@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Models\AuditLog;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -40,6 +41,7 @@ class OrderResource extends Resource
                             ->label('Order Number')
                             ->required()
                             ->maxLength(255)
+                            ->readOnly()
                             ->columnSpan(1),
                         
                         Forms\Components\Select::make('user_id')
@@ -261,38 +263,58 @@ class OrderResource extends Resource
                     ->label('Mark Processing')
                     ->icon('heroicon-o-arrow-path')
                     ->color('primary')
-                    ->action(fn (Order $record) => $record->update(['status' => 'processing']))
+                    ->action(function (Order $record) {
+                        $old = $record->status;
+                        $record->update(['status' => 'processing']);
+                        AuditLog::record('order_status_changed', $record, ['status' => $old], ['status' => 'processing']);
+                    })
                     ->visible(fn (Order $record): bool => $record->status === 'pending'),
-                
+
                 Tables\Actions\Action::make('mark_shipped')
                     ->label('Mark Shipped')
                     ->icon('heroicon-o-truck')
                     ->color('info')
-                    ->action(fn (Order $record) => $record->update(['status' => 'shipped']))
+                    ->action(function (Order $record) {
+                        $old = $record->status;
+                        $record->update(['status' => 'shipped']);
+                        AuditLog::record('order_status_changed', $record, ['status' => $old], ['status' => 'shipped']);
+                    })
                     ->visible(fn (Order $record): bool => $record->status === 'processing'),
-                
+
                 Tables\Actions\Action::make('mark_delivered')
                     ->label('Mark Delivered')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->action(fn (Order $record) => $record->update(['status' => 'delivered']))
+                    ->action(function (Order $record) {
+                        $old = $record->status;
+                        $record->update(['status' => 'delivered']);
+                        AuditLog::record('order_status_changed', $record, ['status' => $old], ['status' => 'delivered']);
+                    })
                     ->visible(fn (Order $record): bool => $record->status === 'shipped'),
-                
+
                 // Payment Status Actions
                 Tables\Actions\Action::make('mark_paid')
                     ->label('Mark Paid')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(fn (Order $record) => $record->update(['payment_status' => 'paid']))
+                    ->action(function (Order $record) {
+                        $old = $record->payment_status;
+                        $record->update(['payment_status' => 'paid']);
+                        AuditLog::record('order_payment_status_changed', $record, ['payment_status' => $old], ['payment_status' => 'paid']);
+                    })
                     ->visible(fn (Order $record): bool => $record->payment_status === 'pending'),
-                
+
                 Tables\Actions\Action::make('mark_failed')
                     ->label('Mark Failed')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(fn (Order $record) => $record->update(['payment_status' => 'failed']))
+                    ->action(function (Order $record) {
+                        $old = $record->payment_status;
+                        $record->update(['payment_status' => 'failed']);
+                        AuditLog::record('order_payment_status_changed', $record, ['payment_status' => $old], ['payment_status' => 'failed']);
+                    })
                     ->visible(fn (Order $record): bool => $record->payment_status === 'pending'),
             ])
             ->bulkActions([
@@ -302,19 +324,43 @@ class OrderResource extends Resource
                     Tables\Actions\BulkAction::make('mark_processing')
                         ->label('Mark as Processing')
                         ->icon('heroicon-o-arrow-path')
-                        ->action(fn ($records) => $records->each->update(['status' => 'processing']))
+                        ->action(function ($records) {
+                            $ids = $records->pluck('id')->all();
+                            $records->each->update(['status' => 'processing']);
+                            AuditLog::record('order_status_changed', null, [], [
+                                'order_ids'  => $ids,
+                                'new_status' => 'processing',
+                                'count'      => count($ids),
+                            ]);
+                        })
                         ->deselectRecordsAfterCompletion(),
-                    
+
                     Tables\Actions\BulkAction::make('mark_shipped')
                         ->label('Mark as Shipped')
                         ->icon('heroicon-o-truck')
-                        ->action(fn ($records) => $records->each->update(['status' => 'shipped']))
+                        ->action(function ($records) {
+                            $ids = $records->pluck('id')->all();
+                            $records->each->update(['status' => 'shipped']);
+                            AuditLog::record('order_status_changed', null, [], [
+                                'order_ids'  => $ids,
+                                'new_status' => 'shipped',
+                                'count'      => count($ids),
+                            ]);
+                        })
                         ->deselectRecordsAfterCompletion(),
-                    
+
                     Tables\Actions\BulkAction::make('mark_delivered')
                         ->label('Mark as Delivered')
                         ->icon('heroicon-o-check-circle')
-                        ->action(fn ($records) => $records->each->update(['status' => 'delivered']))
+                        ->action(function ($records) {
+                            $ids = $records->pluck('id')->all();
+                            $records->each->update(['status' => 'delivered']);
+                            AuditLog::record('order_status_changed', null, [], [
+                                'order_ids'  => $ids,
+                                'new_status' => 'delivered',
+                                'count'      => count($ids),
+                            ]);
+                        })
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ])

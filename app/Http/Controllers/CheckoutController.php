@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
@@ -10,6 +11,7 @@ use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -94,9 +96,22 @@ class CheckoutController extends Controller
 
         // Check if billing is same as shipping (default to true if not specified)
         $billingSame = in_array($request->billing_same, ['on', '1', 'true', 1, true]) || !$request->has('billing_same');
-        
-        // Use shipping address as billing address (simplified checkout)
-        $billingAddress = $shippingAddress;
+
+        if ($billingSame || empty($validated['billing_address'])) {
+            $billingAddress = $shippingAddress;
+        } else {
+            $billingAddress = [
+                'name'        => $validated['name'],
+                'address'     => $validated['billing_address'],
+                'city'        => $validated['billing_city'] ?? $validated['city'],
+                'state'       => $validated['billing_state'] ?? $validated['state'] ?? null,
+                'postal_code' => $validated['billing_postal_code'] ?? $validated['postal_code'] ?? null,
+                'country'     => $validated['billing_country'] ?? $validated['country'],
+                'phone'       => $validated['phone'],
+            ];
+        }
+
+        $order = null;
 
         try {
             DB::beginTransaction();
@@ -105,13 +120,13 @@ class CheckoutController extends Controller
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'customer_email' => $validated['email'],
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => 'ORD-' . date('Ymd') . '-' . Str::upper(Str::random(10)),
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'shipping' => $shipping,
                 'total' => $total,
                 'status' => 'pending',
-                'payment_status' => $validated['payment_method'] === 'cod' ? 'pending' : 'pending',
+                'payment_status' => 'pending',
                 'payment_method' => $validated['payment_method'],
                 'shipping_address' => json_encode($shippingAddress),
                 'billing_address' => json_encode($billingAddress),
@@ -158,16 +173,25 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            session(['last_completed_order_id' => $order->id]);
-
-            // Redirect to success page
-            return redirect()->route('order.success', $order->id)
-                ->with('success', 'Order placed successfully!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Failed to place order. Please try again.');
         }
+
+        try {
+            AuditLog::record('order_created', $order, [], [
+                'order_number'   => $order->order_number,
+                'total'          => $order->total,
+                'customer_email' => $order->customer_email,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        session(['last_completed_order_id' => $order->id]);
+
+        return redirect()->route('order.success', $order->id)
+            ->with('success', 'Order placed successfully!');
     }
 
     public function success($orderId)
