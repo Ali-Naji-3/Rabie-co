@@ -50,11 +50,6 @@
 	<link rel="stylesheet" href="{{ asset('dependencies/owl.carousel/css/owl.carousel.min.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/owl.carousel/css/owl.theme.default.min.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/flaticon/css/flaticon.css') }}" type="text/css">
-	<link rel="stylesheet" href="{{ asset('dependencies/wow/css/animate.css') }}" type="text/css">
-	<link rel="stylesheet" href="{{ asset('dependencies/jquery-ui/css/jquery-ui.css') }}" type="text/css">
-	<link rel="stylesheet" href="{{ asset('dependencies/venobox/css/venobox.css') }}" type="text/css">
-	<link rel="stylesheet" href="{{ asset('dependencies/slick-carousel/css/slick.css') }}" type="text/css">
-	<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" type="text/css">
 
 	<!-- Site Stylesheet -->
 	<link rel="stylesheet" href="{{ asset('assets/css/app.css') }}" type="text/css">
@@ -324,6 +319,195 @@
 			font-weight: bold;
 			margin-right: 10px;
 		}
+
+		/* Cart remove button fix: position the form where .fa-times was, reset icon to static */
+		.cart-drop .single-cart form.cart-remove-form {
+			position: absolute;
+			right: 2px;
+			top: 38px;
+			width: 20px;
+			height: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0;
+			padding: 0;
+		}
+		.cart-drop .single-cart form.cart-remove-form .fa-times {
+			position: static;
+			width: auto;
+			height: auto;
+			line-height: normal;
+		}
+
+		/* ============================================================
+		   ANIMATE.CSS MICRO-REPLACEMENT
+		   Only the 5 classes actually used in views + DB.
+		   Replaces the full 56 KB animate.css library.
+		   Class names are unchanged so DB values, Filament dropdown,
+		   and all jQuery addClass/removeClass calls need no edits.
+		   ============================================================ */
+		.animated { animation-duration: 1s; animation-fill-mode: both; }
+		@keyframes fadeInUp {
+			from { opacity: 0; transform: translate3d(0, 30px, 0); }
+			to   { opacity: 1; transform: translate3d(0, 0, 0); }
+		}
+		.fadeInUp { animation-name: fadeInUp; }
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
+		.fadeIn { animation-name: fadeIn; }
+		@keyframes fadeInDown {
+			from { opacity: 0; transform: translate3d(0, -30px, 0); }
+			to   { opacity: 1; transform: translate3d(0, 0, 0); }
+		}
+		.fadeInDown { animation-name: fadeInDown; }
+		@keyframes slideInLeft {
+			from { opacity: 0; transform: translate3d(-60px, 0, 0); }
+			to   { opacity: 1; transform: translate3d(0, 0, 0); }
+		}
+		.slideInLeft { animation-name: slideInLeft; }
+		@keyframes slideInRight {
+			from { opacity: 0; transform: translate3d(60px, 0, 0); }
+			to   { opacity: 1; transform: translate3d(0, 0, 0); }
+		}
+		.slideInRight { animation-name: slideInRight; }
+
+		/* ============================================================
+		   PREMIUM MOTION SYSTEM (compositor-friendly: transform/opacity)
+		   Aurora hero · Scroll reveal · Image zoom · CTA glow
+		   ============================================================ */
+
+		/* 1. AURORA HERO — CSS-only animated gradient behind the slider.
+		   Uses blurred radial blobs moved via transform (no repaint of
+		   layout/paint-heavy props). Confined to the hero only. */
+		.slider-wrapper {
+			position: relative;
+			isolation: isolate;
+			overflow: hidden;
+		}
+		.slider-wrapper .aurora {
+			position: absolute;
+			inset: -20%;
+			z-index: -1;
+			pointer-events: none;
+			overflow: hidden;
+		}
+		.slider-wrapper .aurora::before,
+		.slider-wrapper .aurora::after {
+			content: "";
+			position: absolute;
+			width: 60vw;
+			height: 60vw;
+			border-radius: 50%;
+			filter: blur(80px);
+			opacity: 0.55;
+			/* !important needed to survive the global `* { will-change:auto !important }`
+			   rule above — the aurora animates continuously, so it benefits from a
+			   persistent compositor layer. */
+			will-change: transform !important;
+			transform: translate3d(0, 0, 0);
+		}
+		/* Palette stops pulled from existing brand colors — no color change */
+		.slider-wrapper .aurora::before {
+			top: -10%;
+			left: -5%;
+			background: radial-gradient(circle at center, #f49935 0%, rgba(244,153,53,0) 70%);
+			animation: auroraDriftA 22s ease-in-out infinite alternate;
+		}
+		.slider-wrapper .aurora::after {
+			bottom: -15%;
+			right: -10%;
+			background: radial-gradient(circle at center, #fad959 0%, rgba(250,217,89,0) 70%);
+			animation: auroraDriftB 26s ease-in-out infinite alternate;
+		}
+		@keyframes auroraDriftA {
+			0%   { transform: translate3d(0, 0, 0) scale(1); }
+			100% { transform: translate3d(12%, 8%, 0) scale(1.15); }
+		}
+		@keyframes auroraDriftB {
+			0%   { transform: translate3d(0, 0, 0) scale(1.1); }
+			100% { transform: translate3d(-10%, -6%, 0) scale(1); }
+		}
+
+		/* 2. SCROLL REVEAL — toggled by IntersectionObserver. Subtle rise + fade. */
+		.reveal {
+			opacity: 0;
+			transform: translate3d(0, 24px, 0);
+			transition: opacity 0.7s ease, transform 0.7s ease;
+			/* transform/opacity auto-promote to a compositor layer during the
+			   transition — no persistent will-change needed (and the global rule
+			   above would strip it anyway). */
+		}
+		.reveal.reveal--in {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+
+		/* 3. IMAGE ZOOM — subtle, framed, no layout shift. */
+		.sin-product .pro-img {
+			overflow: hidden;
+		}
+		.sin-product .pro-img img {
+			transition: transform 0.5s ease;
+			backface-visibility: hidden;
+		}
+		.sin-product:hover .pro-img img {
+			transform: scale(1.06);
+		}
+
+		/* 4. MOUSE-REACTIVE GLOW + MAGNETIC PULL — hero CTA only.
+		   Glow follows cursor via CSS custom props; magnetic translate set in JS.
+		   The transition smooths the pull and the spring-back on mouseleave.
+		   transform-only → compositor-friendly, no layout thrash. */
+		.cta-primary {
+			position: relative;
+			overflow: hidden;
+			isolation: isolate;
+			transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+		}
+		.cta-primary::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			z-index: -1;
+			background: radial-gradient(
+				120px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+				rgba(255, 255, 255, 0.45),
+				rgba(255, 255, 255, 0) 60%
+			);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+		.cta-primary:hover::before {
+			opacity: 1;
+		}
+
+		/* ACCESSIBILITY / PERF — honor reduced motion: kill all motion,
+		   reveal content immediately, no aurora drift, no zoom, no glow. */
+		@media (prefers-reduced-motion: reduce) {
+			.animated { animation: none !important; }
+			.slider-wrapper .aurora::before,
+			.slider-wrapper .aurora::after {
+				animation: none;
+			}
+			.reveal {
+				opacity: 1;
+				transform: none;
+				transition: none;
+			}
+			.sin-product:hover .pro-img img {
+				transform: none;
+			}
+			.cta-primary::before {
+				display: none;
+			}
+			.cta-primary {
+				transform: none !important;
+				transition: none;
+			}
+		}
 	</style>
 
 	@stack('styles')
@@ -363,6 +547,8 @@
 			color: #FFA500 !important;
 		}
 	</style>
+
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 
@@ -477,10 +663,10 @@
 											<div class="cart-price">
 												<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
 											</div>
-											<form method="POST" action="{{ route('cart.remove', $item->id) }}" style="display:inline;">
+											<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="cart-remove-form">
 												@csrf
 												@method('DELETE')
-												<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer;">
+												<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer; padding:0; width:100%; height:100%;">
 													<i class="fa fa-times"></i>
 												</button>
 											</form>
@@ -490,7 +676,7 @@
 											<p>Your cart is empty</p>
 										</div>
 									@endforelse
-									
+
 									@if($globalCartItems->isNotEmpty())
 										<div class="cart-bottom">
 											<div class="cart-sub-total">
@@ -561,10 +747,10 @@
 									<div class="cart-price">
 										<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
 									</div>
-									<form method="POST" action="{{ route('cart.remove', $item->id) }}" style="display:inline;">
+									<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="cart-remove-form">
 										@csrf
 										@method('DELETE')
-										<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer;">
+										<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer; padding:0; width:100%; height:100%;">
 											<i class="fa fa-times"></i>
 										</button>
 									</form>
@@ -1013,15 +1199,7 @@
 			}, { once: true });
 		})();
 	</script>
-	<script src="{{ asset('dependencies/wow/js/wow.min.js') }}"></script>
-	<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>
-	<script src="{{ asset('dependencies/imagesloaded/js/imagesloaded.pkgd.min.js') }}"></script>
-	<script src="{{ asset('dependencies/jquery.countdown/js/jquery.countdown.min.js') }}"></script>
-	<script src="{{ asset('dependencies/venobox/js/venobox.min.js') }}"></script>
-	<script src="{{ asset('dependencies/slick-carousel/js/slick.js') }}"></script>
 	<script src="{{ asset('dependencies/headroom/js/headroom.js') }}"></script>
-	<script src="{{ asset('dependencies/jquery-ui/js/jquery-ui.min.js') }}"></script>
-	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 	
 	<!-- Google Maps - Disabled to prevent loading errors -->
 	@if(request()->routeIs('contact'))
@@ -1041,25 +1219,93 @@
 	<!-- Site Scripts -->
 	<script src="{{ asset('assets/js/app.js') }}"></script>
 
-	<!-- AOS Animation Library Initialization -->
+	<!-- Premium Motion System: scroll reveal + CTA glow (replaces AOS) -->
 	<script>
-		// Initialize AOS with smooth settings
-		AOS.init({
-			duration: 800, // Animation duration in ms
-			easing: 'ease-in-out', // Easing function
-			once: true, // Animation only happens once
-			offset: 50, // Offset from original trigger point
-			delay: 0, // Delay in ms
-			anchorPlacement: 'top-bottom', // Defines which position of the element regarding to window should trigger the animation
-			disable: false, // Disable AOS on mobile devices
-			startEvent: 'DOMContentLoaded', // Name of the event dispatched on the document
-			initClassName: 'aos-init', // Class applied after initialization
-			animatedClassName: 'aos-animate', // Class applied on animation
-			useClassNames: false, // If true, will add content of `data-aos` as classes
-			disableMutationObserver: false, // Disable automatic mutations' detections
-			debounceDelay: 50, // The delay on debounce used while resizing window
-			throttleDelay: 99, // The delay on throttle used while scrolling the page
-		});
+		(function () {
+			'use strict';
+
+			var reduceMotion = window.matchMedia
+				&& window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			/* ---- Scroll Reveal: single IntersectionObserver, ~80ms stagger ---- */
+			document.addEventListener('DOMContentLoaded', function () {
+				var revealEls = document.querySelectorAll('.reveal');
+
+				// Reduced motion or no IO support → show everything immediately.
+				if (reduceMotion || !('IntersectionObserver' in window)) {
+					revealEls.forEach(function (el) { el.classList.add('reveal--in'); });
+					return;
+				}
+
+				var observer = new IntersectionObserver(function (entries, obs) {
+					entries.forEach(function (entry) {
+						if (!entry.isIntersecting) return;
+						var el = entry.target;
+						// Stagger siblings revealed in the same frame.
+						var delay = (Number(el.dataset.revealOrder) || 0) * 80;
+						el.style.transitionDelay = delay + 'ms';
+						el.classList.add('reveal--in');
+						obs.unobserve(el); // reveal once, then stop observing
+					});
+				}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+				// Assign a stagger order within each parent group.
+				var groups = new Map();
+				revealEls.forEach(function (el) {
+					var parent = el.parentElement;
+					var idx = groups.get(parent) || 0;
+					el.dataset.revealOrder = idx;
+					groups.set(parent, idx + 1);
+					observer.observe(el);
+				});
+			});
+
+			/* ---- Hero CTA only: cursor glow + magnetic pull. rAF-throttled, no touch ----
+			   Glow → CSS custom props track the cursor inside the button.
+			   Magnet → button translates a fraction of the cursor's offset from its
+			   center (capped), then springs back on mouseleave. transform-only. */
+			document.addEventListener('DOMContentLoaded', function () {
+				if (reduceMotion) return;
+				var isTouch = window.matchMedia
+					&& window.matchMedia('(hover: none), (pointer: coarse)').matches;
+				if (isTouch) return; // skip on touch devices — no cursor to track
+
+				var MAGNET_STRENGTH = 0.3;  // fraction of offset-from-center applied
+				var MAGNET_MAX = 14;        // px cap so it stays subtle/premium
+
+				var ctas = document.querySelectorAll('.cta-primary');
+				ctas.forEach(function (cta) {
+					var rafId = null;
+					var glowX = 0, glowY = 0;   // cursor pos relative to top-left (glow)
+					var pullX = 0, pullY = 0;   // capped magnetic translate
+
+					function clamp(v, max) {
+						return Math.max(-max, Math.min(max, v));
+					}
+
+					cta.addEventListener('mousemove', function (e) {
+						var rect = cta.getBoundingClientRect();
+						glowX = e.clientX - rect.left;
+						glowY = e.clientY - rect.top;
+						// Offset from the button's center drives the magnet.
+						pullX = clamp((glowX - rect.width / 2) * MAGNET_STRENGTH, MAGNET_MAX);
+						pullY = clamp((glowY - rect.height / 2) * MAGNET_STRENGTH, MAGNET_MAX);
+						if (rafId) return;
+						rafId = requestAnimationFrame(function () {
+							cta.style.setProperty('--glow-x', glowX + 'px');
+							cta.style.setProperty('--glow-y', glowY + 'px');
+							cta.style.transform = 'translate3d(' + pullX + 'px,' + pullY + 'px,0)';
+							rafId = null;
+						});
+					});
+
+					cta.addEventListener('mouseleave', function () {
+						// Spring back to rest (CSS transition does the easing).
+						cta.style.transform = '';
+					});
+				});
+			});
+		})();
 
 		// Fast page navigation with optimized transitions
 		document.addEventListener('DOMContentLoaded', function() {

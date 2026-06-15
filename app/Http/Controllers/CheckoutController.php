@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrderNotification;
 use App\Models\AuditLog;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -11,6 +12,7 @@ use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -184,6 +186,16 @@ class CheckoutController extends Controller
                 'total'          => $order->total,
                 'customer_email' => $order->customer_email,
             ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        try {
+            $adminEmail = config('mail.admin_order_notification_email');
+            if ($adminEmail) {
+                $order->loadMissing('items.product');
+                Mail::to($adminEmail)->send(new NewOrderNotification($order));
+            }
         } catch (\Throwable $e) {
             report($e);
         }

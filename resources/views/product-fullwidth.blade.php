@@ -319,6 +319,7 @@
 @endsection
 
 @push('styles')
+<link rel="stylesheet" href="{{ asset('dependencies/slick-carousel/css/slick.css') }}" type="text/css">
 <style>
 	/* Write Review Button Hover Effects - Black & Gold Theme */
 	.btn-dark:hover {
@@ -328,4 +329,29 @@
 		border-color: #FFD700 !important;
 	}
 </style>
+@endpush
+
+@push('scripts')
+<script src="{{ asset('dependencies/slick-carousel/js/slick.js') }}"></script>
+<script>
+$(document).ready(function () {
+    $('.slider-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        fade: true,
+        asNavFor: '.slider-nav',
+        swipe: false,
+    });
+    $('.slider-nav').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: '.slider-for',
+        focusOnSelect: true,
+        swipe: false,
+        infinite: false,
+        arrows: true,
+    });
+});
+</script>
 @endpush
