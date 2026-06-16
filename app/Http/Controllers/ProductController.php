@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,9 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(12);
-        $categories = Category::where('is_active', true)->get();
+        $categories = Cache::remember('categories:active', 1800, function () {
+            return Category::where('is_active', true)->get();
+        });
 
         return view('Collection', compact('products', 'categories'));
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -40,9 +41,11 @@ class ProductController extends Controller
 
     public function categories()
     {
-        $categories = Category::where('is_active', true)
-            ->withCount('products')
-            ->get();
+        $categories = Cache::remember('categories:active_with_counts', 1800, function () {
+            return Category::where('is_active', true)
+                ->withCount('products')
+                ->get();
+        });
 
         return response()->json($categories);
     }

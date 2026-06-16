@@ -948,18 +948,14 @@
 
 	// Form submission - Instant submission, no processing delays
 	document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-		console.log('Form submission triggered');
 		const btn = document.getElementById('placeOrderBtn');
-		
+
 		// Just disable button, no processing text
 		if (btn) {
 			btn.disabled = true;
 			btn.style.opacity = '0.7';
 			btn.style.cursor = 'not-allowed';
 		}
-		
-		// Form submits immediately - no delays
-		console.log('Form submitting to server immediately...');
 	});
 	
 	// Ensure Place Order button is always enabled and clickable
@@ -969,9 +965,6 @@
 			placeOrderBtn.disabled = false;
 			placeOrderBtn.style.cursor = 'pointer';
 			placeOrderBtn.style.opacity = '1';
-			
-			// Button now submits form immediately - no processing delays
-			console.log('Place Order button ready for instant submission');
 		}
 	});
 </script>

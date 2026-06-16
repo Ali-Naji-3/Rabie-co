@@ -257,19 +257,6 @@ var THEMEIM = THEMEIM || {};
 
 
 
-      $('.trigger').on('click', function(e) {
-        e.preventDefault();
-        var mask = '<div class="mask-overlay">';
-
-        $('.quickview-wrapper').toggleClass('open');
-        $(mask).hide().appendTo('body').fadeIn('fast');
-        $('.mask-overlay, .close-qv').on('click', function() {
-          $('.quickview-wrapper').removeClass('open');
-          $('.mask-overlay').remove();
-        });
-      });
-
-
       //Product plus minus
 
       $(".cart-plus-minus-button").append('<div class="dec qtybutton">-</div><div class="inc qtybutton">+</div>');

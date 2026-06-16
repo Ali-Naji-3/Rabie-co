@@ -5,9 +5,19 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Cart;
+use App\Models\Category;
+use App\Models\FeatureIcon;
+use App\Models\HeroSlider;
 use App\Models\Product;
+use App\Models\PromotionalBanner;
+use App\Models\Review;
 use App\Models\SiteSetting;
+use App\Observers\CategoryObserver;
+use App\Observers\FeatureIconObserver;
+use App\Observers\HeroSliderObserver;
 use App\Observers\ProductObserver;
+use App\Observers\PromotionalBannerObserver;
+use App\Observers\ReviewObserver;
 use App\Observers\SiteSettingObserver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -30,7 +40,12 @@ class AppServiceProvider extends ServiceProvider
         // Register observers
         SiteSetting::observe(SiteSettingObserver::class);
         Product::observe(ProductObserver::class);
-        
+        Category::observe(CategoryObserver::class);
+        HeroSlider::observe(HeroSliderObserver::class);
+        PromotionalBanner::observe(PromotionalBannerObserver::class);
+        FeatureIcon::observe(FeatureIconObserver::class);
+        Review::observe(ReviewObserver::class);
+
         // Share cart data and site settings with all views
         View::composer('*', function ($view) {
             // Site settings (cached for 1 hour) — shared everywhere

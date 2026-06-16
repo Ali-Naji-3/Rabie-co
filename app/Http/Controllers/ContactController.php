@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NewContactMessageNotification;
+use App\Jobs\SendContactNotificationJob;
 use App\Models\Contact;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class ContactController extends Controller
 {
@@ -40,24 +39,10 @@ class ContactController extends Controller
         try {
             $adminEmail = config('mail.admin_contact_notification_email');
             if ($adminEmail) {
-                // Deferred until after the HTTP response is sent, and sent via the Resend
-                // HTTP API (not SMTP) since outbound SMTP ports are blocked in production.
-                dispatch(function () use ($contact, $adminEmail) {
-                    try {
-                        $mailable = new NewContactMessageNotification($contact);
-
-                        Http::withToken(config('services.resend.key'))
-                            ->post('https://api.resend.com/emails', [
-                                'from'    => config('mail.from.name') . ' <' . config('services.resend.from') . '>',
-                                'to'      => [$adminEmail],
-                                'subject' => $mailable->envelope()->subject,
-                                'html'    => $mailable->render(),
-                            ])
-                            ->throw();
-                    } catch (\Throwable $e) {
-                        report($e);
-                    }
-                })->afterResponse();
+                // Queued (database driver) — request never waits on email
+                // delivery, and failures retry with backoff instead of being
+                // lost (see SendContactNotificationJob::$tries/$backoff).
+                SendContactNotificationJob::dispatch($contact, $adminEmail);
             }
         } catch (\Throwable $e) {
             report($e);

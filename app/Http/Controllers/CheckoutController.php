@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NewOrderNotification;
+use App\Jobs\SendOrderNotificationJob;
 use App\Models\AuditLog;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -12,7 +12,6 @@ use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -193,26 +192,10 @@ class CheckoutController extends Controller
         try {
             $adminEmail = config('mail.admin_order_notification_email');
             if ($adminEmail) {
-                $order->loadMissing('items.product');
-
-                // Deferred until after the HTTP response is sent, and sent via the Resend
-                // HTTP API (not SMTP) since outbound SMTP ports are blocked in production.
-                dispatch(function () use ($order, $adminEmail) {
-                    try {
-                        $mailable = new NewOrderNotification($order);
-
-                        Http::withToken(config('services.resend.key'))
-                            ->post('https://api.resend.com/emails', [
-                                'from'    => config('mail.from.name') . ' <' . config('services.resend.from') . '>',
-                                'to'      => [$adminEmail],
-                                'subject' => $mailable->envelope()->subject,
-                                'html'    => $mailable->render(),
-                            ])
-                            ->throw();
-                    } catch (\Throwable $e) {
-                        report($e);
-                    }
-                })->afterResponse();
+                // Queued (database driver) — checkout never waits on email
+                // delivery, and failures retry with backoff instead of being
+                // lost (see SendOrderNotificationJob::$tries/$backoff).
+                SendOrderNotificationJob::dispatch($order, $adminEmail);
             }
         } catch (\Throwable $e) {
             report($e);

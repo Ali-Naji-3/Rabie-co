@@ -107,7 +107,6 @@
 												<div class="icon-wrapper">
 													<div class="pro-icon">
 														<ul>
-															<li><a href="#"><i class="flaticon-valentines-heart"></i></a></li>
 															<li><a href="{{ route('product.show', $product->slug) }}"><i class="flaticon-eye"></i></a></li>
 														</ul>
 													</div>
@@ -158,7 +157,6 @@
 														</div>
 														<div class="pro-icon">
 															<ul>
-																<li><a href="#"><i class="flaticon-valentines-heart"></i></a></li>
 																<li><a href="{{ route('product.show', $product->slug) }}"><i class="flaticon-eye"></i></a></li>
 															</ul>
 														</div>

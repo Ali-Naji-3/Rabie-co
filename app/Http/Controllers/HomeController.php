@@ -10,6 +10,7 @@ use App\Models\PromotionalBanner;
 use App\Models\SiteSetting;
 use App\Models\FeatureIcon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -17,49 +18,61 @@ class HomeController extends Controller
     {
         // Get site settings
         $siteSettings = SiteSetting::getSettings();
-        
+
         // Get hero sliders
-        $heroSliders = HeroSlider::active()
-            ->ordered()
-            ->get();
-        
-        // Get promotional banners for "after_products" position
-        $promoBannersAfterProducts = PromotionalBanner::active()
-            ->scheduled()
-            ->byPosition('after_products')
-            ->ordered()
-            ->get();
-        
+        $heroSliders = Cache::remember('home:hero_sliders', 1800, function () {
+            return HeroSlider::active()->ordered()->get();
+        });
+
+        // Get promotional banners for "after_products" position. Short TTL
+        // because scheduled() is time-bound (start_date/end_date) — a longer
+        // cache would keep showing an expired banner past its end_date.
+        $promoBannersAfterProducts = Cache::remember('home:promo_banners:after_products', 300, function () {
+            return PromotionalBanner::active()
+                ->scheduled()
+                ->byPosition('after_products')
+                ->ordered()
+                ->get();
+        });
+
         // Get promotional banners for "after_reviews" position
-        $promoBannersAfterReviews = PromotionalBanner::active()
-            ->scheduled()
-            ->byPosition('after_reviews')
-            ->ordered()
-            ->get();
-        
+        $promoBannersAfterReviews = Cache::remember('home:promo_banners:after_reviews', 300, function () {
+            return PromotionalBanner::active()
+                ->scheduled()
+                ->byPosition('after_reviews')
+                ->ordered()
+                ->get();
+        });
+
         // Get feature icons
-        $featureIcons = FeatureIcon::active()
-            ->ordered()
-            ->get();
-        
+        $featureIcons = Cache::remember('home:feature_icons', 1800, function () {
+            return FeatureIcon::active()->ordered()->get();
+        });
+
         // Existing data
-        $featuredProducts = Product::where('is_active', true)
-            ->where('is_featured', true)
-            ->with('category')
-            ->latest()
-            ->take(8)
-            ->get();
+        $featuredProducts = Cache::remember('products:featured', 1800, function () {
+            return Product::where('is_active', true)
+                ->where('is_featured', true)
+                ->with('category')
+                ->latest()
+                ->take(8)
+                ->get();
+        });
 
-        $categories = Category::where('is_active', true)
-            ->withCount('products')
-            ->get();
+        $categories = Cache::remember('categories:active_with_counts', 1800, function () {
+            return Category::where('is_active', true)
+                ->withCount('products')
+                ->get();
+        });
 
-        $featuredReviews = Review::where('is_featured', true)
-            ->where('is_approved', true)
-            ->with(['user', 'product'])
-            ->latest()
-            ->take(6)
-            ->get();
+        $featuredReviews = Cache::remember('reviews:featured', 1800, function () {
+            return Review::where('is_featured', true)
+                ->where('is_approved', true)
+                ->with(['user', 'product'])
+                ->latest()
+                ->take(6)
+                ->get();
+        });
 
         return view('welcome', compact(
             'siteSettings',
