@@ -194,7 +194,16 @@ class CheckoutController extends Controller
             $adminEmail = config('mail.admin_order_notification_email');
             if ($adminEmail) {
                 $order->loadMissing('items.product');
-                Mail::to($adminEmail)->send(new NewOrderNotification($order));
+
+                // Deferred until after the HTTP response is sent so a slow/unreachable
+                // SMTP host (e.g. a blocked port) can never delay checkout completion.
+                dispatch(function () use ($order, $adminEmail) {
+                    try {
+                        Mail::to($adminEmail)->send(new NewOrderNotification($order));
+                    } catch (\Throwable $e) {
+                        report($e);
+                    }
+                })->afterResponse();
             }
         } catch (\Throwable $e) {
             report($e);
