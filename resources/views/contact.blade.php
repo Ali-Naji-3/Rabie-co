@@ -97,7 +97,7 @@
 				<div class="row">
 					<div class="col-xl-12">
 						<div class="bc-inner">
-							<p><a href="#">Home  |</a> Shop</p>
+							<p><a href="{{ route('home') }}">Home  |</a> Shop</p>
 						</div>
 					</div>
 					<!-- /.col-xl-12 -->

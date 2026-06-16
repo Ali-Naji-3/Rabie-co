@@ -100,56 +100,58 @@ var THEMEIM = THEMEIM || {};
       });
 
       /* Product filter   */
-      $('.main-product').imagesLoaded(function() {
-        var $grid = $('.grid').isotope({
-          // options
-          itemSelector: '.grid-item',
-          stagger: 30,
-        });
-
-
-        //Product filter active menu
-        $('.pro-tab-button .filter').on('click', function() {
-          $('.pro-tab-button .filter').removeClass('active');
-          $(this).addClass('active');
-        });
-
-
-        $('.pro-tab-button').on('click', 'li', function() {
-          var filterValue = $(this).attr('data-filter');
-          $grid.isotope({
-            filter: filterValue
+      if ($.fn.imagesLoaded) {
+        $('.main-product').imagesLoaded(function() {
+          var $grid = $('.grid').isotope({
+            // options
+            itemSelector: '.grid-item',
+            stagger: 30,
           });
-        });
-
-      });
 
 
-      /* Blog filter   */
-
-      $('.blog-wrapper').imagesLoaded(function() {
-        var $grid = $('.grid').isotope({
-          // options
-          itemSelector: '.grid-item',
-          stagger: 30,
-        });
-
-
-        //Blog filter active menu
-        $('.pro-tab-button .filter').on('click', function() {
-          $('.pro-tab-button .filter').removeClass('active');
-          $(this).addClass('active');
-        });
-
-
-        $('.pro-tab-button').on('click', 'li', function() {
-          var filterValue = $(this).attr('data-filter');
-          $grid.isotope({
-            filter: filterValue
+          //Product filter active menu
+          $('.pro-tab-button .filter').on('click', function() {
+            $('.pro-tab-button .filter').removeClass('active');
+            $(this).addClass('active');
           });
+
+
+          $('.pro-tab-button').on('click', 'li', function() {
+            var filterValue = $(this).attr('data-filter');
+            $grid.isotope({
+              filter: filterValue
+            });
+          });
+
         });
 
-      });
+
+        /* Blog filter   */
+
+        $('.blog-wrapper').imagesLoaded(function() {
+          var $grid = $('.grid').isotope({
+            // options
+            itemSelector: '.grid-item',
+            stagger: 30,
+          });
+
+
+          //Blog filter active menu
+          $('.pro-tab-button .filter').on('click', function() {
+            $('.pro-tab-button .filter').removeClass('active');
+            $(this).addClass('active');
+          });
+
+
+          $('.pro-tab-button').on('click', 'li', function() {
+            var filterValue = $(this).attr('data-filter');
+            $grid.isotope({
+              filter: filterValue
+            });
+          });
+
+        });
+      }
 
 
       /* Client Slider  */

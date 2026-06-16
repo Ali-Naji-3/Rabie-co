@@ -588,8 +588,3 @@
 	@endforeach
 
 @endsection
-
-@push('scripts')
-<script src="{{ asset('dependencies/imagesloaded/js/imagesloaded.pkgd.min.js') }}"></script>
-<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>
-@endpush

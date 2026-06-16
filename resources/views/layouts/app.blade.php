@@ -806,8 +806,8 @@
 
 				</ul>
 				<div class="mobile-login">
-					<a href="#">Log in</a> |
-					<a href="#">Create Account</a>
+					<a href="{{ route('login') }}">Log in</a> |
+					<a href="{{ route('register') }}">Create Account</a>
 				</div>
 				<form action="#" id="moble-search">
 					<input placeholder="Search...." type="text">
@@ -1152,7 +1152,9 @@
 	<script src="{{ asset('dependencies/popper.js/popper.min.js') }}"></script>
 	<script src="{{ asset('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('dependencies/owl.carousel/js/owl.carousel.min.js') }}"></script>
-	
+	<script src="{{ asset('dependencies/imagesloaded/js/imagesloaded.pkgd.min.js') }}"></script>
+	<script src="{{ asset('dependencies/isotope-layout/js/isotope.pkgd.min.js') }}"></script>
+
 	<!-- Fix will-change memory warning - Targeted approach -->
 	<script>
 		// Targeted will-change cleanup - only fix carousel/slider libraries
