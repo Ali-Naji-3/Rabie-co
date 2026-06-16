@@ -20,6 +20,9 @@ return [
 
     'resend' => [
         'key' => env('RESEND_KEY'),
+        // Gmail/Outlook etc. addresses are rejected by Resend (unverified domain).
+        // Defaults to Resend's sandbox sender until a real domain is verified.
+        'from' => env('RESEND_FROM_ADDRESS', 'onboarding@resend.dev'),
     ],
 
     'ses' => [

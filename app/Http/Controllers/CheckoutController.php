@@ -203,7 +203,7 @@ class CheckoutController extends Controller
 
                         Http::withToken(config('services.resend.key'))
                             ->post('https://api.resend.com/emails', [
-                                'from'    => config('mail.from.name') . ' <' . config('mail.from.address') . '>',
+                                'from'    => config('mail.from.name') . ' <' . config('services.resend.from') . '>',
                                 'to'      => [$adminEmail],
                                 'subject' => $mailable->envelope()->subject,
                                 'html'    => $mailable->render(),

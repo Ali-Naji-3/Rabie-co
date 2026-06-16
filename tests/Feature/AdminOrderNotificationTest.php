@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Mail\NewOrderNotification;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AdminOrderNotificationTest extends TestCase
@@ -34,7 +34,7 @@ class AdminOrderNotificationTest extends TestCase
 
     public function test_admin_notification_is_sent_on_successful_checkout(): void
     {
-        Mail::fake();
+        Http::fake(['api.resend.com/*' => Http::response(['id' => 'test-id'], 200)]);
         config(['mail.admin_order_notification_email' => 'admin@example.com']);
 
         $user    = User::factory()->create();
@@ -44,14 +44,15 @@ class AdminOrderNotificationTest extends TestCase
         $this->actingAs($user)
             ->post(route('checkout.process'), $this->checkoutPayload());
 
-        Mail::assertSent(NewOrderNotification::class, function (NewOrderNotification $mail) {
-            return $mail->hasTo('admin@example.com');
+        Http::assertSent(function (Request $request) {
+            return $request->url() === 'https://api.resend.com/emails'
+                && $request['to'] === ['admin@example.com'];
         });
     }
 
     public function test_notification_contains_correct_order_number(): void
     {
-        Mail::fake();
+        Http::fake(['api.resend.com/*' => Http::response(['id' => 'test-id'], 200)]);
         config(['mail.admin_order_notification_email' => 'admin@example.com']);
 
         $user    = User::factory()->create();
@@ -61,16 +62,17 @@ class AdminOrderNotificationTest extends TestCase
         $this->actingAs($user)
             ->post(route('checkout.process'), $this->checkoutPayload());
 
-        Mail::assertSent(NewOrderNotification::class, function (NewOrderNotification $mail) {
-            $order = Order::first();
-            return $mail->order->id === $order->id
-                && $mail->envelope()->subject === 'New Order: ' . $order->order_number;
+        $order = Order::first();
+
+        Http::assertSent(function (Request $request) use ($order) {
+            return $request['subject'] === 'New Order: ' . $order->order_number
+                && str_contains($request['html'], $order->order_number);
         });
     }
 
     public function test_notification_shipping_fields_are_decoded(): void
     {
-        Mail::fake();
+        Http::fake(['api.resend.com/*' => Http::response(['id' => 'test-id'], 200)]);
         config(['mail.admin_order_notification_email' => 'admin@example.com']);
 
         $user    = User::factory()->create();
@@ -80,11 +82,12 @@ class AdminOrderNotificationTest extends TestCase
         $this->actingAs($user)
             ->post(route('checkout.process'), $this->checkoutPayload());
 
-        Mail::assertSent(NewOrderNotification::class, function (NewOrderNotification $mail) {
-            return $mail->shipping['city']    === 'Riyadh'
-                && $mail->shipping['country'] === 'Saudi Arabia'
-                && $mail->shipping['name']    === 'Jane Doe'
-                && $mail->shipping['phone']   === '0501234567';
+        Http::assertSent(function (Request $request) {
+            $html = $request['html'];
+            return str_contains($html, 'Riyadh')
+                && str_contains($html, 'Saudi Arabia')
+                && str_contains($html, 'Jane Doe')
+                && str_contains($html, '0501234567');
         });
     }
 
@@ -92,7 +95,7 @@ class AdminOrderNotificationTest extends TestCase
 
     public function test_no_notification_sent_when_admin_email_not_configured(): void
     {
-        Mail::fake();
+        Http::fake();
         config(['mail.admin_order_notification_email' => null]);
 
         $user    = User::factory()->create();
@@ -102,7 +105,7 @@ class AdminOrderNotificationTest extends TestCase
         $this->actingAs($user)
             ->post(route('checkout.process'), $this->checkoutPayload());
 
-        Mail::assertNothingSent();
+        Http::assertNothingSent();
         $this->assertDatabaseCount('orders', 1);
     }
 
@@ -110,15 +113,8 @@ class AdminOrderNotificationTest extends TestCase
 
     public function test_checkout_succeeds_even_when_mail_sending_fails(): void
     {
+        Http::fake(['api.resend.com/*' => Http::response(['message' => 'server error'], 500)]);
         config(['mail.admin_order_notification_email' => 'admin@example.com']);
-
-        // Replace the mail manager binding with one that throws on to()
-        $this->app->bind('mail.manager', function () {
-            $mock = \Mockery::mock();
-            $mock->shouldReceive('to')
-                ->andThrow(new \RuntimeException('SMTP connection refused'));
-            return $mock;
-        });
 
         $user    = User::factory()->create();
         $product = Product::factory()->withStock(5)->create();
