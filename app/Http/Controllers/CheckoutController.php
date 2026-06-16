@@ -12,7 +12,7 @@ use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -195,11 +195,20 @@ class CheckoutController extends Controller
             if ($adminEmail) {
                 $order->loadMissing('items.product');
 
-                // Deferred until after the HTTP response is sent so a slow/unreachable
-                // SMTP host (e.g. a blocked port) can never delay checkout completion.
+                // Deferred until after the HTTP response is sent, and sent via the Resend
+                // HTTP API (not SMTP) since outbound SMTP ports are blocked in production.
                 dispatch(function () use ($order, $adminEmail) {
                     try {
-                        Mail::to($adminEmail)->send(new NewOrderNotification($order));
+                        $mailable = new NewOrderNotification($order);
+
+                        Http::withToken(config('services.resend.key'))
+                            ->post('https://api.resend.com/emails', [
+                                'from'    => config('mail.from.name') . ' <' . config('mail.from.address') . '>',
+                                'to'      => [$adminEmail],
+                                'subject' => $mailable->envelope()->subject,
+                                'html'    => $mailable->render(),
+                            ])
+                            ->throw();
                     } catch (\Throwable $e) {
                         report($e);
                     }
