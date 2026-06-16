@@ -316,6 +316,84 @@ var THEMEIM = THEMEIM || {};
       });
 
 
+      /*---------------------
+          Live search suggestions
+          ------------------------- */
+
+      function liveSearchEscape(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function liveSearchRender($box, items) {
+        if (!items.length) {
+          $box.html('<div class="live-search-empty">No products found</div>').addClass('active');
+          return;
+        }
+
+        var html = items.map(function(item) {
+          return '<a class="live-search-item" href="' + item.url + '">' +
+            '<img src="' + item.image + '" alt="">' +
+            '<span class="live-search-item-name">' + liveSearchEscape(item.name) + '</span>' +
+            '<span class="live-search-item-price">$' + liveSearchEscape(item.price) + '</span>' +
+            '</a>';
+        }).join('');
+
+        $box.html(html).addClass('active');
+      }
+
+      function liveSearchBind(inputSelector, boxSelector) {
+        var $input = $(inputSelector);
+        var $box = $(boxSelector);
+        var timer = null;
+        var currentRequest = null;
+
+        if (!$input.length || !$box.length) {
+          return;
+        }
+
+        $input.on('input', function() {
+          var term = $(this).val().trim();
+
+          clearTimeout(timer);
+
+          if (currentRequest) {
+            currentRequest.abort();
+          }
+
+          if (term.length < 2) {
+            $box.removeClass('active').empty();
+            return;
+          }
+
+          timer = setTimeout(function() {
+            currentRequest = $.getJSON('/search-suggestions', { q: term })
+              .done(function(items) {
+                liveSearchRender($box, items);
+              })
+              .fail(function(jqXHR) {
+                if (jqXHR.statusText !== 'abort') {
+                  $box.removeClass('active').empty();
+                }
+              });
+          }, 300);
+        });
+
+        $(document).on('click', function(e) {
+          if (!$(e.target).closest($input).length && !$(e.target).closest($box).length) {
+            $box.removeClass('active');
+          }
+        });
+      }
+
+      liveSearchBind('#live-search-input', '#live-search-results');
+      liveSearchBind('#live-search-input-mobile', '#live-search-results-mobile');
+
+
 
       /*---------------------
           Cart top show hide toggle

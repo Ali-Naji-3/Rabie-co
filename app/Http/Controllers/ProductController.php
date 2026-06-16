@@ -31,6 +31,39 @@ class ProductController extends Controller
         return view('Collection', compact('products', 'categories'));
     }
 
+    /**
+     * Live search suggestions (JSON) for the header search box.
+     */
+    public function suggestions(Request $request)
+    {
+        $term = trim((string) $request->query('q', ''));
+
+        if (mb_strlen($term) < 2) {
+            return response()->json([]);
+        }
+
+        $products = Product::where('is_active', true)
+            ->where(function ($query) use ($term) {
+                $query->where('name', 'like', '%' . $term . '%')
+                    ->orWhere('description', 'like', '%' . $term . '%');
+            })
+            ->select('id', 'name', 'slug', 'price', 'sale_price', 'discount_percentage', 'primary_image')
+            ->take(6)
+            ->get()
+            ->map(function (Product $product) {
+                return [
+                    'name' => $product->name,
+                    'url' => route('product.show', $product->slug),
+                    'image' => $product->primary_image
+                        ? asset('storage/' . $product->primary_image)
+                        : asset('media/images/product/sp1.jpg'),
+                    'price' => number_format((float) $product->final_price, 2),
+                ];
+            });
+
+        return response()->json($products);
+    }
+
     public function show($slug)
     {
         $product = Product::where('slug', $slug)

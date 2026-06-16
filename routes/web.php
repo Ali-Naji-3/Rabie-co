@@ -22,6 +22,7 @@ Route::get('/multiple-orders-guide', [PageController::class, 'multipleOrdersGuid
 
 // Products
 Route::get('/collection', [ProductController::class, 'index'])->name('collection');
+Route::get('/search-suggestions', [ProductController::class, 'suggestions'])->name('search.suggestions')->middleware('throttle:30,1');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
 // Cart

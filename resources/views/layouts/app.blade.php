@@ -695,7 +695,10 @@
 								<li class="top-search">
 									<a href="javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
 									</a>
-									<input type="text" class="search-input" placeholder="Search">
+									<form action="{{ route('collection') }}" method="GET" autocomplete="off">
+										<input type="text" name="search" value="{{ request('search') }}" class="search-input" placeholder="Search" id="live-search-input">
+										<div class="live-search-results" id="live-search-results"></div>
+									</form>
 								</li>
 							</ul>
 						</div>
@@ -809,9 +812,10 @@
 					<a href="{{ route('login') }}">Log in</a> |
 					<a href="{{ route('register') }}">Create Account</a>
 				</div>
-				<form action="#" id="moble-search">
-					<input placeholder="Search...." type="text">
+				<form action="{{ route('collection') }}" method="GET" id="moble-search" autocomplete="off">
+					<input name="search" value="{{ request('search') }}" placeholder="Search...." type="text" id="live-search-input-mobile">
 					<button type="submit"><i class="fa fa-search"></i></button>
+					<div class="live-search-results" id="live-search-results-mobile"></div>
 				</form>
 			</div>
 		</div>
