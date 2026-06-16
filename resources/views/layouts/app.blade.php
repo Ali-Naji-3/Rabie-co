@@ -9,24 +9,24 @@
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://maps.googleapis.com https://maps.gstatic.com https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://unpkg.com; img-src 'self' data: blob: https:; connect-src 'self' https://maps.googleapis.com https://maps.gstatic.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com https://fonts.bunny.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net;">
 	
 	<!-- SEO Meta Tags -->
-	<title>@yield('title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')</title>
-	<meta name="description" content="@yield('description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co. Premium clothing, accessories, and exclusive collections.')">
+	<title>@yield('title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Softyskin Fashion Store')</title>
+	<meta name="description" content="@yield('description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Softyskin. Premium clothing, accessories, and exclusive collections.')">
 	<meta name="keywords" content="@yield('keywords', $siteSettings->meta_keywords ?? 'fashion, clothing, accessories, online store, premium brands, style')">
-	<meta name="author" content="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+	<meta name="author" content="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 	<meta name="robots" content="index, follow">
 	
 	<!-- Open Graph Meta Tags (Social Media) -->
-	<meta property="og:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')">
-	<meta property="og:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co. Premium clothing, accessories, and exclusive collections.')">
+	<meta property="og:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Softyskin Fashion Store')">
+	<meta property="og:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Softyskin. Premium clothing, accessories, and exclusive collections.')">
 	<meta property="og:image" content="@yield('og_image', $siteSettings->og_image ? asset('storage/' . $siteSettings->og_image) : asset('media/images/logo.png'))">
 	<meta property="og:url" content="{{ url()->current() }}">
 	<meta property="og:type" content="website">
-	<meta property="og:site_name" content="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+	<meta property="og:site_name" content="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 	
 	<!-- Twitter Card Meta Tags -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Rabie-Co Fashion Store')">
-	<meta name="twitter:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Rabie-Co.')">
+	<meta name="twitter:title" content="@yield('og_title', $siteSettings->meta_title ?? $siteSettings->site_name ?? 'Softyskin Fashion Store')">
+	<meta name="twitter:description" content="@yield('og_description', $siteSettings->meta_description ?? $siteSettings->site_description ?? 'Shop the latest fashion trends at Softyskin.')">
 	<meta name="twitter:image" content="@yield('og_image', $siteSettings->og_image ? asset('storage/' . $siteSettings->og_image) : asset('media/images/logo.png'))">
 	
 	<!-- Additional SEO Meta Tags -->
@@ -570,9 +570,9 @@
 					<div class="logo">
 						<a href="{{ url('/') }}">
 							@if($siteSettings->logo)
-								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@else
-								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@endif
 						</a>
 					</div>
@@ -728,9 +728,9 @@
 					<div class="logo">
 						<a href="{{ url('/') }}">
 							@if($siteSettings->logo)
-								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@else
-								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@endif
 						</a>
 					</div>
@@ -794,9 +794,9 @@
 				<ul>
 					<li class="mob-logo"><a href="{{ url('/') }}">
 							@if($siteSettings->logo)
-								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@else
-								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 							@endif
 						</a></li>
 					<li><a href="#" class="closeme"><i class="flaticon-close"></i></a></li>
@@ -835,11 +835,11 @@
 							<div class="logo">
 								<a href="{{ url('/') }}">
 									@if($siteSettings->footer_logo)
-										<img src="{{ asset('storage/' . $siteSettings->footer_logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+										<img src="{{ asset('storage/' . $siteSettings->footer_logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 									@elseif($siteSettings->logo)
-										<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+										<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 									@else
-										<img src="{{ asset('media/images/logo2.png') }}" alt="{{ $siteSettings->site_name ?? 'Rabie-Co' }}">
+										<img src="{{ asset('media/images/logo2.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
 									@endif
 								</a>
 							</div>
@@ -930,7 +930,7 @@
 			<div class="footer-bottom">
 				<div class="row">
 					<div class="col-12">
-						<p>{{ $siteSettings->copyright_text ?? '© ' . date('Y') . ' Rabie-Co. All rights reserved.' }}</p>
+						<p>{{ $siteSettings->copyright_text ?? '© ' . date('Y') . ' Softyskin. All rights reserved.' }}</p>
 					</div>
 					<!-- /.col-xl-6 -->
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - Fashion Shop')
+@section('title', 'Contact Us - Softyskin')
 
 @push('styles')
 <style>
@@ -160,7 +160,7 @@
 									<input type="text" name="last_name" value="{{ old('last_name') }}" placeholder="Last Name*" required>
 								</div>
 								<div class="col-xl-6">
-									<input type="tel" name="phone" value="{{ old('phone') }}" placeholder="Phone Number*" required>
+									<input type="tel" name="phone" value="{{ old('phone') }}" placeholder="Phone Number*" inputmode="numeric" pattern="[0-9]*" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
 								</div>
 								<div class="col-xl-6">
 									<select name="subject" required style="padding: 15px; border: 1px solid #ddd; border-radius: 4px; width: 100%; font-size: 14px; color: #666; background: white;">

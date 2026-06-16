@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - Fashion Shop')
+@section('title', 'Checkout - Softyskin')
 
 @section('content')
 
@@ -145,7 +145,7 @@
 								<label style="color: #333; font-weight: 600; margin-bottom: 8px; display: block;">
 									Phone Number <span style="color: #e74c3c;">*</span>
 								</label>
-								<input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required
+								<input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" inputmode="numeric" pattern="[0-9]*" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required
 									   style="border: 2px solid @error('phone') #dc3545 @else #e0e0e0 @enderror; border-radius: 8px; padding: 12px 15px; font-size: 15px; transition: all 0.3s;"
 									   onfocus="this.style.borderColor='#FFD700'" onblur="this.style.borderColor='@error('phone') #dc3545 @else #e0e0e0 @enderror'">
 								@error('phone')

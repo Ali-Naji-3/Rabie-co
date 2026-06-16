@@ -39,7 +39,7 @@ class SiteSettingResource extends Resource
                                             ->label('Site Name')
                                             ->required()
                                             ->maxLength(255)
-                                            ->default('Rabie-Co'),
+                                            ->default('Softyskin'),
                                         Forms\Components\TextInput::make('site_tagline')
                                             ->label('Tagline')
                                             ->maxLength(255)
@@ -124,7 +124,7 @@ class SiteSettingResource extends Resource
                                             ->label('Email Address')
                                             ->email()
                                             ->maxLength(255)
-                                            ->placeholder('info@rabie-co.com'),
+                                            ->placeholder('info@softyskin.com'),
                                         Forms\Components\TextInput::make('whatsapp')
                                             ->label('WhatsApp Number')
                                             ->tel()
@@ -254,7 +254,7 @@ class SiteSettingResource extends Resource
                                         Forms\Components\TextInput::make('copyright_text')
                                             ->label('Copyright Text')
                                             ->maxLength(255)
-                                            ->default('© 2025 Rabie-Co. All rights reserved.')
+                                            ->default('© 2025 Softyskin. All rights reserved.')
                                             ->columnSpanFull(),
                                     ]),
                                     

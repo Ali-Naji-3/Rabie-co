@@ -62,7 +62,7 @@ class OrderController extends Controller
                 'state'          => 'nullable|string|max:100',
                 'postal_code'    => 'nullable|string|max:20',
                 'country'        => 'required|string|max:100',
-                'phone'          => 'required|string|max:20',
+                'phone'          => ['required', 'regex:/^[0-9]{7,20}$/'],
                 'payment_method' => 'required|in:cod,card,bank_transfer',
                 'notes'          => 'nullable|string|max:500',
             ]);
