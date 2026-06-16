@@ -117,4 +117,6 @@ return [
 
     'admin_order_notification_email' => env('ADMIN_ORDER_NOTIFICATION_EMAIL'),
 
+    'admin_contact_notification_email' => env('ADMIN_CONTACT_NOTIFICATION_EMAIL', env('ADMIN_ORDER_NOTIFICATION_EMAIL')),
+
 ];
