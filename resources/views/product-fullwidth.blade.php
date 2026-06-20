@@ -165,13 +165,17 @@
 									<!-- Rating -->
 									<div class="rating my-3" style="cursor: pointer;" onclick="document.getElementById('reviews-section').scrollIntoView({behavior: 'smooth'});">
 										<span>Rating: </span>
-										@php
-											$avgRating = $product->reviews()->where('is_approved', true)->avg('rating') ?? 0;
-											$reviewCount = $product->reviews()->where('is_approved', true)->count();
-										@endphp
-										@for($i = 1; $i <= 5; $i++)
-											<i class="fas fa-star {{ $i <= round($avgRating) ? 'text-warning' : 'text-muted' }}"></i>
-										@endfor
+										@if($product->display_rating !== null)
+											@for($i = 1; $i <= 5; $i++)
+												<i class="fas fa-star {{ $i <= round($product->display_rating) ? 'text-warning' : 'text-muted' }}"></i>
+											@endfor
+											<span style="font-weight: 600; margin-left: 4px;">{{ $product->display_rating }}</span>
+											@if($product->display_review_count !== null)
+												<span class="text-muted" style="font-size: 14px;">({{ number_format($product->display_review_count) }} reviews)</span>
+											@endif
+										@else
+											<span class="text-muted">No reviews yet</span>
+										@endif
 									</div>
 
 									
@@ -225,7 +229,7 @@
 										</div>
 									</div>
 									<div class="card-body">
-										@forelse($product->reviews()->where('is_approved', true)->orderBy('rating', 'desc')->latest()->take(5)->get() as $index => $review)
+										@forelse($product->reviews as $index => $review)
 											<div class="review-item mb-4 p-4 border rounded" style="background-color: #f8f9fa; position: relative;">
 												<!-- Top 5 Badge for each review -->
 												<span class="badge position-absolute" style="top: 10px; right: 10px; background: #28a745; color: white; font-size: 10px; padding: 4px 8px;">

@@ -200,9 +200,21 @@
 											@endif
 										</div>
 										<div class="mid-wrapper">
+											@if($product->display_rating !== null)
+												<div style="font-size: 13px; margin-bottom: 4px;">
+													@for($i = 1; $i <= 5; $i++)
+														<i class="fas fa-star" style="color: {{ $i <= round($product->display_rating) ? '#f39c12' : '#ccc' }};"></i>
+													@endfor
+													<span style="color: #555; font-weight: 600; font-size: 13px; margin-left: 3px;">{{ $product->display_rating }}</span>
+													@if($product->display_review_count !== null)
+														<span style="color: #888; font-size: 12px;">({{ number_format($product->display_review_count) }})</span>
+													@endif
+												</div>
+											@endif
 											<h5 class="pro-title" style="font-size: 20px; font-weight: 900; color: #222; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
 												<a href="{{ route('product.show', $product->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $product->name }}</a>
 											</h5>
+											@include('partials.product-short-description', ['description' => $product->short_description])
 										<div class="price-section">
 											@if($product->discount_percentage > 0)
 												<div class="mb-1">

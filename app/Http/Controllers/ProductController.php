@@ -11,7 +11,10 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::where('is_active', true)->with('category', 'reviews');
+        $query = Product::where('is_active', true)
+            ->with('category')
+            ->withAvg(['reviews as avg_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_review_count' => fn($q) => $q->where('is_approved', true)]);
 
         // Filter by category
         if ($request->has('category')) {
@@ -71,7 +74,13 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)
             ->where('is_active', true)
-            ->with(['category', 'reviews.user'])
+            ->with([
+                'category',
+                'reviews' => fn($q) => $q->where('is_approved', true)->orderBy('rating', 'desc')->latest()->take(5),
+                'reviews.user',
+            ])
+            ->withAvg(['reviews as avg_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+            ->withCount(['reviews as approved_review_count' => fn($q) => $q->where('is_approved', true)])
             ->firstOrFail();
 
         $relatedProducts = Product::where('category_id', $product->category_id)

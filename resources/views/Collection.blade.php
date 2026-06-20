@@ -19,6 +19,69 @@
 }
 .mobile-switch-btn.active { background: #1b1b18; border-color: #1b1b18; color: #fff; }
 
+/* Product card: override float-based theme layout for vertical stacking */
+.sin-product.style-two .mid-wrapper h5.pro-title {
+    float: none;
+    width: 100%;
+    display: block;
+    clear: both;
+}
+.sin-product.style-two .mid-wrapper h5.pro-title a {
+    white-space: normal;
+    width: auto;
+    overflow: visible;
+    text-overflow: unset;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111111;
+}
+.sin-product.style-two .mid-wrapper span {
+    float: none;
+}
+.sin-product.style-two .mid-wrapper p {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    clear: both;
+    text-align: center !important;
+}
+.sin-product.style-two .mid-wrapper > ul {
+    float: none;
+    clear: both;
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+.sin-product.style-two .mid-wrapper > ul > li {
+    display: block !important;
+    float: none !important;
+    margin: 0 !important;
+}
+
+/* Eye icon: true center of image area */
+.sin-product.style-two .pro-img .icon-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.sin-product.style-two .pro-img .pro-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    text-align: center;
+    pointer-events: auto;
+}
+.sin-product.style-two .pro-img .add-to-cart {
+    pointer-events: auto;
+}
+
 @media (max-width: 767px) {
     #mobile-product-row .owl-dots { margin-top: 12px; text-align: center; }
     #mobile-product-row .owl-dots .owl-dot span { background: #ddd; }
@@ -121,6 +184,23 @@
 															loading="lazy"
 															style="max-width: 100%; height: auto;">
 													</a>
+													<div class="icon-wrapper">
+														<div class="pro-icon">
+															<ul>
+																<li><a href="{{ route('product.show', $product->slug) }}"><i class="flaticon-eye"></i></a></li>
+															</ul>
+														</div>
+														<div class="add-to-cart">
+															<form method="POST" action="{{ route('cart.add') }}">
+																@csrf
+																<input type="hidden" name="product_id" value="{{ $product->id }}">
+																<input type="hidden" name="quantity" value="1">
+																<button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; width:100%;">
+																	add to cart
+																</button>
+															</form>
+														</div>
+													</div>
 												</div>
 												@if($product->stock === 0)
 													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10;">OUT OF STOCK</span>
@@ -128,8 +208,19 @@
 													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold; color: white;">{{ $product->discount_percentage }}% OFF</span>
 												@endif
 												<div class="mid-wrapper">
+													@if($product->display_rating !== null)
+														<div style="font-size: 13px; margin-bottom: 4px;">
+															@for($i = 1; $i <= 5; $i++)
+																<i class="fas fa-star" style="color: {{ $i <= round($product->display_rating) ? '#f39c12' : '#ccc' }};"></i>
+															@endfor
+															<span style="color: #555; font-weight: 600; margin-left: 3px;">{{ $product->display_rating }}</span>
+															@if($product->display_review_count !== null)
+																<span style="color: #888; font-size: 12px;">({{ number_format($product->display_review_count) }})</span>
+															@endif
+														</div>
+													@endif
 													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
-													<p style="font-size: 16px; color: #555; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">{{ $product->category->name }}</p>
+													@include('partials.product-short-description', ['description' => $product->short_description])
 													<div class="price-section">
 														@if($product->discount_percentage > 0)
 															<div class="mb-1">
@@ -149,23 +240,6 @@
 																</span>
 															</div>
 														@endif
-													</div>
-												</div>
-												<div class="icon-wrapper">
-													<div class="pro-icon">
-														<ul>
-															<li><a href="{{ route('product.show', $product->slug) }}"><i class="flaticon-eye"></i></a></li>
-														</ul>
-													</div>
-													<div class="add-to-cart">
-														<form method="POST" action="{{ route('cart.add') }}">
-															@csrf
-															<input type="hidden" name="product_id" value="{{ $product->id }}">
-															<input type="hidden" name="quantity" value="1">
-															<button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; width:100%;">
-																add to cart
-															</button>
-														</form>
 													</div>
 												</div>
 											</div>
@@ -210,6 +284,19 @@
 													</div>
 													<div class="col-md-7 col-lg-6 col-xl-8">
 														<div class="list-pro-det">
+															<div class="rating">
+																@if($product->display_rating !== null)
+																	<ul>
+																		@for($i = 1; $i <= 5; $i++)
+																			<li><i class="fas fa-star {{ $i <= round($product->display_rating) ? 'text-warning' : 'text-muted' }}"></i></li>
+																		@endfor
+																	</ul>
+																	<span style="font-size: 13px; color: #555; font-weight: 600;">{{ $product->display_rating }}</span>
+																	@if($product->display_review_count !== null)
+																		<span style="font-size: 12px; color: #888;">({{ number_format($product->display_review_count) }})</span>
+																	@endif
+																@endif
+															</div>
 															<h5 class="pro-title" style="font-size: 22px; font-weight: 900; color: #222; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
 																<a href="{{ route('product.show', $product->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $product->name }}</a>
 															</h5>
@@ -233,17 +320,7 @@
 																</div>
 															@endif
 														</div>
-															<div class="rating">
-																<ul>
-																	@php
-																		$avgRating = $product->reviews()->where('is_approved', true)->avg('rating') ?? 0;
-																	@endphp
-																	@for($i = 1; $i <= 5; $i++)
-																		<li><i class="fas fa-star {{ $i <= round($avgRating) ? 'text-warning' : 'text-muted' }}"></i></li>
-																	@endfor
-																</ul>
-															</div>
-															<p>{{ \Illuminate\Support\Str::limit(strip_tags($product->description), 200) }}</p>
+															@include('partials.product-short-description', ['description' => $product->short_description])
 															<div class="pro-btn">
 																<form method="POST" action="{{ route('cart.add') }}" style="display:inline;">
 																	@csrf

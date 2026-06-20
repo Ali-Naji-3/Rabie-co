@@ -158,6 +158,38 @@ class ProductResource extends Resource
                             ->helperText('Visible to customers'),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Marketing / Social Proof')
+                    ->schema([
+                        Forms\Components\Textarea::make('short_description')
+                            ->label('Short Description')
+                            ->rows(2)
+                            ->maxLength(500)
+                            ->helperText('Brief marketing tagline shown on product cards')
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('rating')
+                            ->label('Display Rating')
+                            ->numeric()
+                            ->step(0.1)
+                            ->minValue(0)
+                            ->maxValue(5)
+                            ->suffix('/ 5')
+                            ->helperText('Overrides calculated avg. Leave blank to use real review average.'),
+                        Forms\Components\Toggle::make('auto_review_count')
+                            ->label('Auto Review Count')
+                            ->helperText('ON: use real approved review count. OFF: use manual count below.')
+                            ->live()
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('rating_count')
+                            ->label('Manual Review Count')
+                            ->numeric()
+                            ->step(1)
+                            ->minValue(0)
+                            ->helperText('Ignored when Auto Review Count is ON.')
+                            ->hidden(fn (Forms\Get $get): bool => (bool) $get('auto_review_count')),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
             ]);
     }
 

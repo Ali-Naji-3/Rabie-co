@@ -54,6 +54,8 @@ class HomeController extends Controller
             return Product::where('is_active', true)
                 ->where('is_featured', true)
                 ->with('category')
+                ->withAvg(['reviews as avg_rating' => fn($q) => $q->where('is_approved', true)], 'rating')
+                ->withCount(['reviews as approved_review_count' => fn($q) => $q->where('is_approved', true)])
                 ->latest()
                 ->take(8)
                 ->get();

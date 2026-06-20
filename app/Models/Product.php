@@ -26,6 +26,10 @@ class Product extends Model
         'sku',
         'is_featured',
         'is_active',
+        'rating',
+        'rating_count',
+        'auto_review_count',
+        'short_description',
     ];
 
     protected $casts = [
@@ -34,6 +38,9 @@ class Product extends Model
         'images' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'rating' => 'decimal:1',
+        'rating_count' => 'integer',
+        'auto_review_count' => 'boolean',
     ];
 
     public function category(): BelongsTo
@@ -51,6 +58,24 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
     
+    public function getDisplayRatingAttribute(): ?float
+    {
+        if ($this->rating !== null) {
+            return (float) $this->rating;
+        }
+        $avg = $this->getAttribute('avg_rating');
+        return $avg !== null ? round((float) $avg, 1) : null;
+    }
+
+    public function getDisplayReviewCountAttribute(): ?int
+    {
+        if ($this->auto_review_count) {
+            $count = $this->getAttribute('approved_review_count');
+            return $count !== null ? (int) $count : null;
+        }
+        return $this->rating_count;
+    }
+
     // Auto-calculate sale price from percentage
     public function getSalePriceAttribute($value)
     {
