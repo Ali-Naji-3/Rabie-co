@@ -436,7 +436,7 @@
 						
 						<!-- Reviewer Info -->
 						<div class="reviewer-info" style="display: flex; align-items: center; padding-top: 15px; border-top: 2px solid #f0f0f0;">
-							<div class="reviewer-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; margin-right: 12px;">
+							<div class="reviewer-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: #1b1b18; display: flex; align-items: center; justify-content: center; color: #d19e66; font-weight: 700; font-size: 16px; margin-right: 12px;">
 								{{ strtoupper(substr($review->user->name, 0, 1)) }}
 							</div>
 							<div>
