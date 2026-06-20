@@ -205,58 +205,6 @@ var THEMEIM = THEMEIM || {};
 
       });
 
-      /* Product Slider  */
-      $('.prod-carousel').owlCarousel({
-        loop: true,
-        nav: false,
-        items: 3,
-        autoplay: true,
-        dots: false,
-        responsive: {
-          320: {
-            items: 1
-          },
-          600: {
-            items: 2
-          },
-          768: {
-            items: 2
-          },
-          1200: {
-            items: 3
-          }
-
-        }
-
-      });
-
-      /* Category Slider  */
-      $('.category-carousel').owlCarousel({
-        loop: true,
-        nav: false,
-        items: 3,
-        autoplay: true,
-        dots: false,
-        responsive: {
-          320: {
-            items: 1
-          },
-          440: {
-            items: 2
-          },
-          900: {
-            items: 3
-          },
-          1200: {
-            items: 4
-          }
-
-        }
-
-      });
-
-
-
       //Product plus minus
 
       $(".cart-plus-minus-button").append('<div class="dec qtybutton">-</div><div class="inc qtybutton">+</div>');

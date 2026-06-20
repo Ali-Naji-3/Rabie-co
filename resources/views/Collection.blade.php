@@ -2,6 +2,42 @@
 
 @section('title', 'Collection - Softyskin')
 
+@push('styles')
+<style>
+.mobile-view-switcher { gap: 8px; padding: 6px 0; }
+.mobile-switch-btn {
+    background: #f5f5f5;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 7px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    letter-spacing: 0.3px;
+}
+.mobile-switch-btn.active { background: #1b1b18; border-color: #1b1b18; color: #fff; }
+
+@media (max-width: 767px) {
+    #mobile-product-row .owl-dots { margin-top: 12px; text-align: center; }
+    #mobile-product-row .owl-dots .owl-dot span { background: #ddd; }
+    #mobile-product-row .owl-dots .owl-dot.active span { background: #1b1b18; }
+
+    /* Owl 2.2.1 only sets -ms-touch-action; add standard property for iOS/Chrome */
+    #mobile-product-row .owl-stage { touch-action: pan-y; }
+
+    /* Owl manages carousel visibility — bypass vertical-scroll reveal animation */
+    .owl-item .reveal,
+    .owl-item .reveal.reveal--in {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
+</style>
+@endpush
+
 @section('content')
 
 		<!--=========================-->
@@ -63,7 +99,18 @@
 							<div class="tab-content" id="myTabContent">
 								<!-- Grid View -->
 								<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-									<div class="row">
+
+									<!-- Mobile only: Carousel / List toggle -->
+									<div class="d-flex d-md-none align-items-center justify-content-center mb-3 mobile-view-switcher">
+										<button id="btn-mobile-carousel" class="mobile-switch-btn" type="button">
+											<i class="fas fa-th-large"></i> Carousel
+										</button>
+										<button id="btn-mobile-list" class="mobile-switch-btn" type="button">
+											<i class="fas fa-list"></i> List
+										</button>
+									</div>
+
+									<div class="row" id="mobile-product-row">
 										@forelse($products as $product)
 										<div class="reveal col-sm-6 col-xl-3">
 											<div class="sin-product style-two">
@@ -238,3 +285,88 @@
 		<!-- /.shop-area -->
 
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    var $row = $('#mobile-product-row');
+    var owlActive = false;
+
+    function applyCarousel() {
+        if (owlActive) return;
+        $row.find('.reveal').addClass('reveal--in');
+        $row.removeClass('row');
+        $row.owlCarousel({
+            items: 1,
+            loop: false,
+            dots: true,
+            nav: false,
+            margin: 10,
+            stagePadding: 30,
+            mouseDrag: true,
+            touchDrag: true,
+            pullDrag: true,
+            smartSpeed: 400
+        });
+        // Must add owl-carousel AFTER init: Owl calculates dimensions while visible,
+        // then owl-carousel class unlocks the CSS layout rules (float:left on items,
+        // overflow:hidden on stage-outer). owl-loaded is already set so display:block wins.
+        $row.addClass('owl-carousel');
+        owlActive = true;
+        $('#btn-mobile-carousel').addClass('active');
+        $('#btn-mobile-list').removeClass('active');
+        localStorage.setItem('softyskin_mobile_view', 'carousel');
+    }
+
+    function applyList() {
+        if (owlActive) {
+            $row.trigger('destroy.owl.carousel');
+            $row.removeClass('owl-carousel').addClass('row');
+            owlActive = false;
+        }
+        $('#btn-mobile-list').addClass('active');
+        $('#btn-mobile-carousel').removeClass('active');
+        localStorage.setItem('softyskin_mobile_view', 'list');
+    }
+
+    function destroyForDesktop() {
+        if (owlActive) {
+            $row.trigger('destroy.owl.carousel');
+            $row.removeClass('owl-carousel');
+            owlActive = false;
+        }
+        if (!$row.hasClass('row')) {
+            $row.addClass('row');
+        }
+    }
+
+    function applyMobile() {
+        var saved = localStorage.getItem('softyskin_mobile_view') || 'carousel';
+        saved === 'carousel' ? applyCarousel() : applyList();
+    }
+
+    var mobileQuery = window.matchMedia('(max-width: 767px)');
+
+    function onBreakpointChange(e) {
+        if (e.matches) {
+            applyMobile();
+        } else {
+            destroyForDesktop();
+        }
+    }
+
+    if (mobileQuery.matches) {
+        applyMobile();
+    }
+
+    if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', onBreakpointChange);
+    } else {
+        mobileQuery.addListener(onBreakpointChange);
+    }
+
+    $('#btn-mobile-carousel').on('click', applyCarousel);
+    $('#btn-mobile-list').on('click', applyList);
+});
+</script>
+@endpush
