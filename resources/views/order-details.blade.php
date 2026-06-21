@@ -86,11 +86,11 @@
 											</div>
 											<div class="price-info">
 												<span style="color: #666; font-size: 14px;">Unit Price:</span>
-												<span style="color: #333; font-size: 16px; font-weight: 600; margin-left: 5px;">${{ number_format($item->price, 2) }}</span>
+												<span style="color: #333; font-size: 16px; font-weight: 600; margin-left: 5px;">@price($item->price)</span>
 											</div>
 											<div class="total-info">
 												<span style="color: #666; font-size: 14px;">Subtotal:</span>
-												<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 5px;">${{ number_format($item->subtotal, 2) }}</span>
+												<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 5px;">@price($item->subtotal)</span>
 											</div>
 										</div>
 									</div>
@@ -112,19 +112,19 @@
 							<div class="summary-items" style="margin-bottom: 20px;">
 								<div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f3f4;">
 									<span style="color: #666; font-size: 14px;">Subtotal:</span>
-									<span style="color: #333; font-size: 14px; font-weight: 600;">${{ number_format($order->subtotal, 2) }}</span>
+									<span style="color: #333; font-size: 14px; font-weight: 600;">@price($order->subtotal)</span>
 								</div>
 								<div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f3f4;">
 									<span style="color: #666; font-size: 14px;">Shipping:</span>
-									<span style="color: #333; font-size: 14px; font-weight: 600;">${{ number_format($order->shipping, 2) }}</span>
+									<span style="color: #333; font-size: 14px; font-weight: 600;">@price($order->shipping)</span>
 								</div>
 								<div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f3f4;">
 									<span style="color: #666; font-size: 14px;">Tax:</span>
-									<span style="color: #333; font-size: 14px; font-weight: 600;">${{ number_format($order->tax, 2) }}</span>
+									<span style="color: #333; font-size: 14px; font-weight: 600;">@price($order->tax)</span>
 								</div>
 								<div class="summary-row" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-top: 2px solid #FFD700; margin-top: 10px;">
 									<span style="color: #333; font-size: 18px; font-weight: 700;">Total:</span>
-									<span style="color: #28a745; font-size: 20px; font-weight: 900;">${{ number_format($order->total, 2) }}</span>
+									<span style="color: #28a745; font-size: 20px; font-weight: 900;">@price($order->total)</span>
 								</div>
 							</div>
 						</div>

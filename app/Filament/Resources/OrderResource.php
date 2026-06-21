@@ -87,33 +87,42 @@ class OrderResource extends Resource
                     ->columns(2),
                 
                 Forms\Components\Section::make('Order Totals')
+                    ->description('Financial values are derived from PricingService at checkout and are read-only here to preserve order integrity.')
                     ->schema([
+                        // SSOT: subtotal/tax/shipping/total are computed by PricingService
+                        // at order creation. They are shown for reference but disabled and
+                        // not dehydrated, so an admin edit can never overwrite the stored
+                        // values (which must stay consistent with order_items).
                         Forms\Components\TextInput::make('subtotal')
                             ->label('Subtotal')
                             ->numeric()
                             ->prefix('$')
-                            ->required()
+                            ->disabled()
+                            ->dehydrated(false)
                             ->columnSpan(1),
-                        
+
                         Forms\Components\TextInput::make('tax')
                             ->label('Tax')
                             ->numeric()
                             ->prefix('$')
-                            ->required()
+                            ->disabled()
+                            ->dehydrated(false)
                             ->columnSpan(1),
-                        
+
                         Forms\Components\TextInput::make('shipping')
                             ->label('Shipping')
                             ->numeric()
                             ->prefix('$')
-                            ->required()
+                            ->disabled()
+                            ->dehydrated(false)
                             ->columnSpan(1),
-                        
+
                         Forms\Components\TextInput::make('total')
                             ->label('Total')
                             ->numeric()
                             ->prefix('$')
-                            ->required()
+                            ->disabled()
+                            ->dehydrated(false)
                             ->columnSpan(1),
                     ])
                     ->columns(2),

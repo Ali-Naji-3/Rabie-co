@@ -104,7 +104,7 @@
 								</div>
 								<div class="detail-item" style="margin-bottom: 15px;">
 									<strong style="color: #333; font-size: 16px;">Total Amount:</strong>
-									<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 10px;">${{ number_format($order->total, 2) }}</span>
+									<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 10px;">@price($order->total)</span>
 								</div>
 							</div>
 								</div>
@@ -130,7 +130,7 @@
 										<div class="item-details" style="flex: 1;">
 											<h5 style="color: #333; font-size: 16px; font-weight: 600; margin-bottom: 5px;">{{ $item->product->name }}</h5>
 											<p style="color: #666; font-size: 14px; margin-bottom: 5px;">Quantity: {{ $item->quantity }}</p>
-											<p style="color: #28a745; font-size: 16px; font-weight: 700;">${{ number_format($item->subtotal, 2) }}</p>
+											<p style="color: #28a745; font-size: 16px; font-weight: 700;">@price($item->subtotal)</p>
 										</div>
 									</div>
 									@endforeach

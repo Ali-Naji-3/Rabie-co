@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Services\CurrencyService;
 use App\Services\PricingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,25 +65,6 @@ class CheckoutController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
-        // Get cart items
-        if (Auth::check()) {
-            $cartItems = Cart::where('user_id', Auth::id())
-                ->with('product')
-                ->get();
-        } else {
-            $sessionId = session()->getId();
-            $cartItems = Cart::where('session_id', $sessionId)
-                ->with('product')
-                ->get();
-        }
-
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty');
-        }
-
-        ['subtotal' => $subtotal, 'shipping' => $shipping, 'tax' => $tax, 'total' => $total]
-            = (new PricingService())->calculate($cartItems);
-
         // Prepare addresses
         $shippingAddress = [
             'name' => $validated['name'],
@@ -117,6 +99,24 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
+            // Lock this actor's cart rows so duplicate/concurrent submissions
+            // serialize here. The first request to commit deletes these rows; any
+            // request still waiting then re-reads an empty cart and is rejected —
+            // one cart can produce at most one order (no idempotency table needed).
+            $cartQuery = Auth::check()
+                ? Cart::where('user_id', Auth::id())
+                : Cart::where('session_id', session()->getId());
+
+            $cartItems = (clone $cartQuery)->with('product')->lockForUpdate()->get();
+
+            if ($cartItems->isEmpty()) {
+                DB::rollBack();
+                return redirect()->route('cart')->with('error', 'Your cart is empty');
+            }
+
+            ['subtotal' => $subtotal, 'shipping' => $shipping, 'tax' => $tax, 'total' => $total]
+                = (new PricingService())->calculate($cartItems);
+
             // Create order
             $order = Order::create([
                 'user_id' => Auth::id(),
@@ -126,6 +126,7 @@ class CheckoutController extends Controller
                 'tax' => $tax,
                 'shipping' => $shipping,
                 'total' => $total,
+                'display_rate_snapshot' => app(CurrencyService::class)->getEgpRate(),
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $validated['payment_method'],
@@ -145,7 +146,12 @@ class CheckoutController extends Controller
             // Re-validate stock under lock before any mutation
             foreach ($cartItems as $cartItem) {
                 $product = $products->get($cartItem->product_id);
-                if ($product->stock < $cartItem->quantity) {
+                if (!$product->isPurchasable()) {
+                    DB::rollBack();
+                    return back()->with('error',
+                        "Sorry, \"{$product->name}\" is no longer available.");
+                }
+                if (!$product->hasStockFor($cartItem->quantity)) {
                     DB::rollBack();
                     return back()->with('error',
                         "Sorry, \"{$product->name}\" only has {$product->stock} unit(s) left.");
@@ -165,12 +171,8 @@ class CheckoutController extends Controller
                 $product->decrement('stock', $cartItem->quantity);
             }
 
-            // Clear cart
-            if (Auth::check()) {
-                Cart::where('user_id', Auth::id())->delete();
-            } else {
-                Cart::where('session_id', session()->getId())->delete();
-            }
+            // Clear cart (the same locked rows acquired above)
+            $cartQuery->delete();
 
             DB::commit();
 

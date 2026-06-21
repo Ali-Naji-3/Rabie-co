@@ -569,6 +569,22 @@
 										</li>
 									@endif
 								@endauth
+								@if($currencyService->hasEgpRate())
+								<li style="position: relative; list-style: none;">
+									<div style="display: flex; align-items: center; gap: 4px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; font-size: 12px; font-weight: 700; height: 32px;">
+										<form method="POST" action="{{ route('currency.set') }}" style="margin:0;">
+											@csrf
+											<input type="hidden" name="currency" value="USD">
+											<button type="submit" style="padding: 0 8px; height: 32px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; {{ $activeCurrency === 'USD' ? 'background:#1b1b18; color:#fff;' : 'background:#fff; color:#555;' }}">USD</button>
+										</form>
+										<form method="POST" action="{{ route('currency.set') }}" style="margin:0;">
+											@csrf
+											<input type="hidden" name="currency" value="EGP">
+											<button type="submit" style="padding: 0 8px; height: 32px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; {{ $activeCurrency === 'EGP' ? 'background:#1b1b18; color:#fff;' : 'background:#fff; color:#555;' }}">EGP</button>
+										</form>
+									</div>
+								</li>
+								@endif
 								<li class="user-login" style="position: relative;">
 									@auth
 										<!-- Logged-in User -->
@@ -623,7 +639,7 @@
 												<p><a href="{{ route('product.show', $item->product->slug) }}">{{ \Illuminate\Support\Str::limit($item->product->name, 30) }}</a></p>
 											</div>
 											<div class="cart-price">
-												<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
+												<p>{{ $item->quantity }} x @price($item->product->final_price)</p>
 											</div>
 											<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="cart-remove-form">
 												@csrf
@@ -642,7 +658,7 @@
 									@if($globalCartItems->isNotEmpty())
 										<div class="cart-bottom">
 											<div class="cart-sub-total">
-												<p>Total <span>${{ number_format($globalCartTotal, 2) }}</span></p>
+												<p>Total <span>@price($globalCartTotal)</span></p>
 											</div>
 											<div class="cart-checkout">
 												<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
@@ -710,7 +726,7 @@
 										<p><a href="{{ route('product.show', $item->product->slug) }}">{{ \Illuminate\Support\Str::limit($item->product->name, 30) }}</a></p>
 									</div>
 									<div class="cart-price">
-										<p>{{ $item->quantity }} x ${{ number_format($item->product->final_price, 2) }}</p>
+										<p>{{ $item->quantity }} x @price($item->product->final_price)</p>
 									</div>
 									<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="cart-remove-form">
 										@csrf
@@ -725,11 +741,11 @@
 									<p>Your cart is empty</p>
 								</div>
 							@endforelse
-							
+
 							@if($globalCartItems->isNotEmpty())
 								<div class="cart-bottom">
 									<div class="cart-sub-total">
-										<p>Total <span>${{ number_format($globalCartTotal, 2) }}</span></p>
+										<p>Total <span>@price($globalCartTotal)</span></p>
 									</div>
 									<div class="cart-checkout">
 										<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
@@ -770,6 +786,21 @@
 
 
 				</ul>
+				@if($currencyService->hasEgpRate())
+				<div style="padding: 10px 15px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 8px;">
+					<span style="font-size: 12px; color: #666; font-weight: 600;">Currency:</span>
+					<form method="POST" action="{{ route('currency.set') }}" style="margin:0; display:inline;">
+						@csrf
+						<input type="hidden" name="currency" value="USD">
+						<button type="submit" style="padding: 4px 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; font-weight: 700; cursor: pointer; {{ $activeCurrency === 'USD' ? 'background:#1b1b18; color:#fff; border-color:#1b1b18;' : 'background:#fff; color:#555;' }}">USD</button>
+					</form>
+					<form method="POST" action="{{ route('currency.set') }}" style="margin:0; display:inline;">
+						@csrf
+						<input type="hidden" name="currency" value="EGP">
+						<button type="submit" style="padding: 4px 10px; border: 1px solid #ddd; border-radius: 3px; font-size: 12px; font-weight: 700; cursor: pointer; {{ $activeCurrency === 'EGP' ? 'background:#1b1b18; color:#fff; border-color:#1b1b18;' : 'background:#fff; color:#555;' }}">EGP</button>
+					</form>
+				</div>
+				@endif
 				<div class="mobile-login">
 					<a href="{{ route('login') }}">Log in</a> |
 					<a href="{{ route('register') }}">Create Account</a>

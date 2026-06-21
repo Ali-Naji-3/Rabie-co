@@ -112,18 +112,30 @@ class ProductResource extends Resource
                             ->helperText('Enter discount percentage (0-100%). Final price will be auto-calculated.'),
                         Forms\Components\Placeholder::make('calculated_sale_price')
                             ->label('Final Price (After Discount)')
-                            ->content(function (Forms\Get $get) {
+                            ->content(function (Forms\Get $get, ?Product $record) {
                                 $price = floatval($get('price') ?? 0);
                                 $discount = intval($get('discount_percentage') ?? 0);
-                                
-                                if ($discount > 0 && $price > 0) {
-                                    $salePrice = $price - ($price * ($discount / 100));
-                                    return '$' . number_format($salePrice, 2) . ' (Save $' . number_format($price - $salePrice, 2) . ')';
+
+                                if ($price <= 0) {
+                                    return 'Enter price first';
                                 }
-                                
-                                return $price > 0 ? '$' . number_format($price, 2) : 'Enter price first';
+
+                                if ($discount > 0) {
+                                    // Live preview: mirrors getSalePriceAttribute branch-1
+                                    $finalPrice = round($price - ($price * ($discount / 100)), 2);
+                                } elseif ($record !== null) {
+                                    // Edit mode with no percentage: read the stored final_price
+                                    $finalPrice = (float) $record->final_price;
+                                } else {
+                                    $finalPrice = $price;
+                                }
+
+                                if ($finalPrice < $price) {
+                                    return '$' . number_format($finalPrice, 2) . ' (Save $' . number_format($price - $finalPrice, 2) . ')';
+                                }
+                                return '$' . number_format($finalPrice, 2);
                             })
-                            ->helperText('💡 This is calculated automatically from price and discount %'),
+                            ->helperText('💡 This is the actual selling price charged at checkout'),
                         Forms\Components\TextInput::make('stock')
                             ->required()
                             ->numeric()
@@ -213,9 +225,10 @@ class ProductResource extends Resource
                     ->money('usd')
                     ->sortable()
                     ->label('Price')
-                    ->description(fn (Product $record): ?string => 
-                        $record->discount_percentage > 0 
-                            ? $record->discount_percentage . '% OFF → $' . number_format($record->sale_price, 2) 
+                    ->description(fn (Product $record): ?string =>
+                        $record->final_price < $record->price
+                            ? ($record->discount_percentage > 0 ? $record->discount_percentage . '% OFF → ' : 'Sale → ')
+                              . '$' . number_format($record->final_price, 2)
                             : null
                     ),
                 Tables\Columns\TextColumn::make('stock')

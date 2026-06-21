@@ -105,29 +105,27 @@
 									
 									<!-- Price -->
 									<div class="price-section my-3">
-										@if($product->discount_percentage > 0)
-											@php
-												$finalPrice = $product->sale_price;
-												$savings = $product->price - $finalPrice;
-											@endphp
+										@if($product->final_price < $product->price)
 											<div class="mb-2">
 												<span style="color: #666; font-size: 16px;">Original Price: </span>
 												<span style="color: #e74c3c; font-size: 22px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 2px;">
-													${{ number_format($product->price, 2) }}
+													@price($product->price)
 												</span>
-												<span class="badge bg-danger ms-2" style="color: white;">{{ $product->discount_percentage }}% OFF</span>
+												@if($product->discount_percentage > 0)
+													<span class="badge bg-danger ms-2" style="color: white;">{{ $product->discount_percentage }}% OFF</span>
+												@endif
 											</div>
 											<div class="mb-2">
 												<span style="color: #666; font-size: 16px;">Final Price: </span>
 												<span style="color: #27ae60; font-size: 36px; font-weight: bold; letter-spacing: 1px;">
-													${{ number_format($finalPrice, 2) }}
+													@price($product->final_price)
 												</span>
 											</div>
 										@else
 											<div class="mb-2">
 												<span style="color: #666; font-size: 16px;">Price: </span>
 												<span style="color: #27ae60; font-size: 36px; font-weight: bold; letter-spacing: 1px;">
-													${{ number_format($product->price, 2) }}
+													@price($product->final_price)
 												</span>
 											</div>
 										@endif
@@ -283,21 +281,21 @@
 											<a href="{{ route('product.show', $related->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $related->name }}</a>
 										</h5>
 										<div class="price-section">
-											@if($related->discount_percentage > 0)
+											@if($related->final_price < $related->price)
 												<div class="mb-1">
 													<span style="color: #e74c3c; font-size: 14px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 2px;">
-														${{ number_format($related->price, 2) }}
+														@price($related->price)
 													</span>
 												</div>
 												<div class="mb-1">
 													<span style="color: #27ae60; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
-														${{ number_format($related->sale_price, 2) }}
+														@price($related->final_price)
 													</span>
 												</div>
 											@else
 												<div class="mb-1">
 													<span style="color: #27ae60; font-size: 18px; font-weight: bold; letter-spacing: 0.5px;">
-														${{ number_format($related->price, 2) }}
+														@price($related->final_price)
 													</span>
 												</div>
 											@endif

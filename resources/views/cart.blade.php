@@ -99,14 +99,14 @@
 												<ul style="list-style: none; padding: 0;">
 													<li>
 														<div class="price-box">
-															<span class="price">${{ number_format($item->product->final_price, 2) }}</span>
+															<span class="price">@price($item->product->final_price)</span>
 														</div>
 													</li>
 												</ul>
 											</td>
 											<td>
 												<div class="total-price-box">
-													<span class="price">${{ number_format($item->product->final_price * $item->quantity, 2) }}</span>
+													<span class="price">@price($item->product->final_price * $item->quantity)</span>
 												</div>
 											</td>
 										</tr>
@@ -148,10 +148,10 @@
 									<div class="summary-item">
 										<div class="item-details">
 											<div class="item-name">{{ \Illuminate\Support\Str::limit($item->product->name, 25) }}</div>
-											<div class="item-qty-price">{{ $item->quantity }} × ${{ number_format($item->product->final_price, 2) }}</div>
+											<div class="item-qty-price">{{ $item->quantity }} × @price($item->product->final_price)</div>
 										</div>
 										<div class="item-total">
-											${{ number_format($item->product->final_price * $item->quantity, 2) }}
+											@price($item->product->final_price * $item->quantity)
 										</div>
 									</div>
 								@endforeach
@@ -169,7 +169,7 @@
 							</div>
 						@else
 							<div class="free-shipping-progress">
-								<p class="fs-progress-text">Add <strong>${{ number_format($fsRemaining, 2) }}</strong> more for <strong>FREE shipping</strong></p>
+								<p class="fs-progress-text">Add <strong>@price($fsRemaining)</strong> more for <strong>FREE shipping</strong></p>
 								<div class="fs-progress-track">
 									<div class="fs-progress-fill" style="width:{{ $fsProgress }}%;"></div>
 								</div>
@@ -180,25 +180,25 @@
 						<ul class="summary-totals">
 							<li class="subtotal-line">
 								<span>Subtotal:</span>
-								<span>${{ number_format($subtotal, 2) }}</span>
+								<span>@price($subtotal)</span>
 							</li>
 							<li class="shipping-line">
 								<span>Shipping:</span>
 								@if($shipping == 0)
 									<span class="text-success"><strong>FREE</strong></span>
 								@else
-									<span>${{ number_format($shipping, 2) }}</span>
+									<span>@price($shipping)</span>
 								@endif
 							</li>
 							@if(\App\Services\PricingService::TAX_RATE > 0)
 							<li class="subtotal-line">
 								<span>Tax:</span>
-								<span>${{ number_format($tax, 2) }}</span>
+								<span>@price($tax)</span>
 							</li>
 							@endif
 							<li class="total-line">
 								<span>TOTAL:</span>
-								<span>${{ number_format($total, 2) }}</span>
+								<span>@price($total)</span>
 							</li>
 						</ul>
 

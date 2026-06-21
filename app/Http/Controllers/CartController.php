@@ -38,7 +38,11 @@ class CartController extends Controller
 
         $product = Product::findOrFail($request->product_id);
 
-        if ($product->stock < $request->quantity) {
+        if (!$product->isPurchasable()) {
+            return back()->with('error', 'This product is no longer available');
+        }
+
+        if (!$product->hasStockFor($request->quantity)) {
             return back()->with('error', 'Not enough stock available');
         }
 
@@ -49,7 +53,7 @@ class CartController extends Controller
             
             if ($cart) {
                 // Check if total quantity exceeds stock
-                if ($product->stock < ($cart->quantity + $request->quantity)) {
+                if (!$product->hasStockFor($cart->quantity + $request->quantity)) {
                     return back()->with('error', 'Not enough stock available');
                 }
                 $cart->quantity += $request->quantity;
@@ -69,7 +73,7 @@ class CartController extends Controller
             
             if ($cart) {
                 // Check if total quantity exceeds stock
-                if ($product->stock < ($cart->quantity + $request->quantity)) {
+                if (!$product->hasStockFor($cart->quantity + $request->quantity)) {
                     return back()->with('error', 'Not enough stock available');
                 }
                 $cart->quantity += $request->quantity;
@@ -94,7 +98,11 @@ class CartController extends Controller
 
         $cart = $this->resolveOwnedCart($id);
 
-        if ($cart->product->stock < $request->quantity) {
+        if (!$cart->product->isPurchasable()) {
+            return back()->with('error', 'This product is no longer available');
+        }
+
+        if (!$cart->product->hasStockFor($request->quantity)) {
             return back()->with('error', 'Not enough stock available');
         }
 

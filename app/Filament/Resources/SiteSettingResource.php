@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiteSettingResource\Pages;
 use App\Models\SiteSetting;
+use App\Services\CurrencyService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -51,6 +52,20 @@ class SiteSettingResource extends Resource
                                             ->columnSpanFull(),
                                     ])
                                     ->columns(2),
+
+                                Forms\Components\Section::make('Currency Settings')
+                                    ->description('Default storefront currency shown to customers without a session preference.')
+                                    ->schema([
+                                        Forms\Components\Select::make('default_currency')
+                                            ->label('Default Currency')
+                                            ->options([
+                                                'USD' => 'USD — US Dollar ($)',
+                                                'EGP' => 'EGP — Egyptian Pound',
+                                            ])
+                                            ->default('USD')
+                                            ->required()
+                                            ->helperText('Customers may still switch currencies manually. This only affects new visitors who have not chosen a currency.'),
+                                    ]),
                             ]),
                             
                         // Logos & Images Tab

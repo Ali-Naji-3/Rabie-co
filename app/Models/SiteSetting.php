@@ -38,6 +38,7 @@ class SiteSetting extends Model
         'copyright_text',
         'footer_background_color',
         'footer_text_color',
+        'default_currency',
     ];
 
     protected $casts = [
@@ -45,10 +46,27 @@ class SiteSetting extends Model
     ];
 
     /**
-     * Get the site settings (singleton pattern)
+     * Container key for the per-request resolved settings instance.
+     * Registered as a `scoped` binding in AppServiceProvider so the cache
+     * lookup happens at most once per request and is flushed at the request
+     * boundary (no cross-request/test leakage).
+     */
+    public const REQUEST_CACHE_KEY = 'storefront.site_settings';
+
+    /**
+     * Get the site settings (singleton pattern).
+     *
+     * Resolves through a per-request `scoped` binding so repeated callers
+     * (view composer, CurrencyService, controllers) share a single cache
+     * lookup. Falls back to the direct cache read when the binding is not
+     * registered (e.g. early boot, isolated unit tests).
      */
     public static function getSettings()
     {
+        if (app()->bound(self::REQUEST_CACHE_KEY)) {
+            return app(self::REQUEST_CACHE_KEY);
+        }
+
         return Cache::remember('site_settings', 1800, fn () => static::first() ?? new static());
     }
 }

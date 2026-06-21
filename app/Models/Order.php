@@ -19,6 +19,7 @@ class Order extends Model
         'tax',
         'shipping',
         'total',
+        'display_rate_snapshot',
         'status',
         'payment_status',
         'payment_method',

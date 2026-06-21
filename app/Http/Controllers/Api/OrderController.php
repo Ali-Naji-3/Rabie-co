@@ -100,8 +100,13 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
+            // Lock this user's cart rows so duplicate/concurrent submissions
+            // serialize here. The first request to commit deletes these rows; any
+            // request still waiting then re-reads an empty cart and is rejected —
+            // one cart can produce at most one order (no idempotency table needed).
             $cartItems = Cart::where('user_id', $request->user()->id)
                 ->with('product')
+                ->lockForUpdate()
                 ->get();
 
             if ($cartItems->isEmpty()) {
@@ -120,7 +125,13 @@ class OrderController extends Controller
             // Re-validate stock under lock before any mutation
             foreach ($cartItems as $item) {
                 $product = $products->get($item->product_id);
-                if ($product->stock < $item->quantity) {
+                if (!$product->isPurchasable()) {
+                    DB::rollBack();
+                    return response()->json([
+                        'error' => "\"{$product->name}\" is no longer available.",
+                    ], 422);
+                }
+                if (!$product->hasStockFor($item->quantity)) {
                     DB::rollBack();
                     return response()->json([
                         'error' => "Insufficient stock for \"{$product->name}\". Available: {$product->stock}.",

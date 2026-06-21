@@ -49,6 +49,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:10,1');
 
+// Currency switcher — no auth required (display preference only)
+Route::post('/currency', [App\Http\Controllers\CurrencyController::class, 'set'])->name('currency.set');
+
 // Dashboard - Redirect to Filament for admins
 Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard');
 

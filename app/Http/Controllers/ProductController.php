@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Services\CurrencyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -48,6 +49,16 @@ class ProductController extends Controller
             return response()->json([]);
         }
 
+        // Currency comes from session (page context) or explicit ?currency= param.
+        // The param allows the JS caller to pass the current session currency so the
+        // formatted price is consistent with the rest of the storefront.
+        $requestedCurrency = $request->query('currency');
+        $currency = in_array($requestedCurrency, CurrencyService::CURRENCIES, true)
+            ? $requestedCurrency
+            : session('currency', 'USD');
+
+        $currencyService = app(CurrencyService::class);
+
         $products = Product::where('is_active', true)
             ->where(function ($query) use ($term) {
                 $query->where('name', 'like', '%' . $term . '%')
@@ -56,14 +67,14 @@ class ProductController extends Controller
             ->select('id', 'name', 'slug', 'price', 'sale_price', 'discount_percentage', 'primary_image')
             ->take(6)
             ->get()
-            ->map(function (Product $product) {
+            ->map(function (Product $product) use ($currencyService, $currency) {
                 return [
-                    'name' => $product->name,
-                    'url' => route('product.show', $product->slug),
+                    'name'  => $product->name,
+                    'url'   => route('product.show', $product->slug),
                     'image' => $product->primary_image
                         ? asset('storage/' . $product->primary_image)
                         : asset('media/images/product/sp1.jpg'),
-                    'price' => number_format((float) $product->final_price, 2),
+                    'price' => $currencyService->formatPrice((float) $product->final_price, $currency),
                 ];
             });
 

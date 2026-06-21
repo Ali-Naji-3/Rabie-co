@@ -351,11 +351,11 @@
 														{{ $item->product->name }}
 													</div>
 													<div class="item-meta" style="color: #666; font-size: 14px; font-weight: 500;">
-														{{ $item->quantity }} × ${{ number_format($item->product->final_price, 2) }}
+														{{ $item->quantity }} × @price($item->product->final_price)
 													</div>
 												</div>
 												<div class="item-total" style="font-weight: 800; color: #1a1a1a; font-size: 18px; min-width: 80px; text-align: right;">
-													${{ number_format($item->product->final_price * $item->quantity, 2) }}
+													@price($item->product->final_price * $item->quantity)
 												</div>
 											</div>
 											@endforeach
@@ -366,12 +366,12 @@
 									<div class="totals-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 25px;">
 										<div class="subtotal-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #dee2e6;">
 											<span style="font-size: 16px; color: #666; font-weight: 600;">Subtotal:</span>
-											<span style="font-size: 18px; color: #333; font-weight: 700;">${{ number_format($subtotal, 2) }}</span>
+											<span style="font-size: 18px; color: #333; font-weight: 700;">@price($subtotal)</span>
 										</div>
-										
+
 										<div class="total-row" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0 0 0; margin-top: 15px;">
 											<span style="font-size: 22px; color: #1a1a1a; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">TOTAL:</span>
-											<span style="font-size: 28px; color: #28a745; font-weight: 900; text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);">${{ number_format($total, 2) }}</span>
+											<span style="font-size: 28px; color: #28a745; font-weight: 900; text-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);">@price($total)</span>
 										</div>
 									</div>
 
@@ -386,7 +386,7 @@
 							</button>
 							<button type="submit" class="btn btn-success place-order-btn" id="placeOrderBtn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 18px 40px; border: none; border-radius: 12px; font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4); transition: all 0.3s ease; min-width: 250px; cursor: pointer;">
 								<i class="fas fa-lock" style="margin-right: 10px;"></i> 
-								Place Order - ${{ number_format($total, 2) }}
+								Place Order - @price($total)
 							</button>
 						</div>
 					</div>

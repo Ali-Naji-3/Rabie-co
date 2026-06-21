@@ -92,7 +92,7 @@
 												Quantity: <strong>{{ $item->quantity }}</strong>
 											</p>
 											<p style="color: #28a745; font-size: 16px; font-weight: 700; margin-bottom: 0;">
-												${{ number_format($item->subtotal, 2) }}
+												@price($item->subtotal)
 											</p>
 										</div>
 									</div>
@@ -121,15 +121,15 @@
 									<div class="col-md-6">
 										<div class="summary-item" style="margin-bottom: 10px;">
 											<span style="color: #666; font-size: 14px;">Subtotal:</span>
-											<span style="color: #333; font-size: 14px; margin-left: 10px;">${{ number_format($order->subtotal, 2) }}</span>
+											<span style="color: #333; font-size: 14px; margin-left: 10px;">@price($order->subtotal)</span>
 										</div>
 										<div class="summary-item" style="margin-bottom: 10px;">
 											<span style="color: #666; font-size: 14px;">Shipping:</span>
-											<span style="color: #333; font-size: 14px; margin-left: 10px;">${{ number_format($order->shipping, 2) }}</span>
+											<span style="color: #333; font-size: 14px; margin-left: 10px;">@price($order->shipping)</span>
 										</div>
 										<div class="summary-item" style="margin-bottom: 0;">
 											<span style="color: #666; font-size: 16px; font-weight: 600;">Total:</span>
-											<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 10px;">${{ number_format($order->total, 2) }}</span>
+											<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 10px;">@price($order->total)</span>
 										</div>
 									</div>
 								</div>
@@ -158,7 +158,7 @@
 								</div>
 								
 								<div class="order-total-mobile" style="display: none;">
-									<span style="color: #28a745; font-size: 20px; font-weight: 700;">${{ number_format($order->total, 2) }}</span>
+									<span style="color: #28a745; font-size: 20px; font-weight: 700;">@price($order->total)</span>
 								</div>
 							</div>
 

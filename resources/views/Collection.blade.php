@@ -216,21 +216,21 @@
 													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
 													@include('partials.product-short-description', ['description' => $product->short_description])
 													<div class="price-section">
-														@if($product->discount_percentage > 0)
+														@if($product->final_price < $product->price)
 															<div class="mb-1">
 																<span style="color: #e74c3c; font-size: 20px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
-																	${{ number_format($product->price, 2) }}
+																	@price($product->price)
 																</span>
 															</div>
 															<div class="mb-1">
 																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																	${{ number_format($product->sale_price, 2) }}
+																	@price($product->final_price)
 																</span>
 															</div>
 														@else
 															<div class="mb-1">
 																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																	${{ number_format($product->price, 2) }}
+																	@price($product->final_price)
 																</span>
 															</div>
 														@endif
@@ -287,21 +287,21 @@
 																<a href="{{ route('product.show', $product->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $product->name }}</a>
 															</h5>
 														<div class="price-section">
-															@if($product->discount_percentage > 0)
+															@if($product->final_price < $product->price)
 																<div class="mb-1">
 																	<span style="color: #e74c3c; font-size: 22px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
-																		${{ number_format($product->price, 2) }}
+																		@price($product->price)
 																	</span>
 																</div>
 																<div class="mb-1">
 																	<span style="color: #27ae60; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
-																		${{ number_format($product->sale_price, 2) }}
+																		@price($product->final_price)
 																	</span>
 																</div>
 															@else
 																<div class="mb-1">
 																	<span style="color: #27ae60; font-size: 28px; font-weight: bold; letter-spacing: 1px;">
-																		${{ number_format($product->price, 2) }}
+																		@price($product->final_price)
 																	</span>
 																</div>
 															@endif

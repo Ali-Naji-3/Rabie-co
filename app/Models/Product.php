@@ -57,7 +57,25 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-    
+
+    /**
+     * SSOT — whether this product may be sold at all (catalog/business gate).
+     * Independent of stock: an in-stock product that has been deactivated is
+     * NOT purchasable. Every purchase entry point must consult this.
+     */
+    public function isPurchasable(): bool
+    {
+        return (bool) $this->is_active;
+    }
+
+    /**
+     * SSOT — whether on-hand stock can fulfil the requested quantity.
+     */
+    public function hasStockFor(int $quantity): bool
+    {
+        return $this->stock >= $quantity;
+    }
+
     public function getDisplayRatingAttribute(): ?float
     {
         if ($this->rating !== null) {
