@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class SiteSetting extends Model
 {
@@ -48,6 +49,6 @@ class SiteSetting extends Model
      */
     public static function getSettings()
     {
-        return static::first() ?? new static();
+        return Cache::remember('site_settings', 1800, fn () => static::first() ?? new static());
     }
 }

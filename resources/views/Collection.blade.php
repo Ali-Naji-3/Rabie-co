@@ -209,14 +209,8 @@
 												@endif
 												<div class="mid-wrapper">
 													@if($product->display_rating !== null)
-														<div style="font-size: 13px; margin-bottom: 4px;">
-															@for($i = 1; $i <= 5; $i++)
-																<i class="fas fa-star" style="color: {{ $i <= round($product->display_rating) ? '#f39c12' : '#ccc' }};"></i>
-															@endfor
-															<span style="color: #555; font-weight: 600; margin-left: 3px;">{{ $product->display_rating }}</span>
-															@if($product->display_review_count !== null)
-																<span style="color: #888; font-size: 12px;">({{ number_format($product->display_review_count) }})</span>
-															@endif
+														<div style="margin-bottom: 4px; text-align: center;">
+															@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
 														</div>
 													@endif
 													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
@@ -286,15 +280,7 @@
 														<div class="list-pro-det">
 															<div class="rating">
 																@if($product->display_rating !== null)
-																	<ul>
-																		@for($i = 1; $i <= 5; $i++)
-																			<li><i class="fas fa-star {{ $i <= round($product->display_rating) ? 'text-warning' : 'text-muted' }}"></i></li>
-																		@endfor
-																	</ul>
-																	<span style="font-size: 13px; color: #555; font-weight: 600;">{{ $product->display_rating }}</span>
-																	@if($product->display_review_count !== null)
-																		<span style="font-size: 12px; color: #888;">({{ number_format($product->display_review_count) }})</span>
-																	@endif
+																	@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
 																@endif
 															</div>
 															<h5 class="pro-title" style="font-size: 22px; font-weight: 900; color: #222; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">

@@ -28,23 +28,6 @@
 
 	<section class="cart-area">
 		<div class="container-fluid custom-container">
-			@if(session('success'))
-				<div class="alert alert-success alert-dismissible fade show" role="alert">
-					<i class="fas fa-check-circle"></i> {{ session('success') }}
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-			@endif
-
-			@if(session('error'))
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-					<i class="fas fa-exclamation-circle"></i> {{ session('error') }}
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-			@endif
 
 			<div class="row">
 				<div class="col-xl-9">
@@ -174,15 +157,48 @@
 								@endforeach
 							</div>
 
+						{{-- Free shipping progress --}}
+						@php
+							$fsThreshold = \App\Services\PricingService::FREE_SHIPPING_THRESHOLD;
+							$fsRemaining = max(0, $fsThreshold - $subtotal);
+							$fsProgress  = min(100, ($subtotal / $fsThreshold) * 100);
+						@endphp
+						@if($shipping == 0)
+							<div class="free-shipping-banner">
+								<i class="fas fa-truck"></i> <strong>Free shipping unlocked!</strong>
+							</div>
+						@else
+							<div class="free-shipping-progress">
+								<p class="fs-progress-text">Add <strong>${{ number_format($fsRemaining, 2) }}</strong> more for <strong>FREE shipping</strong></p>
+								<div class="fs-progress-track">
+									<div class="fs-progress-fill" style="width:{{ $fsProgress }}%;"></div>
+								</div>
+							</div>
+						@endif
+
 						<!-- Summary Totals -->
 						<ul class="summary-totals">
 							<li class="subtotal-line">
 								<span>Subtotal:</span>
 								<span>${{ number_format($subtotal, 2) }}</span>
 							</li>
+							<li class="shipping-line">
+								<span>Shipping:</span>
+								@if($shipping == 0)
+									<span class="text-success"><strong>FREE</strong></span>
+								@else
+									<span>${{ number_format($shipping, 2) }}</span>
+								@endif
+							</li>
+							@if(\App\Services\PricingService::TAX_RATE > 0)
+							<li class="subtotal-line">
+								<span>Tax:</span>
+								<span>${{ number_format($tax, 2) }}</span>
+							</li>
+							@endif
 							<li class="total-line">
 								<span>TOTAL:</span>
-								<span>${{ number_format($subtotal + $shipping, 2) }}</span>
+								<span>${{ number_format($total, 2) }}</span>
 							</li>
 						</ul>
 
@@ -529,6 +545,46 @@
 		border-color: #FFD700;
 	}
 	
+	/* Free shipping progress bar */
+	.free-shipping-progress {
+		margin-bottom: 16px;
+		padding: 12px 14px;
+		background: #fffbf0;
+		border: 1px solid #ffe5b4;
+		border-radius: 8px;
+	}
+	.fs-progress-text {
+		font-size: 13px;
+		color: #555;
+		margin-bottom: 8px;
+		line-height: 1.4;
+	}
+	.fs-progress-track {
+		height: 6px;
+		background: #eee;
+		border-radius: 3px;
+		overflow: hidden;
+	}
+	.fs-progress-fill {
+		height: 100%;
+		background: linear-gradient(90deg, #f39c12, #e67e22);
+		border-radius: 3px;
+		transition: width 0.3s ease;
+	}
+	.free-shipping-banner {
+		margin-bottom: 16px;
+		padding: 10px 14px;
+		background: #d4edda;
+		border: 1px solid #c3e6cb;
+		border-radius: 8px;
+		color: #155724;
+		font-size: 13px;
+		text-align: center;
+	}
+	.free-shipping-banner i {
+		margin-right: 6px;
+	}
+
 	/* Cart Count Badge */
 	.cart-count-badge {
 		text-align: center;

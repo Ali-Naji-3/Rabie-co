@@ -164,15 +164,8 @@
 
 									<!-- Rating -->
 									<div class="rating my-3" style="cursor: pointer;" onclick="document.getElementById('reviews-section').scrollIntoView({behavior: 'smooth'});">
-										<span>Rating: </span>
 										@if($product->display_rating !== null)
-											@for($i = 1; $i <= 5; $i++)
-												<i class="fas fa-star {{ $i <= round($product->display_rating) ? 'text-warning' : 'text-muted' }}"></i>
-											@endfor
-											<span style="font-weight: 600; margin-left: 4px;">{{ $product->display_rating }}</span>
-											@if($product->display_review_count !== null)
-												<span class="text-muted" style="font-size: 14px;">({{ number_format($product->display_review_count) }} reviews)</span>
-											@endif
+											@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
 										@else
 											<span class="text-muted">No reviews yet</span>
 										@endif
@@ -244,7 +237,7 @@
 														<strong style="color: #333; font-size: 16px;">{{ $review->user->name }}</strong>
 														<div class="mt-1">
 															@for($i = 1; $i <= 5; $i++)
-																<i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}" style="font-size: 14px;"></i>
+																<i class="{{ $i <= $review->rating ? 'fas fa-star text-warning' : 'far fa-star text-muted' }}" style="font-size: 14px;"></i>
 															@endfor
 															<span class="ms-2 text-muted" style="font-size: 14px;">{{ $review->rating }}/5</span>
 														</div>

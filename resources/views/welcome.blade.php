@@ -106,9 +106,9 @@
 					<div class="row align-items-center">
 						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
 							<div class="slider-text">
-								<h4 class="animated fadeInUp"><span>BRAND NEW</span> COLLECTION</h4>
-								<h1 class="animated fadeInUp">COMERCIO SHOP</h1>
-								<p class="animated fadeInUp">Autem vel eum iriure dolor in molestie consequat vel illum dolore eu feugiat nulla facilisis at vero eros.</p>
+								<h4 class="animated fadeInUp"><span>CLEAN</span> SKINCARE</h4>
+								<h1 class="animated fadeInUp">{{ $siteSettings->site_name ?? 'Softyskin' }}</h1>
+								<p class="animated fadeInUp">Gentle, effective skincare for healthy, glowing skin. Discover formulas your skin will love.</p>
 								<a class="animated fadeInUp btn-two cta-primary" href="{{ route('collection') }}">SHOP NOW</a>
 							</div>
 						</div>
@@ -166,21 +166,51 @@
 	@endif
 
 	<!--=========================-->
+	<!--=   Shop by Category (Dynamic)   =-->
+	<!--=========================-->
+
+	{{-- Visibility guard: only categories that have products AND a real image render.
+	     Demo categories (Electronics/Clothing/Home & Garden) have no image, so the whole
+	     section stays hidden until real skincare categories with images are added in admin —
+	     at which point it appears automatically with no code change. --}}
+	@php($shopCategories = $categories->where('products_count', '>', 0)->filter(fn ($category) => filled($category->image)))
+	@if($shopCategories->isNotEmpty())
+	<section class="reveal category-discovery-section">
+		<div class="container container-two">
+			<div class="reveal section-heading">
+				<h3>Shop by <span>Category</span></h3>
+			</div>
+			<div class="row">
+				@foreach($shopCategories as $category)
+				<div class="reveal col-6 col-md-4 col-lg-3 mb-4">
+					<a href="{{ route('collection', ['category' => $category->id]) }}" class="category-tile">
+						@if($category->image)
+							<img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" loading="lazy" class="category-tile-img">
+						@else
+							<span class="category-tile-fallback" aria-hidden="true">{{ strtoupper(substr($category->name, 0, 1)) }}</span>
+						@endif
+						<span class="category-tile-name">{{ $category->name }}</span>
+					</a>
+				</div>
+				@endforeach
+			</div>
+		</div>
+	</section>
+	@endif
+
+	<!--=========================-->
 	<!--=        Product Filter      =-->
 	<!--=========================-->
 
 	<section class="reveal main-product">
 		<div class="container container-two">
 			<div class="reveal section-heading">
-				<h3>Welcome to <span>product</span></h3>
+				<h3>Featured <span>Products</span></h3>
 			</div>
 			<!-- /.section-heading-->
 			<div class="row">
 				<div class="col-xl-12 ">
 					<div class="pro-tab-filter">
-						<ul class="pro-tab-button">
-							<li class="filter active" data-filter="*">ALL</li>
-						</ul>
 						<div class="grid row">
 							@forelse($featuredProducts as $product)
 								<!-- single product -->
@@ -201,14 +231,8 @@
 										</div>
 										<div class="mid-wrapper">
 											@if($product->display_rating !== null)
-												<div style="font-size: 13px; margin-bottom: 4px;">
-													@for($i = 1; $i <= 5; $i++)
-														<i class="fas fa-star" style="color: {{ $i <= round($product->display_rating) ? '#f39c12' : '#ccc' }};"></i>
-													@endfor
-													<span style="color: #555; font-weight: 600; font-size: 13px; margin-left: 3px;">{{ $product->display_rating }}</span>
-													@if($product->display_review_count !== null)
-														<span style="color: #888; font-size: 12px;">({{ number_format($product->display_review_count) }})</span>
-													@endif
+												<div style="margin-bottom: 4px;">
+													@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
 												</div>
 											@endif
 											<h5 class="pro-title" style="font-size: 20px; font-weight: 900; color: #222; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -235,6 +259,16 @@
 												</div>
 											@endif
 										</div>
+										@if($product->stock === 0)
+											<button type="button" class="btn-two quick-add-btn" disabled style="width:100%;margin-top:12px;opacity:.55;cursor:not-allowed;">Out of Stock</button>
+										@else
+											<form method="POST" action="{{ route('cart.add') }}" class="quick-add-form" style="margin-top:12px;">
+												@csrf
+												<input type="hidden" name="product_id" value="{{ $product->id }}">
+												<input type="hidden" name="quantity" value="1">
+												<button type="submit" class="btn-two quick-add-btn" style="width:100%;">Add to Cart</button>
+											</form>
+										@endif
 										</div>
 									</div>
 								</div>
@@ -248,6 +282,11 @@
 				</div>
 			</div>
 			<!-- Row End -->
+			<div class="row">
+				<div class="col-12 text-center" style="margin-top: 20px;">
+					<a class="btn-two cta-primary" href="{{ route('collection') }}">SHOP ALL PRODUCTS</a>
+				</div>
+			</div>
 		</div>
 		<!-- Container  -->
 	</section>
@@ -257,128 +296,29 @@
 	<!--=   Promotional Banners (Dynamic)   =-->
 	<!--=========================-->
 
-	@foreach($promoBannersAfterProducts as $banner)
-	<section class="reveal add-area" style="position: relative; overflow: hidden;">
-		@if($banner->media_type === 'video')
-			{{-- Video Banner --}}
-			@if($banner->video_url)
-				{{-- External Video (YouTube/Vimeo) --}}
-				@php
-					$videoId = '';
-					$videoType = '';
-					if (strpos($banner->video_url, 'youtube.com') !== false || strpos($banner->video_url, 'youtu.be') !== false) {
-						preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $banner->video_url, $matches);
-						$videoId = $matches[1] ?? '';
-						$videoType = 'youtube';
-					} elseif (strpos($banner->video_url, 'vimeo.com') !== false) {
-						preg_match('/vimeo\.com\/(\d+)/', $banner->video_url, $matches);
-						$videoId = $matches[1] ?? '';
-						$videoType = 'vimeo';
-					}
-				@endphp
-				
-				@if($videoType === 'youtube' && $videoId)
-					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-						<iframe 
-							src="https://www.youtube.com/embed/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $banner->muted ? 'mute=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
-							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-							allowfullscreen>
-						</iframe>
-					</div>
-				@elseif($videoType === 'vimeo' && $videoId)
-					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-						<iframe 
-							src="https://player.vimeo.com/video/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&' : '' }}{{ $banner->muted ? 'muted=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}" 
-							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-							allow="autoplay; fullscreen; picture-in-picture" 
-							allowfullscreen>
-						</iframe>
-					</div>
-				@endif
-			@elseif($banner->video)
-				{{-- Uploaded Video File --}}
-				@if($banner->link_url && !$banner->button_text)
-					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-						<video 
-							style="width: 100%; display: block; object-fit: cover;"
-							{{ $banner->autoplay ? 'autoplay' : '' }}
-							{{ $banner->loop ? 'loop' : '' }}
-							{{ $banner->muted ? 'muted' : '' }}
-							{{ $banner->show_controls ? 'controls' : '' }}
-							{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
-							playsinline>
-							<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
-							Your browser does not support the video tag.
-						</video>
-					</a>
-				@else
-					<video 
-						style="width: 100%; display: block; object-fit: cover;"
-						{{ $banner->autoplay ? 'autoplay' : '' }}
-						{{ $banner->loop ? 'loop' : '' }}
-						{{ $banner->muted ? 'muted' : '' }}
-						{{ $banner->show_controls ? 'controls' : '' }}
-						{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
-						playsinline>
-						<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
-						Your browser does not support the video tag.
-					</video>
-				@endif
-			@endif
-		@else
-			{{-- Image Banner --}}
-			@if($banner->image)
-				@if($banner->link_url && !$banner->button_text)
-					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-						<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-					</a>
-				@else
-					<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-				@endif
-			@endif
-		@endif
-		
-		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
-		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 10;">
-			<div class="row align-items-center">
-				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
-					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">
-						@if($banner->small_title)
-						<h4 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 18px; text-transform: uppercase; margin-bottom: 10px;">
-							<span>{{ $banner->small_title }}</span>
-						</h4>
-						@endif
-						
-						@if($banner->main_title)
-						<h1 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 48px; font-weight: 700; margin-bottom: 15px; line-height: 1.2;">
-							{{ $banner->main_title }}
-						</h1>
-						@endif
-						
-						@if($banner->description)
-						<p class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 16px; margin-bottom: 20px; line-height: 1.6;">
-							{{ $banner->description }}
-						</p>
-						@endif
-						
-						@if($banner->button_text && $banner->link_url)
-						<a class="animated fadeInUp btn-two" href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }}>
-							{{ $banner->button_text }}
-						</a>
-						@endif
-					</div>
-				</div>
+	@if($promoBannersAfterProducts->isNotEmpty())
+	<section class="reveal promo-banners-section">
+		<div class="promo-banner-section-header">
+			<h6 class="promo-banner-section-title">Real Results</h6>
+			<p class="promo-banner-section-subtitle">See what to expect at every stage of your treatment</p>
+		</div>
+		<div class="promo-banner-wrap">
+			<div class="promo-banner-carousel owl-carousel"
+				 data-items="{{ min($promoBannersAfterProducts->count(), 4) }}"
+				 data-total="{{ $promoBannersAfterProducts->count() }}">
+				@foreach($promoBannersAfterProducts as $banner)
+					@include('partials.promo-banner-item', ['banner' => $banner])
+				@endforeach
 			</div>
 		</div>
-		@endif
 	</section>
-	@endforeach
+	@endif
 
 	<!--=========================-->
 	<!--=   Small Product area    =-->
 	<!--=========================-->
 
+	@if($featuredReviews->isNotEmpty())
 	<section class="reveal product-small">
 		<div class="container-fluid  custom-container">
 			<div class="row">
@@ -391,7 +331,7 @@
 			</div>
 			
 			<div class="row">
-				@forelse($featuredReviews as $review)
+				@foreach($featuredReviews as $review)
 				<div class="reveal col-lg-4 col-md-6 col-sm-12 mb-4">
 					<!-- Featured Review Card -->
 					<div class="featured-review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%; position: relative; transition: all 0.3s ease;">
@@ -404,7 +344,7 @@
 						<div class="review-product-info" style="margin-bottom: 20px;">
 							<a href="{{ route('product.show', $review->product->slug) }}" style="text-decoration: none;">
 								<div class="product-image" style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
-									<img src="{{ $review->product->primary_image ? asset('storage/' . $review->product->primary_image) : asset('media/images/product/default.jpg') }}" 
+									<img src="{{ $review->product->primary_image ? asset('storage/' . $review->product->primary_image) : asset('media/images/product/1.jpg') }}"
 									     alt="{{ $review->product->name }}"
 									     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
 									     onmouseover="this.style.transform='scale(1.05)'"
@@ -417,7 +357,7 @@
 						<!-- Rating -->
 						<div class="review-rating" style="margin-bottom: 15px;">
 							@for($i = 1; $i <= 5; $i++)
-								<i class="fas fa-star" style="color: {{ $i <= $review->rating ? '#FFD700' : '#ddd' }}; font-size: 18px;"></i>
+								<i class="{{ $i <= $review->rating ? 'fas fa-star' : 'far fa-star' }}" style="color: {{ $i <= $review->rating ? '#FFD700' : '#ddd' }}; font-size: 18px;"></i>
 							@endfor
 							<span style="color: #666; font-size: 14px; margin-left: 8px; font-weight: 600;">{{ $review->rating }}/5</span>
 						</div>
@@ -454,149 +394,384 @@
 						</a>
 					</div>
 				</div>
-				
-				@empty
-				<div class="col-12">
-					<div style="text-align: center; padding: 60px 20px; background: #f8f9fa; border-radius: 12px;">
-						<i class="fas fa-star" style="font-size: 60px; color: #ddd; margin-bottom: 20px;"></i>
-						<h4 style="color: #666; margin-bottom: 15px;">No Featured Reviews Yet</h4>
-						<p style="color: #999; font-size: 16px;">Pin reviews from the admin dashboard to showcase them here!</p>
-						@auth
-							@if(auth()->user()->role === 'admin')
-								<a href="{{ url('/admin/reviews') }}" style="display: inline-block; margin-top: 20px; background: #000; color: #FFD700; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 700;">
-									GO TO ADMIN DASHBOARD
-								</a>
-							@endif
-						@endauth
-					</div>
-				</div>
-				@endforelse
+				@endforeach
 			</div>
 			<!-- row -->
 		</div>
 		<!-- container-fluid End-->
 	</section>
+		@endif
 
 	<!--=========================-->
 	<!--=   Promotional Banners After Reviews (Dynamic)   =-->
 	<!--=========================-->
 
-	@foreach($promoBannersAfterReviews as $banner)
-	<section class="reveal add-area" style="position: relative; overflow: hidden;">
-		@if($banner->media_type === 'video')
-			{{-- Video Banner --}}
-			@if($banner->video_url)
-				{{-- External Video (YouTube/Vimeo) --}}
-				@php
-					$videoId = '';
-					$videoType = '';
-					if (strpos($banner->video_url, 'youtube.com') !== false || strpos($banner->video_url, 'youtu.be') !== false) {
-						preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $banner->video_url, $matches);
-						$videoId = $matches[1] ?? '';
-						$videoType = 'youtube';
-					} elseif (strpos($banner->video_url, 'vimeo.com') !== false) {
-						preg_match('/vimeo\.com\/(\d+)/', $banner->video_url, $matches);
-						$videoId = $matches[1] ?? '';
-						$videoType = 'vimeo';
-					}
-				@endphp
-				
-				@if($videoType === 'youtube' && $videoId)
-					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-						<iframe 
-							src="https://www.youtube.com/embed/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $banner->muted ? 'mute=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
-							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-							allowfullscreen>
-						</iframe>
-					</div>
-				@elseif($videoType === 'vimeo' && $videoId)
-					<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-						<iframe 
-							src="https://player.vimeo.com/video/{{ $videoId }}?{{ $banner->autoplay ? 'autoplay=1&' : '' }}{{ $banner->loop ? 'loop=1&' : '' }}{{ $banner->muted ? 'muted=1&' : '' }}{{ $banner->show_controls ? '' : 'controls=0&' }}" 
-							style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-							allow="autoplay; fullscreen; picture-in-picture" 
-							allowfullscreen>
-						</iframe>
-					</div>
-				@endif
-			@elseif($banner->video)
-				{{-- Uploaded Video File --}}
-				@if($banner->link_url && !$banner->button_text)
-					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-						<video 
-							style="width: 100%; display: block; object-fit: cover;"
-							{{ $banner->autoplay ? 'autoplay' : '' }}
-							{{ $banner->loop ? 'loop' : '' }}
-							{{ $banner->muted ? 'muted' : '' }}
-							{{ $banner->show_controls ? 'controls' : '' }}
-							{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
-							playsinline>
-							<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
-							Your browser does not support the video tag.
-						</video>
-					</a>
-				@else
-					<video 
-						style="width: 100%; display: block; object-fit: cover;"
-						{{ $banner->autoplay ? 'autoplay' : '' }}
-						{{ $banner->loop ? 'loop' : '' }}
-						{{ $banner->muted ? 'muted' : '' }}
-						{{ $banner->show_controls ? 'controls' : '' }}
-						{{ $banner->video_thumbnail ? 'poster=' . asset('storage/' . $banner->video_thumbnail) : '' }}
-						playsinline>
-						<source src="{{ asset('storage/' . $banner->video) }}" type="video/mp4">
-						Your browser does not support the video tag.
-					</video>
-				@endif
-			@endif
-		@else
-			{{-- Image Banner --}}
-			@if($banner->image)
-				@if($banner->link_url && !$banner->button_text)
-					<a href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="display: block;">
-						<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-					</a>
-				@else
-					<img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->alt_text }}" loading="lazy" style="width: 100%; display: block;">
-				@endif
-			@endif
-		@endif
-		
-		@if($banner->small_title || $banner->main_title || $banner->description || $banner->button_text)
-		<div class="container-fluid custom-container" style="position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 10;">
-			<div class="row align-items-center">
-				<div class="col-12 col-sm-8 col-md-8 col-lg-6 {{ $banner->text_alignment === 'right' ? 'ml-auto' : ($banner->text_alignment === 'center' ? 'mx-auto' : '') }}">
-					<div class="banner-text" style="text-align: {{ $banner->text_alignment }}; pointer-events: auto;">
-						@if($banner->small_title)
-						<h4 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 18px; text-transform: uppercase; margin-bottom: 10px;">
-							<span>{{ $banner->small_title }}</span>
-						</h4>
-						@endif
-						
-						@if($banner->main_title)
-						<h1 class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 48px; font-weight: 700; margin-bottom: 15px; line-height: 1.2;">
-							{{ $banner->main_title }}
-						</h1>
-						@endif
-						
-						@if($banner->description)
-						<p class="animated fadeInUp" style="color: {{ $banner->text_color }}; font-size: 16px; margin-bottom: 20px; line-height: 1.6;">
-							{{ $banner->description }}
-						</p>
-						@endif
-						
-						@if($banner->button_text && $banner->link_url)
-						<a class="animated fadeInUp btn-two" href="{{ $banner->link_url }}" {{ $banner->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }}>
-							{{ $banner->button_text }}
-						</a>
-						@endif
-					</div>
-				</div>
+	@if($promoBannersAfterReviews->isNotEmpty())
+	<section class="reveal promo-banners-section">
+		<div class="promo-banner-section-header">
+			<h6 class="promo-banner-section-title">Special Offers</h6>
+			<p class="promo-banner-section-subtitle">Exclusive deals selected for you</p>
+		</div>
+		<div class="promo-banner-wrap">
+			<div class="promo-banner-carousel owl-carousel"
+				 data-items="{{ min($promoBannersAfterReviews->count(), 4) }}"
+				 data-total="{{ $promoBannersAfterReviews->count() }}">
+				@foreach($promoBannersAfterReviews as $banner)
+					@include('partials.promo-banner-item', ['banner' => $banner])
+				@endforeach
 			</div>
 		</div>
-		@endif
 	</section>
-	@endforeach
+	@endif
 
 @endsection
+
+@push('styles')
+<style>
+/* ── Shop by Category ─────────────────────── */
+
+.category-discovery-section {
+    padding: 48px 0;
+}
+.category-tile {
+    display: block;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.category-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+.category-tile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.category-tile-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 56px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #d9b8a3 0%, #b25b30 100%);
+}
+.category-tile-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 12px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+/* ── Results / Timeline Carousel ─────────────────────── */
+
+.promo-banners-section {
+    overflow: clip;
+    padding: 48px 0;
+}
+
+.promo-banner-section-header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 15px;
+}
+.promo-banner-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #b25b30;
+    margin: 0 0 8px;
+}
+.promo-banner-section-subtitle {
+    font-size: 13px;
+    color: #888;
+    margin: 0;
+}
+
+/* Aligns with .container-two (max-width: 1430px) used by the product grid */
+.promo-banner-wrap {
+    max-width: 1430px;
+    margin: 0 auto;
+    padding: 0 15px;
+    overflow: clip;
+}
+
+/* Owl carousel item — content-driven height, no fixed px */
+.prc-card {
+    vertical-align: top;
+}
+
+/* Top label: "2–4 WEEKS" */
+.prc-top-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #b25b30;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Image / video container */
+.prc-media {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #1b1b18;
+}
+
+.prc-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.prc-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.prc-iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+}
+
+/* Gradient overlay — anchored at bottom of image */
+.prc-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 60px 16px 18px;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.80) 0%,
+        rgba(0,0,0,0.50) 40%,
+        transparent 100%
+    );
+    z-index: 10;
+    pointer-events: none;
+}
+.prc-overlay > * { pointer-events: auto; }
+
+.prc-overlay-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 5px;
+}
+.prc-overlay-desc {
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0 0 10px;
+}
+.prc-overlay-btn {
+    display: inline-block;
+    background: #fff;
+    color: #1b1b18 !important;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none !important;
+}
+.prc-overlay-btn:hover { background: #f0f0f0; }
+
+/* Below-image content */
+.prc-bottom {
+    padding: 10px 4px 4px;
+}
+.prc-bottom-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1b1b18;
+    margin: 0 0 6px;
+    line-height: 1.3;
+}
+.prc-bottom-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 10px;
+}
+.prc-shop-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: #b25b30;
+    text-decoration: none;
+}
+.prc-shop-link:hover { color: #8f3f1c; text-decoration: underline; }
+
+/* Mobile — edge-to-edge, single-item swipe */
+@media (max-width: 991px) {
+    .promo-banners-section        { padding: 24px 0; }
+    .promo-banner-wrap            { padding: 0; }
+    .promo-banner-section-header  { margin-bottom: 20px; }
+    .prc-media                    { height: 300px; border-radius: 0; }
+    .prc-top-label                { padding: 0 12px; }
+    .prc-bottom                   { padding: 10px 12px 4px; }
+    .prc-bottom-title             { font-size: 14px; }
+    .prc-overlay-title            { font-size: 15px; }
+}
+
+/* Owl dots */
+.promo-banners-section .owl-dots            { margin-top: 14px; text-align: center; }
+.promo-banners-section .owl-dot span        { background: #ccc !important; }
+.promo-banners-section .owl-dot.active span { background: #b25b30 !important; }
+
+/* Nav arrows — overlaid on the image portion only */
+.promo-banners-section .owl-nav {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    right: 0;
+    height: 380px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+}
+.promo-banners-section .owl-nav.disabled { display: none; }
+/* Owl 2.2.1 renders arrows as <div class="owl-prev/owl-next">, not <button>.
+   Target the actual elements so pointer-events + styling apply. */
+.promo-banners-section .owl-nav .owl-prev,
+.promo-banners-section .owl-nav .owl-next {
+    pointer-events: auto;
+    cursor: pointer;
+    background: rgba(0,0,0,0.45) !important;
+    color: #fff !important;
+    border-radius: 50% !important;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px !important;
+    line-height: 1 !important;
+    z-index: 20;
+    transition: background 0.2s;
+    position: static;
+    transform: none;
+    margin: 0;
+}
+.promo-banners-section .owl-nav .owl-prev:hover,
+.promo-banners-section .owl-nav .owl-next:hover { background: rgba(0,0,0,0.7) !important; }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function () {
+    var MOBILE_MAX = 991; // tier breakpoint is 992; < 992 == mobile
+
+    function initCarousel($el) {
+        var desktopItems = parseInt($el.data('items')) || 3;
+        var totalItems   = parseInt($el.data('total')) || desktopItems;
+        var needsDesktopNav = totalItems > desktopItems;
+
+        $el.owlCarousel({
+            loop: false,
+            rewind: true,
+            margin: 16,
+            navText: ['&#10094;', '&#10095;'],
+            responsiveRefreshRate: 350,
+            responsive: {
+                0: {
+                    items: 1,
+                    stagePadding: totalItems > 1 ? 40 : 0,
+                    dots: totalItems > 1,
+                    nav: false,
+                    touchDrag: true,
+                    mouseDrag: true
+                },
+                992: {
+                    items: desktopItems,
+                    stagePadding: 0,
+                    dots: needsDesktopNav,
+                    nav: needsDesktopNav,
+                    touchDrag: needsDesktopNav,
+                    mouseDrag: needsDesktopNav,
+                    pullDrag: needsDesktopNav
+                }
+            }
+        });
+    }
+
+    $('.promo-banner-carousel').each(function () { initCarousel($(this)); });
+
+    // Responsive lifecycle.
+    //
+    // Owl 2.2.1's responsive transition is unreliable when a breakpoint is
+    // crossed by a real manual window drag: its native onResize is throttled and
+    // :visible-guarded, and a single matchMedia('change') listener fires only
+    // ONCE per crossing (so a debounce that resolves mid-drag lays out for an
+    // intermediate width and is never corrected). The observed symptom is
+    // "swipe/dots don't activate" and "desktop layout not restored" until a
+    // manual page refresh — i.e. a stale/partial tier with leftover Owl wrappers,
+    // classes, padding, dots or drag bindings from the previous tier.
+    //
+    // Fix: drive the lifecycle off `window resize`, debounced so it only runs
+    // once the user has actually stopped (final, settled width). On a TIER change
+    // (mobile <-> desktop, where items/dots/nav/touchDrag all differ) we fully
+    // destroy() — which removes every Owl wrapper, class and clone and restores
+    // the original markup — then re-init from a clean slate against the fresh
+    // viewport. No stale state is structurally possible. For a same-tier width
+    // change we take the cheap path: invalidate('width') + refresh() so item
+    // widths/coordinates track the final viewport (a bare refresh() skips the
+    // width-filtered stagePadding/coordinate operators).
+    var reflowTimer = null;
+    var lastWidth = window.innerWidth;
+    var lastMobile = window.innerWidth <= MOBILE_MAX;
+
+    function reflowPromoCarousels() {
+        var isMobile = window.innerWidth <= MOBILE_MAX;
+        var tierChanged = isMobile !== lastMobile;
+        lastMobile = isMobile;
+
+        $('.promo-banner-carousel').each(function () {
+            var $el = $(this);
+            var owl = $el.data('owl.carousel');
+            if (!owl) return;
+            if (tierChanged) {
+                owl.destroy();      // strip all Owl DOM/classes/clones, restore markup
+                initCarousel($el);  // rebuild clean for the new tier
+            } else {
+                owl.invalidate('width');
+                owl.refresh();
+            }
+        });
+    }
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth === lastWidth) return; // ignore height-only resizes
+        lastWidth = window.innerWidth;
+        clearTimeout(reflowTimer);
+        reflowTimer = setTimeout(reflowPromoCarousels, 200);
+    });
+});
+</script>
+@endpush

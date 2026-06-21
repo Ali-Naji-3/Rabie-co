@@ -513,7 +513,6 @@ var THEMEIM = THEMEIM || {};
   // Initialize Functions
   $(document).ready(THEMEIM.documentOnReady.init);
   $(window).on('load', THEMEIM.documentOnLoad.init);
-  $(window).on('resize', THEMEIM.documentOnResize.init);
   $(window).on('scroll', THEMEIM.documentOnScroll.init);
 
 })(jQuery);

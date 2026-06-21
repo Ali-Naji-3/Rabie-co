@@ -66,6 +66,17 @@ class PromotionalBannerResource extends Resource
                             ->maxSize(1024)
                             ->helperText('Optional mobile version')
                             ->columnSpanFull(),
+                        Forms\Components\Select::make('focal_point')
+                            ->label('Image Focus')
+                            ->options([
+                                'center top'    => 'Top',
+                                'center center' => 'Center',
+                                'center bottom' => 'Bottom',
+                                'left center'   => 'Left',
+                                'right center'  => 'Right',
+                            ])
+                            ->default('center top')
+                            ->helperText('Controls which part of the image stays visible when cropped'),
                     ])
                     ->visible(fn (Forms\Get $get) => $get('media_type') === 'image'),
                     
@@ -159,28 +170,40 @@ class PromotionalBannerResource extends Resource
                     ])
                     ->columns(2),
                     
-                Forms\Components\Section::make('Content Overlay (Optional)')
-                    ->description('Add text overlay on banner (similar to hero sliders)')
+                Forms\Components\Section::make('Card Content')
+                    ->description('Text displayed on and below the card image')
                     ->schema([
                         Forms\Components\TextInput::make('small_title')
-                            ->label('Small Title (Optional)')
+                            ->label('Top Label (Above Image)')
                             ->maxLength(255)
-                            ->placeholder('e.g., SPECIAL OFFER'),
+                            ->placeholder('e.g., 2–4 WEEKS')
+                            ->helperText('Small label displayed above the image, e.g. a timeline stage or category'),
                         Forms\Components\TextInput::make('main_title')
-                            ->label('Main Title')
+                            ->label('Overlay Title (On Image)')
                             ->maxLength(255)
-                            ->placeholder('e.g., 50% OFF SALE'),
+                            ->placeholder('e.g., Hair starts shedding'),
                         Forms\Components\Textarea::make('description')
-                            ->label('Description')
-                            ->rows(3)
-                            ->maxLength(500)
-                            ->placeholder('Limited time offer...')
+                            ->label('Overlay Description (On Image)')
+                            ->rows(2)
+                            ->maxLength(300)
+                            ->placeholder('Supporting text shown on the image...')
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('button_text')
-                            ->label('Button Text (Optional)')
+                            ->label('Overlay Button Text')
                             ->maxLength(255)
-                            ->placeholder('e.g., SHOP NOW')
-                            ->helperText('If empty, entire banner will be clickable without button'),
+                            ->placeholder('e.g., Learn More')
+                            ->live()
+                            ->helperText('Button displayed on the image overlay — requires a Link URL to work'),
+                        Forms\Components\TextInput::make('bottom_title')
+                            ->label('Bottom Title (Below Image)')
+                            ->maxLength(255)
+                            ->placeholder('e.g., Hair starts shedding'),
+                        Forms\Components\Textarea::make('bottom_description')
+                            ->label('Bottom Description (Below Image)')
+                            ->rows(2)
+                            ->maxLength(300)
+                            ->placeholder('Supporting text shown below the image...')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->collapsed(),
@@ -198,8 +221,8 @@ class PromotionalBannerResource extends Resource
                             ->default('left'),
                         Forms\Components\ColorPicker::make('text_color')
                             ->label('Text Color')
-                            ->default('#000000')
-                            ->helperText('Choose text color for good contrast'),
+                            ->default('#ffffff')
+                            ->helperText('Choose text color for good contrast against the dark gradient overlay'),
                     ])
                     ->columns(2)
                     ->collapsed(),
@@ -211,7 +234,8 @@ class PromotionalBannerResource extends Resource
                             ->url()
                             ->maxLength(255)
                             ->placeholder('https://example.com/sale')
-                            ->helperText('Where should this banner link to? Leave empty for no link.'),
+                            ->required(fn (Forms\Get $get) => filled($get('button_text')))
+                            ->helperText('Required when Overlay Button Text is set. Leave empty for no link.'),
                         Forms\Components\Toggle::make('open_new_tab')
                             ->label('Open in New Tab')
                             ->default(false),
@@ -225,12 +249,10 @@ class PromotionalBannerResource extends Resource
                             ->options([
                                 'after_products' => 'After Featured Products',
                                 'after_reviews' => 'After Customer Reviews',
-                                'before_footer' => 'Before Footer',
-                                'custom' => 'Custom Position',
                             ])
                             ->default('after_products')
                             ->required()
-                            ->helperText('Choose where to display this banner on homepage'),
+                            ->helperText('Choose where to display this banner on the homepage'),
                         Forms\Components\TextInput::make('order')
                             ->label('Display Order')
                             ->numeric()
@@ -293,17 +315,6 @@ class PromotionalBannerResource extends Resource
                     ->sortable()
                     ->badge()
                     ->color('gray'),
-                Tables\Columns\TextColumn::make('clicks_count')
-                    ->label('Clicks')
-                    ->numeric()
-                    ->sortable()
-                    ->badge()
-                    ->color('success'),
-                Tables\Columns\TextColumn::make('click_through_rate')
-                    ->label('CTR')
-                    ->suffix('%')
-                    ->badge()
-                    ->color('primary'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean()
@@ -328,8 +339,6 @@ class PromotionalBannerResource extends Resource
                     ->options([
                         'after_products' => 'After Featured Products',
                         'after_reviews' => 'After Customer Reviews',
-                        'before_footer' => 'Before Footer',
-                        'custom' => 'Custom Position',
                     ]),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active Status')

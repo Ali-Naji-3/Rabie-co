@@ -233,7 +233,7 @@
 						
 						<!-- Step Navigation Buttons -->
 						<div class="step-navigation" style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-							<a href="{{ route('cart') }}" class="btn btn-secondary" style="padding: 12px 24px; border-radius: 6px; text-decoration: none; color: #666; border: 1px solid #ddd;">
+							<a href="{{ route('cart') }}" class="btn btn-secondary" style="padding: 12px 24px; border-radius: 6px; text-decoration: none; color: #0000000; border: 1px solid #ddd;">
 								Back to cart
 							</a>
 							<button type="button" class="btn btn-primary next-step" data-next="2" style="background: #007cba; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600;">

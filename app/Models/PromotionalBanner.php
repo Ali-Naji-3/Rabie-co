@@ -10,7 +10,7 @@ class PromotionalBanner extends Model
     protected $fillable = [
         'image',
         'mobile_image',
-        'thumbnail',
+        'focal_point',
         'video',
         'video_thumbnail',
         'media_type',
@@ -23,7 +23,9 @@ class PromotionalBanner extends Model
         'alt_text',
         'small_title',
         'main_title',
+        'bottom_title',
         'description',
+        'bottom_description',
         'button_text',
         'text_color',
         'text_alignment',
@@ -32,11 +34,6 @@ class PromotionalBanner extends Model
         'position',
         'start_date',
         'end_date',
-        'views_count',
-        'clicks_count',
-        'image_width',
-        'image_height',
-        'file_size',
         'order',
         'is_active',
     ];
@@ -49,11 +46,6 @@ class PromotionalBanner extends Model
         'muted' => 'boolean',
         'show_controls' => 'boolean',
         'order' => 'integer',
-        'views_count' => 'integer',
-        'clicks_count' => 'integer',
-        'image_width' => 'integer',
-        'image_height' => 'integer',
-        'file_size' => 'integer',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
@@ -86,7 +78,7 @@ class PromotionalBanner extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('order', 'asc')->orderBy('id', 'asc');
     }
 
     /**
