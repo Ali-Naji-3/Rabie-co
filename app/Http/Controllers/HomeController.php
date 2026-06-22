@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FaqSection;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\HomepageSection;
@@ -65,6 +66,12 @@ class HomeController extends Controller
                 ->get();
         });
 
+        $faqSection = Cache::remember('home:faq', 1800, function () {
+            return FaqSection::active()
+                ->with(['items' => fn ($q) => $q->active()->ordered()])
+                ->first();
+        });
+
         return view('welcome', compact(
             'siteSettings',
             'heroSliders',
@@ -72,7 +79,8 @@ class HomeController extends Controller
             'featureIcons',
             'featuredProducts',
             'categories',
-            'featuredReviews'
+            'featuredReviews',
+            'faqSection'
         ));
     }
 }

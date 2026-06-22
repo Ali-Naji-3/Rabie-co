@@ -58,8 +58,9 @@ class HomepageSectionResource extends Resource
                         Forms\Components\Select::make('card_layout')
                             ->label('Card Layout')
                             ->options([
-                                'promotional' => 'Promotional (image + overlay + shop link)',
-                                'steps'       => 'Steps (label + image + title + description)',
+                                'promotional'      => 'Promotional (image + overlay + shop link)',
+                                'steps'            => 'Steps (label + image + title + description)',
+                                'comparison_table' => 'Comparison Table (Feature comparison with Check/X)',
                             ])
                             ->default('promotional')
                             ->required()
@@ -97,7 +98,12 @@ class HomepageSectionResource extends Resource
                             ->maxLength(255)
                             ->placeholder('e.g., dark-bg'),
                         Forms\Components\KeyValue::make('settings')
-                            ->label('Extra Settings (JSON)'),
+                            ->label('Table Header Configuration')
+                            ->helperText('Define headers. For Comparison Table, keys should be unique (e.g. ice_cooling) and values should be labels (e.g. ICE COOLING PRO 3). First column is always FEATURES.')
+                            ->visible(fn ($get) => $get('card_layout') === 'comparison_table'),
+                        Forms\Components\KeyValue::make('settings')
+                            ->label('Extra Settings (JSON)')
+                            ->hidden(fn ($get) => $get('card_layout') === 'comparison_table'),
                     ])
                     ->collapsed(),
             ]);

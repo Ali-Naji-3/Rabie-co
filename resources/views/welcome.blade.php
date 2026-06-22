@@ -247,6 +247,16 @@
 	@endforeach
 
 	<!--=========================-->
+	<!--=   Comparison Table UI   =-->
+	<!--=========================-->
+	@include('partials.comparison-table-static')
+
+	<!--=========================-->
+	<!--=   FAQ Section (Dynamic)   =-->
+	<!--=========================-->
+	@include('partials.home-faq')
+
+	<!--=========================-->
 	<!--=   Small Product area    =-->
 	<!--=========================-->
 

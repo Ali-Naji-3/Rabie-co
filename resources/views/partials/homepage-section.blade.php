@@ -12,13 +12,17 @@
         @endif
     </div>
     <div class="promo-banner-wrap">
-        <div class="promo-banner-carousel owl-carousel"
-             data-items="{{ min($section->cards->count(), 4) }}"
-             data-total="{{ $section->cards->count() }}">
-            @foreach($section->cards as $card)
-                @include('partials.cards.' . $section->card_layout, ['card' => $card])
-            @endforeach
-        </div>
+        @if($section->card_layout === 'comparison_table')
+            @include('partials.sections.comparison-table', ['section' => $section])
+        @else
+            <div class="promo-banner-carousel owl-carousel"
+                 data-items="{{ min($section->cards->count(), 4) }}"
+                 data-total="{{ $section->cards->count() }}">
+                @foreach($section->cards as $card)
+                    @include('partials.cards.' . $section->card_layout, ['card' => $card])
+                @endforeach
+            </div>
+        @endif
     </div>
 </section>
 @endif

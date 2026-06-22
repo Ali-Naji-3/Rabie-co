@@ -275,6 +275,22 @@ class PromotionalBannerResource extends Resource
                     ->columns(2)
                     ->collapsed(),
                     
+                Forms\Components\Section::make('Table Row Settings')
+                    ->description('Configure comparison values for this row (Only for Comparison Table layout)')
+                    ->schema([
+                        Forms\Components\KeyValue::make('settings')
+                            ->label('Column Values')
+                            ->helperText('Key should match the header key defined in the Section. Value should be "check" or "x" (or any text).')
+                            ->default([
+                                'competitor1' => 'x',
+                                'competitor2' => 'x',
+                            ]),
+                    ])
+                    ->visible(fn (Forms\Get $get) => 
+                        filled($get('homepage_section_id')) && 
+                        optional(HomepageSection::find($get('homepage_section_id')))->card_layout === 'comparison_table'
+                    ),
+
                 Forms\Components\Section::make('Settings')
                     ->schema([
                         Forms\Components\Toggle::make('is_active')

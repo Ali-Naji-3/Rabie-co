@@ -38,6 +38,7 @@ class PromotionalBanner extends Model
         'end_date',
         'order',
         'is_active',
+        'settings',
     ];
 
     protected $casts = [
@@ -50,6 +51,7 @@ class PromotionalBanner extends Model
         'order' => 'integer',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'settings' => 'array',
     ];
 
     public function section(): BelongsTo
