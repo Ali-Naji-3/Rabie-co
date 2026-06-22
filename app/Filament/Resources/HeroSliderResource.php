@@ -155,7 +155,12 @@ class HeroSliderResource extends Resource
                             ->label('Main Title')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('e.g., COMERCIO SHOP'),
+                            ->placeholder('e.g., Gentle care for healthy,'),
+                        Forms\Components\TextInput::make('highlight_text')
+                            ->label('Highlight Text (Optional)')
+                            ->maxLength(255)
+                            ->placeholder('e.g., glowing skin.')
+                            ->helperText('Rendered in gold italic right after the main title.'),
                         Forms\Components\Textarea::make('description')
                             ->label('Description')
                             ->rows(3)
@@ -163,6 +168,24 @@ class HeroSliderResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Hero Badges')
+                    ->description('Up to three optional trust badges shown under the hero text.')
+                    ->schema([
+                        Forms\Components\TextInput::make('badge_1')
+                            ->label('Badge 1 (Optional)')
+                            ->maxLength(255)
+                            ->placeholder('e.g., Dermatologist Approved'),
+                        Forms\Components\TextInput::make('badge_2')
+                            ->label('Badge 2 (Optional)')
+                            ->maxLength(255)
+                            ->placeholder('e.g., Clinical Results'),
+                        Forms\Components\TextInput::make('badge_3')
+                            ->label('Badge 3 (Optional)')
+                            ->maxLength(255)
+                            ->placeholder('e.g., Best Seller'),
+                    ])
+                    ->columns(3),
                     
                 Forms\Components\Section::make('Button Settings')
                     ->schema([
@@ -191,6 +214,24 @@ class HeroSliderResource extends Resource
                             ])
                             ->default('left')
                             ->required(),
+                        Forms\Components\Select::make('image_alignment')
+                            ->label('Image Alignment')
+                            ->options([
+                                'left' => 'Left',
+                                'center' => 'Center',
+                                'right' => 'Right',
+                            ])
+                            ->default('right')
+                            ->required()
+                            ->helperText('Where the hero image sits within its column.'),
+                        Forms\Components\Select::make('layout_type')
+                            ->label('Layout Type')
+                            ->options([
+                                'single' => 'Single Image',
+                            ])
+                            ->default('single')
+                            ->required()
+                            ->helperText('Single-image layout. Reserved for future layouts.'),
                         Forms\Components\ColorPicker::make('text_color')
                             ->label('Text Color')
                             ->default('#000000'),

@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\CustomerReview;
+use App\Models\CustomerReviewSetting;
 use App\Models\FaqSection;
 use App\Models\FaqItem;
 use App\Models\FeatureIcon;
@@ -16,6 +18,8 @@ use App\Models\PromotionalBanner;
 use App\Models\Review;
 use App\Models\SiteSetting;
 use App\Observers\CategoryObserver;
+use App\Observers\CustomerReviewObserver;
+use App\Observers\CustomerReviewSettingObserver;
 use App\Observers\FaqSectionObserver;
 use App\Observers\FaqItemObserver;
 use App\Observers\FeatureIconObserver;
@@ -110,6 +114,8 @@ class AppServiceProvider extends ServiceProvider
         Review::observe(ReviewObserver::class);
         FaqSection::observe(FaqSectionObserver::class);
         FaqItem::observe(FaqItemObserver::class);
+        CustomerReview::observe(CustomerReviewObserver::class);
+        CustomerReviewSetting::observe(CustomerReviewSettingObserver::class);
 
         // @price($amount) — formats a USD amount in the session-selected currency.
         // This is the ONLY place in the codebase allowed to call CurrencyService::formatPrice().

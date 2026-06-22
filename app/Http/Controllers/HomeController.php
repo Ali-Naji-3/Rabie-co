@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerReview;
+use App\Models\CustomerReviewSetting;
 use App\Models\FaqSection;
 use App\Models\Product;
 use App\Models\Category;
@@ -72,6 +74,21 @@ class HomeController extends Controller
                 ->first();
         });
 
+        // Customer Reviews (homepage testimonials) — separate from Product Reviews.
+        $customerReviewSettings = CustomerReviewSetting::getSettings();
+
+        // Capped, column-trimmed approved feed — cached, observer-busted. Client-side
+        // star filtering runs over this set, so no per-filter query.
+        $customerReviews = Cache::remember('home:customer_reviews', 1800, function () {
+            return CustomerReview::forHomepage()
+                ->take(60)
+                ->get(['id', 'customer_name', 'title', 'description', 'rating', 'image', 'is_pinned']);
+        });
+
+        // Statistics: marketing numbers (zero queries) or the cached real aggregate.
+        // The GROUP BY only runs inside cachedRealStats() on a cache miss.
+        $customerReviewStats = $customerReviewSettings->resolvedStats(CustomerReview::cachedRealStats());
+
         return view('welcome', compact(
             'siteSettings',
             'heroSliders',
@@ -80,7 +97,10 @@ class HomeController extends Controller
             'featuredProducts',
             'categories',
             'featuredReviews',
-            'faqSection'
+            'faqSection',
+            'customerReviewSettings',
+            'customerReviews',
+            'customerReviewStats'
         ));
     }
 }

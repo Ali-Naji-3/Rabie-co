@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CustomerReviewController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PageController;
@@ -19,6 +20,12 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/multiple-orders-guide', [PageController::class, 'multipleOrdersGuide'])->name('multiple-orders-guide');
+
+// Public homepage review submission (separate from Product Reviews /review*).
+// Throttled against abuse; lands as pending for admin moderation.
+Route::post('/customer-reviews', [CustomerReviewController::class, 'store'])
+    ->name('customer-review.store')
+    ->middleware('throttle:5,1');
 
 // Products
 Route::get('/collection', [ProductController::class, 'index'])->name('collection');

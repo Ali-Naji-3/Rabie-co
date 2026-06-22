@@ -20,8 +20,11 @@
     <!-- Image Area -->
     <div class="product-card-img-container" style="position: relative !important; aspect-ratio: 1/1 !important; background: #fafafa !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; padding: 12px !important;">
         <a href="{{ route('product.show', $product->slug) }}" style="width: 100% !important; height: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important;">
-            <img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/1.jpg') }}" 
+            <img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/1.jpg') }}"
                  alt="{{ $product->name }}"
+                 loading="lazy"
+                 decoding="async"
+                 width="600" height="600"
                  style="max-width: 100% !important; max-height: 100% !important; height: auto !important; width: auto !important; object-fit: contain !important; transition: transform 0.5s ease !important;"
                  class="group-hover:scale-105">
         </a>
@@ -36,9 +39,9 @@
     <!-- Info Area -->
     <div class="card-info-area" style="padding: 20px !important; flex-grow: 1 !important; display: flex !important; flex-direction: column !important; background: #fff !important; border: none !important;">
         
-        <!-- Rating Row -->
-        @if($product->display_rating !== null)
-        <div style="display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 10px !important; flex-wrap: wrap !important;">
+        <!-- Rating Row (always reserves height; empty area when no rating — no fake stars) -->
+        <div style="display: flex !important; align-items: center !important; gap: 6px !important; margin-bottom: 10px !important; flex-wrap: wrap !important; min-height: 18px !important;">
+            @if($product->display_rating !== null)
             <div style="display: flex !important; gap: 2px !important; color: #fbbf24 !important; font-size: 11px !important;">
                 @php
                     $full = (int) floor($product->display_rating);
@@ -51,8 +54,8 @@
             <span style="font-size: 12px !important; font-weight: 600 !important; color: #374151 !important;">{{ number_format($product->display_rating, 1) }}</span>
             <span style="color: #d1d5db !important; font-size: 11px !important;">|</span>
             <span style="font-size: 11px !important; color: #6b7280 !important;">{{ number_format($product->display_review_count) }}</span>
+            @endif
         </div>
-        @endif
 
         <!-- Title -->
         <h3 style="margin: 0 0 8px !important; padding: 0 !important; border: none !important;">
@@ -73,13 +76,13 @@
             </a>
         </h3>
 
-        <!-- Short Description -->
-        @if($product->short_description)
+        <!-- Short Description (always reserves 2 lines; empty container when none) -->
         <p style="
             font-size: 13px !important;
             color: #6b7280 !important;
             line-height: 1.5 !important;
             margin: 0 0 16px !important;
+            min-height: 39px !important;
             display: -webkit-box !important;
             -webkit-line-clamp: 2 !important;
             -webkit-box-orient: vertical !important;
@@ -88,22 +91,15 @@
         ">
             {{ $product->short_description }}
         </p>
-        @endif
 
-        <!-- Price Area -->
+        <!-- Price Area (original-price slot always reserved so final price shares one baseline) -->
         <div style="margin-top: auto !important; padding-bottom: 16px !important;">
-            @if($product->final_price < $product->price)
-                <div style="color: #ef4444 !important; text-decoration: line-through !important; font-size: 14px !important; font-weight: 500 !important; opacity: 0.7 !important; margin-bottom: 2px !important;">
-                    @price($product->price)
-                </div>
-                <div style="color: #16a34a !important; font-size: 20px !important; font-weight: 800 !important; line-height: 1 !important;">
-                    @price($product->final_price)
-                </div>
-            @else
-                <div style="color: #16a34a !important; font-size: 20px !important; font-weight: 800 !important;">
-                    @price($product->final_price)
-                </div>
-            @endif
+            <div style="font-size: 14px !important; line-height: 1.2 !important; min-height: 18px !important; margin-bottom: 2px !important;{{ $product->final_price < $product->price ? '' : ' visibility: hidden !important;' }} color: #ef4444 !important; text-decoration: line-through !important; font-weight: 500 !important; opacity: 0.7 !important;">
+                @price($product->final_price < $product->price ? $product->price : $product->final_price)
+            </div>
+            <div style="color: #16a34a !important; font-size: 20px !important; font-weight: 800 !important; line-height: 1 !important;">
+                @price($product->final_price)
+            </div>
         </div>
 
         <!-- Buttons Area -->

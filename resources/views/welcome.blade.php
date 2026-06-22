@@ -5,165 +5,276 @@
 @section('content')
 
 	<!--=========================-->
-	<!--=        Slider         =-->
+	<!--=        Hero Section       =-->
 	<!--=========================-->
 
-	<section class="slider-wrapper">
-		<div class="aurora" aria-hidden="true"></div>
-		<div class="slider-start slider-1 owl-carousel owl-theme">
+	<style>
+		.luxe-hero-section {
+			background-color: #fdfbf7;
+			padding: 80px 0;
+			overflow: hidden;
+			position: relative;
+		}
 
-		@forelse($heroSliders as $slider)
-		<div class="item" style="position: relative;">
-			@if($slider->media_type === 'video')
-				{{-- Video Slider --}}
-				@if($slider->video_url)
-					{{-- External Video (YouTube/Vimeo) --}}
-					@php
-						$videoId = '';
-						$videoType = '';
-						if (strpos($slider->video_url, 'youtube.com') !== false || strpos($slider->video_url, 'youtu.be') !== false) {
-							preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $slider->video_url, $matches);
-							$videoId = $matches[1] ?? '';
-							$videoType = 'youtube';
-						} elseif (strpos($slider->video_url, 'vimeo.com') !== false) {
-							preg_match('/vimeo\.com\/(\d+)/', $slider->video_url, $matches);
-							$videoId = $matches[1] ?? '';
-							$videoType = 'vimeo';
-						}
-					@endphp
-					
-					@if($videoType === 'youtube' && $videoId)
-						<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-							<iframe 
-								src="https://www.youtube.com/embed/{{ $videoId }}?{{ $slider->autoplay ? 'autoplay=1&' : '' }}{{ $slider->loop ? 'loop=1&playlist=' . $videoId . '&' : '' }}{{ $slider->muted ? 'mute=1&' : '' }}{{ $slider->show_controls ? '' : 'controls=0&' }}rel=0&modestbranding=1" 
-								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-								allowfullscreen>
-							</iframe>
-						</div>
-					@elseif($videoType === 'vimeo' && $videoId)
-						<div style="position: relative; padding-bottom: 42.86%; height: 0; overflow: hidden;">
-							<iframe 
-								src="https://player.vimeo.com/video/{{ $videoId }}?{{ $slider->autoplay ? 'autoplay=1&' : '' }}{{ $slider->loop ? 'loop=1&' : '' }}{{ $slider->muted ? 'muted=1&' : '' }}{{ $slider->show_controls ? '' : 'controls=0&' }}" 
-								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-								allow="autoplay; fullscreen; picture-in-picture" 
-								allowfullscreen>
-							</iframe>
-						</div>
-					@endif
-				@elseif($slider->video)
-					{{-- Uploaded Video File --}}
-					<video 
-						style="width: 100%; height: 100%; object-fit: cover; display: block;"
-						{{ $slider->autoplay ? 'autoplay' : '' }}
-						{{ $slider->loop ? 'loop' : '' }}
-						{{ $slider->muted ? 'muted' : '' }}
-						{{ $slider->show_controls ? 'controls' : '' }}
-						{{ $slider->video_thumbnail ? 'poster=' . asset('storage/' . $slider->video_thumbnail) : '' }}
-						playsinline>
-						<source src="{{ asset('storage/' . $slider->video) }}" type="video/mp4">
-						Your browser does not support the video tag.
-					</video>
-				@endif
-			@else
-				{{-- Image Slider --}}
-				@if($slider->image)
-					<img src="{{ asset('storage/' . $slider->image) }}" alt="{{ $slider->main_title }}" style="width: 100%; display: block;">
-				@endif
-			@endif
-			<div class="container-fluid custom-container slider-content">
-					<div class="row align-items-center">
-						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-							<div class="slider-text" style="{{ $slider->text_alignment === 'center' ? 'text-align: center;' : ($slider->text_alignment === 'right' ? 'text-align: right;' : '') }}">
-								@if($slider->small_title)
-								<h4 class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
-									<span>{{ $slider->small_title }}</span>
-								</h4>
-								@endif
-								<h1 class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
-									{{ $slider->main_title }}
-								</h1>
-								@if($slider->description)
-								<p class="animated {{ $slider->animation }}" style="color: {{ $slider->text_color }}">
-									{{ $slider->description }}
-								</p>
-								@endif
-								<a class="animated {{ $slider->animation }} btn-two cta-primary" href="{{ $slider->button_link }}">
-									{{ $slider->button_text }}
-								</a>
-							</div>
-						</div>
-						<!-- Col End -->
-					</div>
-					<!-- Row End -->
-				</div>
-			</div>
-			@empty
-		<!-- Fallback to default slider if no sliders in database -->
-		<div class="item">
-			<img src="{{ asset('media/images/banner/f1.jpg') }}" alt="" style="width: 100%; display: block;">
-			<div class="container-fluid custom-container slider-content">
-					<div class="row align-items-center">
-						<div class="col-12 col-sm-8 col-md-8 col-lg-6 ml-auto">
-							<div class="slider-text">
-								<h4 class="animated fadeInUp"><span>CLEAN</span> SKINCARE</h4>
-								<h1 class="animated fadeInUp">{{ $siteSettings->site_name ?? 'Softyskin' }}</h1>
-								<p class="animated fadeInUp">Gentle, effective skincare for healthy, glowing skin. Discover formulas your skin will love.</p>
-								<a class="animated fadeInUp btn-two cta-primary" href="{{ route('collection') }}">SHOP NOW</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			@endforelse
+		.hero-eyebrow {
+			font-size: 14px;
+			font-weight: 700;
+			color: #b59572;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			margin-bottom: 20px;
+			display: block;
+		}
 
-		</div>
-	</section>
-	<!-- Slides end -->
+		.hero-headline {
+			font-size: 80px;
+			line-height: 1.1;
+			font-weight: 400;
+			color: #1b1b18;
+			margin-bottom: 30px;
+		}
 
-	<!--=========================-->
-	<!--=   Feature Icons (Dynamic)   =-->
-	<!--=========================-->
+		.hero-headline span.gold {
+			color: #c29b67;
+			font-style: italic;
+		}
 
-	@if($featureIcons->count() > 0)
-	<section class="reveal feature-icons-section" style="padding: 60px 0; background: #f8f9fa;">
-		<div class="container">
-			<div class="row">
-				@foreach($featureIcons as $feature)
-				<div class="reveal col-6 col-md-3 mb-4">
-					<div class="feature-icon-box text-center" style="padding: 30px 15px; background: {{ $feature->background_color ?? 'transparent' }}; border-radius: 8px; transition: all 0.3s ease;">
-						@if($feature->link_url)
-							<a href="{{ $feature->link_url }}" {{ $feature->open_new_tab ? 'target="_blank" rel="noopener noreferrer"' : '' }} style="text-decoration: none; color: inherit;">
-						@endif
-						
-						<div class="feature-icon mb-3" style="font-size: {{ $feature->icon_size }}px; color: {{ $feature->icon_color }};">
-							@if($feature->icon_type === 'image' && $feature->icon_image)
-								<img src="{{ asset('storage/' . $feature->icon_image) }}" alt="{{ $feature->title }}" style="width: {{ $feature->icon_size }}px; height: {{ $feature->icon_size }}px; object-fit: contain;">
-							@else
-								<i class="{{ $feature->icon_class }}"></i>
+		.hero-subtitle {
+			font-size: 20px;
+			color: #7d7d7d;
+			margin-bottom: 45px;
+			max-width: 450px;
+			line-height: 1.6;
+		}
+
+		.btn-luxe-dark {
+			background: #1b1b18;
+			color: #fff;
+			padding: 18px 40px;
+			border-radius: 8px;
+			font-weight: 700;
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			display: inline-flex;
+			align-items: center;
+			gap: 15px;
+			transition: all 0.3s ease;
+			border: none;
+		}
+
+		.btn-luxe-dark:hover {
+			background: #000;
+			transform: translateY(-3px);
+			box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+			color: #fff;
+		}
+
+		.hero-badges {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			margin-top: 35px;
+		}
+
+		.hero-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: #fff;
+			border: 1px solid #ece4d8;
+			color: #1b1b18;
+			font-size: 13px;
+			font-weight: 600;
+			padding: 10px 18px;
+			border-radius: 50px;
+		}
+
+		.hero-badge i {
+			color: #c29b67;
+		}
+
+		.hero-visual {
+			position: relative;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.hero-product-image {
+			max-width: 100%;
+			height: auto;
+			z-index: 2;
+			border-radius: 20px;
+		}
+
+		/* Trust Bar */
+		.trust-bar {
+			background: #fff;
+			padding: 60px 0;
+			border-top: 1px solid #f0f0f0;
+			border-bottom: 1px solid #f0f0f0;
+		}
+
+		.trust-item {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+		}
+
+		.trust-icon-box {
+			width: 65px;
+			height: 65px;
+			background: #fdfbf7;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #c29b67;
+			font-size: 24px;
+			flex-shrink: 0;
+		}
+
+		.trust-content h5 {
+			font-size: 16px;
+			font-weight: 700;
+			margin: 0 0 5px 0;
+			color: #1b1b18;
+		}
+
+		.trust-content p {
+			font-size: 13px;
+			color: #7d7d7d;
+			margin: 0;
+		}
+
+		/* Mobile Hero */
+		@media (max-width: 991px) {
+			.hero-headline { font-size: 50px; }
+			.luxe-hero-section { padding: 60px 0; }
+			.hero-visual { margin-top: 50px; justify-content: center; }
+			.trust-item { margin-bottom: 30px; }
+		}
+	</style>
+
+	@php($hero = $heroSliders->first())
+	@push('head_links')
+	<link rel="preload" as="image"
+		href="{{ $hero && $hero->image ? asset('storage/' . $hero->image) : asset('media/images/luxe-hero.webp') }}"
+		fetchpriority="high">
+	@endpush
+	<section class="luxe-hero-section">
+		<div class="container custom-container">
+			<div class="row align-items-center">
+				@if($hero)
+					@php($imageJustify = ['left' => 'flex-start', 'center' => 'center', 'right' => 'flex-end'][$hero->image_alignment] ?? 'flex-end')
+					<div class="col-lg-6">
+						<div class="hero-content reveal">
+							@if($hero->small_title)
+								<span class="hero-eyebrow luxe-sans">{{ $hero->small_title }}</span>
+							@endif
+							<h1 class="hero-headline luxe-serif">
+								{{ $hero->main_title }}@if($hero->highlight_text) <span class="gold">{{ $hero->highlight_text }}</span>@endif
+							</h1>
+							@if($hero->description)
+								<p class="hero-subtitle luxe-sans">{{ $hero->description }}</p>
+							@endif
+							<a href="{{ $hero->button_link ?: route('collection') }}" class="btn-luxe-dark luxe-sans">
+								{{ $hero->button_text ?: 'SHOP COLLECTION' }} <i class="fa fa-arrow-right"></i>
+							</a>
+							@if($hero->badge_1 || $hero->badge_2 || $hero->badge_3)
+								<div class="hero-badges">
+									@foreach([$hero->badge_1, $hero->badge_2, $hero->badge_3] as $badge)
+										@if($badge)
+											<span class="hero-badge luxe-sans"><i class="fa fa-check-circle"></i>{{ $badge }}</span>
+										@endif
+									@endforeach
+								</div>
 							@endif
 						</div>
-						
-						<h4 style="font-size: 18px; font-weight: 700; margin-bottom: 10px; color: {{ $feature->text_color }};">
-							{{ $feature->title }}
-						</h4>
-						
-						@if($feature->description)
-						<p style="font-size: 14px; color: {{ $feature->text_color }}; opacity: 0.8; margin: 0;">
-							{{ $feature->description }}
-						</p>
-						@endif
-						
-						@if($feature->link_url)
-							</a>
-						@endif
 					</div>
-				</div>
-				@endforeach
+					<div class="col-lg-6">
+						<div class="hero-visual reveal" style="justify-content: {{ $imageJustify }};">
+							<img src="{{ $hero->image ? asset('storage/' . $hero->image) : asset('media/images/luxe-hero.webp') }}"
+							alt="{{ $hero->main_title }}"
+							class="hero-product-image"
+							fetchpriority="high"
+							decoding="async"
+							width="800" height="800">
+						</div>
+					</div>
+				@else
+					<div class="col-lg-6">
+						<div class="hero-content reveal">
+							<span class="hero-eyebrow luxe-sans">CLEAN SKINCARE</span>
+							<h1 class="hero-headline luxe-serif">
+								Gentle care for<br>healthy, <span class="gold">glowing skin.</span>
+							</h1>
+							<p class="hero-subtitle luxe-sans">
+								Discover effective formulas your skin will love.
+							</p>
+							<a href="{{ route('collection') }}" class="btn-luxe-dark luxe-sans">
+								SHOP COLLECTION <i class="fa fa-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="hero-visual reveal">
+							<img src="{{ asset('media/images/luxe-hero.webp') }}"
+							alt="Softyskin Showcase"
+							class="hero-product-image"
+							fetchpriority="high"
+							decoding="async"
+							width="1024" height="1024">
+						</div>
+					</div>
+				@endif
 			</div>
 		</div>
 	</section>
-	@endif
+
+	<section class="trust-bar">
+		<div class="container custom-container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6">
+					<div class="trust-item reveal">
+						<div class="trust-icon-box"><i class="fa fa-truck"></i></div>
+						<div class="trust-content">
+							<h5 class="luxe-sans">Free shipping</h5>
+							<p class="luxe-sans">On orders over EGP 1,500</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="trust-item reveal">
+						<div class="trust-icon-box"><i class="fa fa-box"></i></div>
+						<div class="trust-content">
+							<h5 class="luxe-sans">Easy returns</h5>
+							<p class="luxe-sans">14-day return policy</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="trust-item reveal">
+						<div class="trust-icon-box"><i class="fa fa-shield-alt"></i></div>
+						<div class="trust-content">
+							<h5 class="luxe-sans">Secure payment</h5>
+							<p class="luxe-sans">100% secure checkout</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="trust-item reveal">
+						<div class="trust-icon-box"><i class="fa fa-headset"></i></div>
+						<div class="trust-content">
+							<h5 class="luxe-sans">Support 24/7</h5>
+							<p class="luxe-sans">We're here to help</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
 
 	<!--=========================-->
 	<!--=   Shop by Category (Dynamic)   =-->
@@ -257,6 +368,11 @@
 	@include('partials.home-faq')
 
 	<!--=========================-->
+	<!--=   Customer Reviews (NEW)   =-->
+	<!--=========================-->
+	@include('partials.home-customer-reviews')
+
+	<!--=========================-->
 	<!--=   Small Product area    =-->
 	<!--=========================-->
 
@@ -288,6 +404,9 @@
 								<div class="product-image" style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
 									<img src="{{ $review->product->primary_image ? asset('storage/' . $review->product->primary_image) : asset('media/images/product/1.jpg') }}"
 									     alt="{{ $review->product->name }}"
+									     loading="lazy"
+									     decoding="async"
+									     width="400" height="180"
 									     style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
 									     onmouseover="this.style.transform='scale(1.05)'"
 									     onmouseout="this.style.transform='scale(1)'">

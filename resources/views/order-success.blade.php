@@ -1,251 +1,288 @@
 @extends('layouts.app')
 
-@section('title', 'Order Success - Softyskin')
+@section('title', 'Order Successful - Softyskin Luxury')
 
 @section('content')
 
-		<!--=        Breadcrumb         =-->
-		<!--=========================-->
+	<style>
+		:root {
+			--luxe-primary-gold: #D4AF37;
+			--luxe-soft-gold: #C9A15B;
+			--luxe-cream-bg: #F8F5EF;
+			--luxe-soft-border: #E7E2D8;
+			--luxe-black: #111111;
+			--luxe-text-gray: #666666;
+			--luxe-white: #FFFFFF;
+		}
 
-		<section class="breadcrumb-area">
-			<div class="container-fluid custom-container">
-				<div class="row">
-					<div class="col-xl-12">
-						<div class="bc-inner">
-							<p><a href="{{ url('/') }}">Home</a> | <a href="{{ route('collection') }}">Shop</a> | Order Success</p>
-						</div>
-					</div>
-					<!-- /.col-xl-12 -->
+		.success-section {
+			background-color: var(--luxe-cream-bg);
+			padding: 80px 0;
+			min-height: 80vh;
+			display: flex;
+			align-items: center;
+		}
+
+		.success-badge-wrapper {
+			margin-bottom: 30px;
+			display: flex;
+			justify-content: center;
+		}
+
+		.success-badge {
+			width: 100px;
+			height: 100px;
+			background: var(--luxe-white);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+			border: 2px solid var(--luxe-primary-gold);
+			color: var(--luxe-primary-gold);
+			font-size: 40px;
+		}
+
+		.success-heading {
+			font-family: 'Cormorant Garamond', serif;
+			font-size: 48px;
+			font-weight: 700;
+			color: var(--luxe-black);
+			margin-bottom: 15px;
+		}
+
+		.success-subtitle {
+			font-size: 18px;
+			color: var(--luxe-text-gray);
+			margin-bottom: 50px;
+			max-width: 600px;
+			margin-left: auto;
+			margin-right: auto;
+			line-height: 1.6;
+		}
+
+		.luxe-card {
+			background: var(--luxe-white);
+			border-radius: 24px;
+			padding: 40px;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+			border: 1px solid var(--luxe-soft-border);
+			text-align: left;
+		}
+
+		.card-title {
+			font-family: 'Cormorant Garamond', serif;
+			font-size: 24px;
+			font-weight: 700;
+			color: var(--luxe-black);
+			margin-bottom: 25px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.card-title i {
+			color: var(--luxe-primary-gold);
+			font-size: 20px;
+		}
+
+		/* Status Pill */
+		.status-pill {
+			background: #F5F1EA;
+			color: #C9A15B;
+			padding: 6px 16px;
+			border-radius: 30px;
+			font-size: 13px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
+		/* Detail Grid */
+		.detail-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 24px;
+		}
+
+		.detail-item label {
+			display: block;
+			font-size: 13px;
+			color: var(--luxe-text-gray);
+			margin-bottom: 4px;
+			font-weight: 600;
+		}
+
+		.detail-item span {
+			font-size: 16px;
+			color: var(--luxe-black);
+			font-weight: 700;
+		}
+
+		/* Success Item list */
+		.ordered-item {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			padding: 20px 0;
+			border-bottom: 1px solid var(--luxe-soft-border);
+		}
+
+		.ordered-item:last-child {
+			border-bottom: none;
+		}
+
+		.ordered-item-img {
+			width: 100px;
+			height: 100px;
+			border-radius: 14px;
+			object-fit: cover;
+			background: var(--luxe-cream-bg);
+		}
+
+		.ordered-item-info h4 {
+			font-family: 'Cormorant Garamond', serif;
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--luxe-black);
+			margin: 0;
+		}
+
+		.ordered-item-info p {
+			font-size: 14px;
+			color: var(--luxe-text-gray);
+			margin: 4px 0 0 0;
+		}
+
+		/* Buttons */
+		.btn-luxe-dark {
+			background: var(--luxe-black);
+			color: #fff;
+			padding: 18px 40px;
+			border-radius: 14px;
+			font-weight: 700;
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			transition: all 0.25s ease;
+			border: none;
+		}
+
+		.btn-luxe-dark:hover {
+			background: #000;
+			transform: translateY(-2px);
+			color: #fff;
+			text-decoration: none;
+		}
+
+		.btn-luxe-outline {
+			background: transparent;
+			color: var(--luxe-black);
+			padding: 16px 38px;
+			border-radius: 14px;
+			font-weight: 700;
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			transition: all 0.25s ease;
+			border: 2px solid var(--luxe-primary-gold);
+		}
+
+		.btn-luxe-outline:hover {
+			background: var(--luxe-primary-gold);
+			color: #fff;
+			transform: translateY(-2px);
+			text-decoration: none;
+		}
+
+		@media (max-width: 768px) {
+			.success-heading { font-size: 36px; }
+			.detail-grid { grid-template-columns: 1fr; gap: 15px; }
+			.luxe-card { padding: 30px 20px; }
+			.action-buttons { flex-direction: column; width: 100%; }
+			.btn-luxe-dark, .btn-luxe-outline { width: 100%; justify-content: center; }
+		}
+	</style>
+
+	<section class="success-section">
+		<div class="container custom-container text-center">
+			
+			<div class="success-badge-wrapper reveal">
+				<div class="success-badge">
+					<i class="fa fa-check"></i>
 				</div>
-				<!-- /.row -->
 			</div>
-			<!-- /.container -->
-		</section>
 
-		<!--=========================-->
-		<!--=        Order Success        =-->
-		<!--=========================-->
+			<h1 class="success-heading reveal luxe-serif">Thank You For Your Order</h1>
+			<p class="success-subtitle reveal luxe-sans">Your order has been received and is now being prepared. We'll send you a confirmation email shortly.</p>
 
-		<section class="order-success-area" style="padding: 80px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-			<div class="container-fluid custom-container">
-				<div class="row justify-content-center">
-					<div class="col-xl-8 col-lg-10">
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="luxe-card reveal mb-5">
+						<h3 class="card-title"><i class="fa fa-file-invoice"></i> Order Details</h3>
 						
-						<!-- Success Message -->
-						<div class="success-card" style="background: #fff; border-radius: 20px; padding: 60px 40px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); border: 3px solid #FFD700; position: relative; overflow: hidden;">
-							
-							<!-- Success Icon -->
-							<div class="success-icon" style="margin-bottom: 30px;">
-								<div style="width: 120px; height: 120px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3); animation: successPulse 2s infinite;">
-									<i class="fas fa-check" style="font-size: 60px; color: #fff; font-weight: 900;"></i>
+						<div class="detail-grid">
+							<div class="detail-item">
+								<label>Order Number</label>
+								<span>#{{ $order->order_number }}</span>
+							</div>
+							<div class="detail-item">
+								<label>Order Date</label>
+								<span>{{ $order->created_at->format('M d, Y') }}</span>
+							</div>
+							<div class="detail-item">
+								<label>Payment Method</label>
+								<span>
+									@if($order->payment_method == 'cod') Cash On Delivery @else {{ strtoupper($order->payment_method) }} @endif
+								</span>
+							</div>
+							<div class="detail-item">
+								<label>Order Status</label>
+								<div>
+									<span class="status-pill">Pending</span>
 								</div>
 							</div>
-
-							<!-- Success Message -->
-							<h1 style="color: #333; font-size: 48px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">
-								Order Successful!
-							</h1>
-							
-							<p style="color: #666; font-size: 20px; margin-bottom: 40px; line-height: 1.6;">
-								Thank you for your purchase! Your order has been confirmed and will be processed shortly.
-							</p>
-
-							<!-- Order Details -->
-							@if(isset($order))
-							<div class="order-details" style="background: #f8f9fa; border-radius: 15px; padding: 30px; margin: 40px 0; border-left: 5px solid #FFD700;">
-								<h3 style="color: #333; font-size: 24px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase;">
-									<i class="fas fa-receipt" style="color: #FFD700; margin-right: 10px;"></i>
-									Order Details
-								</h3>
-								
-								<div class="row">
-									<div class="col-md-6">
-										<div class="detail-item" style="margin-bottom: 15px;">
-											<strong style="color: #333; font-size: 16px;">Order Number:</strong>
-											<span style="color: #666; font-size: 16px; margin-left: 10px; font-family: monospace; background: #e9ecef; padding: 5px 10px; border-radius: 5px;">#{{ $order->order_number }}</span>
-										</div>
-										<div class="detail-item" style="margin-bottom: 15px;">
-											<strong style="color: #333; font-size: 16px;">Order Date:</strong>
-											<span style="color: #666; font-size: 16px; margin-left: 10px;">{{ $order->created_at->format('M d, Y \a\t g:i A') }}</span>
-										</div>
-									</div>
-							<div class="col-md-6">
-								<div class="detail-item" style="margin-bottom: 15px;">
-									<strong style="color: #333; font-size: 16px;">Payment Method:</strong>
-									<span style="color: #666; font-size: 16px; margin-left: 10px; text-transform: capitalize;">
-										@if($order->payment_method == 'cod')
-											Cash on Delivery
-										@elseif($order->payment_method == 'card')
-											Credit/Debit Card
-										@elseif($order->payment_method == 'bank_transfer')
-											Bank Transfer
-										@else
-											{{ $order->payment_method }}
-										@endif
-									</span>
-								</div>
-								<div class="detail-item" style="margin-bottom: 15px;">
-									<strong style="color: #333; font-size: 16px;">Payment Status:</strong>
-									<span style="margin-left: 10px; padding: 5px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; text-transform: uppercase;
-										@if($order->payment_status == 'paid')
-											background: #d4edda; color: #155724;
-										@elseif($order->payment_status == 'pending')
-											background: #fff3cd; color: #856404;
-										@elseif($order->payment_status == 'failed')
-											background: #f8d7da; color: #721c24;
-										@elseif($order->payment_status == 'refunded')
-											background: #d1ecf1; color: #0c5460;
-										@else
-											background: #e2e3e5; color: #383d41;
-										@endif
-									">
-										{{ ucfirst($order->payment_status) }}
-									</span>
-								</div>
-								<div class="detail-item" style="margin-bottom: 15px;">
-									<strong style="color: #333; font-size: 16px;">Total Amount:</strong>
-									<span style="color: #28a745; font-size: 18px; font-weight: 700; margin-left: 10px;">@price($order->total)</span>
-								</div>
+							<div class="detail-item pt-2">
+								<label>Total Amount</label>
+								<span class="luxe-gold-text" style="font-size: 20px;">@price($order->total)</span>
 							</div>
-								</div>
-							</div>
-							@endif
-
-							<!-- Order Items Summary -->
-							@if(isset($order) && $order->items->count() > 0)
-							<div class="order-items" style="background: #fff; border-radius: 15px; padding: 30px; margin: 30px 0; border: 2px solid #e9ecef;">
-								<h4 style="color: #333; font-size: 20px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase;">
-									<i class="fas fa-shopping-bag" style="color: #FFD700; margin-right: 10px;"></i>
-									Ordered Items ({{ $order->items->count() }})
-								</h4>
-								
-								<div class="items-list">
-									@foreach($order->items as $item)
-									<div class="item-row" style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f3f4;">
-										<div class="item-image" style="width: 80px; height: 80px; margin-right: 20px;">
-											<img src="{{ $item->product->primary_image ? Storage::url($item->product->primary_image) : 'media/images/product/cp1.jpg' }}" 
-												 alt="{{ $item->product->name }}" 
-												 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 2px solid #e9ecef;">
-										</div>
-										<div class="item-details" style="flex: 1;">
-											<h5 style="color: #333; font-size: 16px; font-weight: 600; margin-bottom: 5px;">{{ $item->product->name }}</h5>
-											<p style="color: #666; font-size: 14px; margin-bottom: 5px;">Quantity: {{ $item->quantity }}</p>
-											<p style="color: #28a745; font-size: 16px; font-weight: 700;">@price($item->subtotal)</p>
-										</div>
-									</div>
-									@endforeach
-								</div>
-							</div>
-							@endif
-
-						<!-- Action Buttons -->
-							<div class="action-buttons" style="margin-top: 40px;">
-								<div class="row">
-									<div class="col-md-6 mb-3">
-										<a href="{{ route('orders.index') }}" 
-										   style="display: block; background: #000; color: #FFD700; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; border: 2px solid #000; text-align: center;"
-										   onmouseover="this.style.background='#FFD700'; this.style.color='#000'; this.style.borderColor='#000'"
-										   onmouseout="this.style.background='#000'; this.style.color='#FFD700'; this.style.borderColor='#000'">
-											<i class="fas fa-list-alt" style="margin-right: 10px;"></i>
-											View My Orders
-										</a>
-									</div>
-									<div class="col-md-6 mb-3">
-										<a href="{{ route('collection') }}" 
-										   style="display: block; background: #FFD700; color: #000; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; border: 2px solid #FFD700; text-align: center;"
-										   onmouseover="this.style.background='#000'; this.style.color='#FFD700'; this.style.borderColor='#FFD700'"
-										   onmouseout="this.style.background='#FFD700'; this.style.color='#000'; this.style.borderColor='#FFD700'">
-											<i class="fas fa-shopping-bag" style="margin-right: 10px;"></i>
-											Continue Shopping
-										</a>
-									</div>
-								</div>
-							</div>
-
 						</div>
-						<!-- /.success-card -->
-
 					</div>
-					<!-- /.col-xl-8 -->
-				</div>
-				<!-- /.row -->
-			</div>
-			<!-- /.container -->
-		</section>
-		<!-- /.order-success-area -->
 
-		<!--=========================-->
+					<div class="luxe-card reveal">
+						<h3 class="card-title"><i class="fa fa-shopping-bag"></i> Ordered Items ({{ $order->items->count() }})</h3>
+						
+						<div class="ordered-items-list">
+							@foreach($order->items as $item)
+								<div class="ordered-item">
+									<img src="{{ $item->product->primary_image ? asset('storage/' . $item->product->primary_image) : asset('media/images/product/cp1.jpg') }}" alt="{{ $item->product->name }}" class="ordered-item-img">
+									<div class="ordered-item-info flex-grow-1">
+										<h4 class="luxe-serif">{{ $item->product->name }}</h4>
+										<p>Quantity: {{ $item->quantity }}</p>
+									</div>
+									<div class="font-weight-bold luxe-black">@price($item->subtotal)</div>
+								</div>
+							@endforeach
+						</div>
+					</div>
+
+					<div class="action-buttons d-flex justify-content-center gap-3 mt-5 reveal">
+						<a href="{{ route('orders.index') }}" class="btn-luxe-dark">
+							<i class="fa fa-list-ul"></i> View My Orders
+						</a>
+						<a href="{{ route('collection') }}" class="btn-luxe-outline">
+							<i class="fa fa-shopping-bag"></i> Continue Shopping
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 @endsection
-
-@push('styles')
-<style>
-	/* Success animation */
-	@keyframes successPulse {
-		0%, 100% {
-			transform: scale(1);
-			box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
-		}
-		50% {
-			transform: scale(1.05);
-			box-shadow: 0 15px 40px rgba(40, 167, 69, 0.5);
-		}
-	}
-
-	/* Success card shine effect */
-	.success-card::before {
-		content: '';
-		position: absolute;
-		top: -50%;
-		left: -50%;
-		width: 200%;
-		height: 200%;
-		background: linear-gradient(
-			45deg,
-			transparent,
-			rgba(255, 215, 0, 0.1),
-			transparent
-		);
-		transform: rotate(45deg);
-		animation: shine 4s infinite;
-		pointer-events: none;
-	}
-
-	@keyframes shine {
-		0% {
-			left: -50%;
-		}
-		100% {
-			left: 150%;
-		}
-	}
-
-	/* Responsive design */
-	@media (max-width: 768px) {
-		.success-card {
-			padding: 40px 20px !important;
-			margin: 20px 10px !important;
-		}
-		
-		h1 {
-			font-size: 36px !important;
-		}
-		
-		.success-icon div {
-			width: 100px !important;
-			height: 100px !important;
-		}
-		
-		.success-icon i {
-			font-size: 50px !important;
-		}
-	}
-
-	/* Item row hover effect */
-	.item-row:hover {
-		background: #f8f9fa;
-		border-radius: 8px;
-		transition: all 0.3s ease;
-	}
-</style>
-@endpush

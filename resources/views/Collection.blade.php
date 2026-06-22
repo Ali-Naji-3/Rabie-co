@@ -97,6 +97,19 @@
         transform: none !important;
         transition: none !important;
     }
+
+    /* Full-width carousel slide: neutralise the grid column's 50% cap once the
+       row becomes an owl carousel, so the card fills the slide instead of
+       collapsing to col-6 (Bootstrap flex:0 0 50%). Only applies while
+       .owl-carousel is present (mobile, carousel mode) — desktop strips it. */
+    #mobile-product-row.owl-carousel .owl-item > .reveal {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 0 !important;
+    }
 }
 </style>
 @endpush

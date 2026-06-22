@@ -44,6 +44,8 @@
 		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/img/fav-icons/favicon-16x16.png') }}">
 	@endif
 
+	@stack('head_links')
+
 	<!-- Dependency Styles -->
 	<link rel="stylesheet" href="{{ asset('dependencies/bootstrap/css/bootstrap.min.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/fontawesome/css/fontawesome-all.min.css') }}" type="text/css">
@@ -51,442 +53,289 @@
 	<link rel="stylesheet" href="{{ asset('dependencies/owl.carousel/css/owl.theme.default.min.css') }}" type="text/css">
 	<link rel="stylesheet" href="{{ asset('dependencies/flaticon/css/flaticon.css') }}" type="text/css">
 
+	<!-- Google Fonts for Luxury Design -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 	<!-- Site Stylesheet -->
 	<link rel="stylesheet" href="{{ asset('assets/css/app.css') }}" type="text/css">
 
-	<!-- Fix for product image clickability -->
+	<!-- Luxury Design System Styles -->
 	<style>
-		.sin-product {
-			position: relative;
-		}
-		.sin-product .pro-img {
-			position: relative;
-			z-index: 1;
-		}
-		.sin-product .pro-img a {
-			display: block;
-			position: relative;
-			z-index: 2;
-		}
-		.sin-product .pro-icon {
-			position: absolute;
-			z-index: 10;
-			pointer-events: none;
-		}
-		.sin-product .pro-icon a {
-			pointer-events: auto;
+		:root {
+			--luxe-gold: #c29b67;
+			--luxe-black: #1b1b18;
+			--luxe-cream: #f9f5f0;
+			--luxe-gray: #7d7d7d;
+			--luxe-border: #eee;
+			--luxe-shadow: 0 10px 30px rgba(0,0,0,0.05);
 		}
 
-		/* Checkout Modal CSS Removed - No longer needed */
+		body {
+			background: #fff;
+			color: var(--luxe-black);
+			font-family: 'Inter', sans-serif;
+		}
 
-		
-		/* User dropdown menu */
-		.user-login:hover .cart-drop {
-			opacity: 1;
-			visibility: visible;
+		.luxe-serif { font-family: 'Cormorant Garamond', serif; }
+		.luxe-sans { font-family: 'Inter', sans-serif; }
+
+		/* Header Styles */
+		.header-area {
+			background: #fff;
+			padding: 25px 0;
+			position: relative;
+			z-index: 1000;
+		}
+
+		.nav-pill-wrapper {
+			background: #fff;
+			border-radius: 50px;
+			box-shadow: var(--luxe-shadow);
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border: 1px solid #f0f0f0;
+		}
+
+		.nav-pill-wrapper ul {
+			display: flex;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			gap: 10px;
+		}
+
+		.nav-pill-wrapper ul li a {
+			padding: 10px 25px;
+			border-radius: 40px;
+			font-size: 13px;
+			font-weight: 700;
+			text-transform: uppercase;
+			color: var(--luxe-black);
+			transition: all 0.3s ease;
+			letter-spacing: 0.05em;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.nav-pill-wrapper ul li a:hover,
+		.nav-pill-wrapper ul li a.active {
+			background: #fff;
+			color: var(--luxe-gold);
+		}
+
+		.nav-pill-wrapper ul li a.active {
+			box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+			position: relative;
 		}
 		
-		/* Fix will-change performance warning - Remove from all elements */
-		* {
-			will-change: auto !important;
+		#header .logo img {
+			max-height: 45px;
 		}
-		
-		/* Only use will-change on actively interacting elements */
-		.social-icons-grid a:active,
-		.btn:active,
-		button:active {
-			will-change: transform !important;
+
+		.header-right-luxe {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 25px;
 		}
-		
-		
-		/* Footer Social Media Hover Effects */
-		.social-media-section a:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 6px 16px rgba(0,0,0,0.3) !important;
+
+		.header-right-luxe .icon-link {
+			color: var(--luxe-black);
+			font-size: 18px;
+			transition: color 0.3s ease;
 		}
-		
-		/* Professional Social Media Grid */
-		.social-icons-grid {
-			display: grid !important;
-			grid-template-columns: repeat(3, 1fr) !important;
-			gap: 12px !important;
-			max-width: 180px !important;
+
+		.header-right-luxe .icon-link:hover {
+			color: var(--luxe-gold);
 		}
-		
-		.social-icons-grid a {
-			width: 50px !important;
-			height: 50px !important;
-			border-radius: 50% !important;
-			display: flex !important;
-			align-items: center !important;
-			justify-content: center !important;
-			text-decoration: none !important;
-			transition: all 0.3s ease !important;
-			box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-			position: relative !important;
-			overflow: hidden !important;
+
+		.my-orders-link {
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--luxe-black);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			display: flex;
+			align-items: center;
+			gap: 8px;
 		}
-		
-		/* Individual Social Media Colors */
-		.social-facebook { background: #1877F2 !important; color: white !important; }
-		.social-instagram { background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4) !important; color: white !important; }
-		.social-twitter { background: #1DA1F2 !important; color: white !important; }
-		.social-linkedin { background: #0A66C2 !important; color: white !important; }
-		.social-youtube { background: #FF0000 !important; color: white !important; }
-		.social-tiktok { background: #000000 !important; color: white !important; }
-		
-		.social-icons-grid a i {
-			font-size: 20px !important;
+
+		.currency-switcher-luxe {
+			background: #f5f5f5;
+			border-radius: 30px;
+			display: flex;
+			padding: 4px;
 		}
-		
-		.social-icons-grid a::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: -100%;
-			width: 100%;
-			height: 100%;
-			background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-			transition: left 0.5s;
-		}
-		
-		.social-icons-grid a:hover::before {
-			left: 100%;
-		}
-		
-		.social-icons-grid a:hover {
-			transform: translateY(-3px) scale(1.05) !important;
-			box-shadow: 0 8px 20px rgba(0,0,0,0.3) !important;
-		}
-		
-		/* Responsive adjustments */
-		@media (max-width: 768px) {
-			.social-icons-grid {
-				grid-template-columns: repeat(2, 1fr) !important;
-				max-width: 120px !important;
-				gap: 10px !important;
-			}
-			
-			.social-icons-grid a {
-				width: 45px !important;
-				height: 45px !important;
-			}
-			
-			.social-icons-grid a i {
-				font-size: 18px !important;
-			}
-		}
-		.sin-product .icon-wrapper {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			opacity: 0;
-			visibility: hidden;
+
+		.currency-btn {
+			background: transparent;
+			border: none;
+			padding: 6px 15px;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: 700;
+			color: #888;
+			cursor: pointer;
 			transition: all 0.3s ease;
 		}
-		.sin-product:hover .icon-wrapper {
-			opacity: 1;
-			visibility: visible;
-		}
-		
-		/* Enhanced icon visibility */
-		.flaticon-eye,
-		.flaticon-valentines-heart {
-			font-size: 18px !important;
-			color: #333 !important;
-			background: rgba(255, 255, 255, 0.95) !important;
-			border-radius: 50% !important;
-			width: 40px !important;
-			height: 40px !important;
-			display: flex !important;
-			align-items: center !important;
-			justify-content: center !important;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-			transition: all 0.3s ease !important;
-			border: 2px solid #fff !important;
-		}
-		.flaticon-eye:hover,
-		.flaticon-valentines-heart:hover {
-			background: #27ae60 !important;
-			color: #fff !important;
-			transform: scale(1.1) !important;
-			box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3) !important;
-		}
-		.pro-icon ul {
-			display: flex !important;
-			gap: 10px !important;
-			justify-content: center !important;
-			padding: 10px 0 !important;
-		}
-		.pro-icon li {
-			list-style: none !important;
-		}
-		.pro-icon a {
-			text-decoration: none !important;
-		}
-		
-		/* Fix scroll-linked positioning warning */
-		#header {
-			position: relative !important;
-		}
-		* {
-			scroll-behavior: auto !important;
-		}
-		
-		/* Fast page transitions */
-		body {
-			transition: opacity 0.15s ease;
-		}
-		
-		/* Fast navigation link hover effects */
-		#navigation a, #mobilemenu a {
-			transition: all 0.15s ease;
-		}
-		
-		#navigation a:hover, #mobilemenu a:hover {
-			transform: translateY(-1px);
-		}
-		.small-sec-title.text-center h6::before {
-			content: '';
-			position: absolute;
-			top: 50%;
-			right: 100%;
-			width: 200px;
-			height: 2px;
-			background-color: #ddd;
-			transform: translateY(-50%);
+
+		.currency-btn.active {
+			background: #fff;
+			color: var(--luxe-black);
+			box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 		}
 
-
-		/* Cart remove button fix: position the form where .fa-times was, reset icon to static */
-		.cart-drop .single-cart form.cart-remove-form {
-			position: absolute;
-			right: 2px;
-			top: 38px;
-			width: 20px;
-			height: 20px;
+		.user-avatar-luxe {
+			width: 38px;
+			height: 38px;
+			border-radius: 50%;
+			background: #fdf2e9;
+			color: #e67e22;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			margin: 0;
-			padding: 0;
-		}
-		.cart-drop .single-cart form.cart-remove-form .fa-times {
-			position: static;
-			width: auto;
-			height: auto;
-			line-height: normal;
+			font-weight: 700;
+			font-size: 14px;
+			text-decoration: none !important;
 		}
 
-		/* ============================================================
-		   ANIMATE.CSS MICRO-REPLACEMENT
-		   Only the 5 classes actually used in views + DB.
-		   Replaces the full 56 KB animate.css library.
-		   Class names are unchanged so DB values, Filament dropdown,
-		   and all jQuery addClass/removeClass calls need no edits.
-		   ============================================================ */
-		.animated { animation-duration: 1s; animation-fill-mode: both; }
-		@keyframes fadeInUp {
-			from { opacity: 0; transform: translate3d(0, 30px, 0); }
-			to   { opacity: 1; transform: translate3d(0, 0, 0); }
+		.cart-pill-luxe {
+			background: var(--luxe-gold);
+			color: #fff;
+			padding: 8px 20px;
+			border-radius: 30px;
+			font-weight: 700;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			box-shadow: 0 4px 15px rgba(194, 155, 103, 0.3);
+			transition: transform 0.3s ease;
 		}
-		.fadeInUp { animation-name: fadeInUp; }
-		@keyframes fadeIn {
-			from { opacity: 0; }
-			to   { opacity: 1; }
-		}
-		.fadeIn { animation-name: fadeIn; }
-		@keyframes fadeInDown {
-			from { opacity: 0; transform: translate3d(0, -30px, 0); }
-			to   { opacity: 1; transform: translate3d(0, 0, 0); }
-		}
-		.fadeInDown { animation-name: fadeInDown; }
-		@keyframes slideInLeft {
-			from { opacity: 0; transform: translate3d(-60px, 0, 0); }
-			to   { opacity: 1; transform: translate3d(0, 0, 0); }
-		}
-		.slideInLeft { animation-name: slideInLeft; }
-		@keyframes slideInRight {
-			from { opacity: 0; transform: translate3d(60px, 0, 0); }
-			to   { opacity: 1; transform: translate3d(0, 0, 0); }
-		}
-		.slideInRight { animation-name: slideInRight; }
 
-		/* ============================================================
-		   PREMIUM MOTION SYSTEM (compositor-friendly: transform/opacity)
-		   Aurora hero · Scroll reveal · Image zoom · CTA glow
-		   ============================================================ */
-
-		/* 1. AURORA HERO — CSS-only animated gradient behind the slider.
-		   Uses blurred radial blobs moved via transform (no repaint of
-		   layout/paint-heavy props). Confined to the hero only. */
-		.slider-wrapper {
-			position: relative;
-			isolation: isolate;
-			overflow: hidden;
+		.cart-pill-luxe:hover {
+			transform: translateY(-2px);
+			color: #fff;
 		}
-		.slider-wrapper .aurora {
+
+		.luxe-dropdown {
 			position: absolute;
-			inset: -20%;
-			z-index: -1;
-			pointer-events: none;
-			overflow: hidden;
-		}
-		.slider-wrapper .aurora::before,
-		.slider-wrapper .aurora::after {
-			content: "";
-			position: absolute;
-			width: 60vw;
-			height: 60vw;
-			border-radius: 50%;
-			filter: blur(80px);
-			opacity: 0.55;
-			/* !important needed to survive the global `* { will-change:auto !important }`
-			   rule above — the aurora animates continuously, so it benefits from a
-			   persistent compositor layer. */
-			will-change: transform !important;
-			transform: translate3d(0, 0, 0);
-		}
-		/* Palette stops pulled from existing brand colors — no color change */
-		.slider-wrapper .aurora::before {
-			top: -10%;
-			left: -5%;
-			background: radial-gradient(circle at center, #f49935 0%, rgba(244,153,53,0) 70%);
-			animation: auroraDriftA 22s ease-in-out infinite alternate;
-		}
-		.slider-wrapper .aurora::after {
-			bottom: -15%;
-			right: -10%;
-			background: radial-gradient(circle at center, #fad959 0%, rgba(250,217,89,0) 70%);
-			animation: auroraDriftB 26s ease-in-out infinite alternate;
-		}
-		@keyframes auroraDriftA {
-			0%   { transform: translate3d(0, 0, 0) scale(1); }
-			100% { transform: translate3d(12%, 8%, 0) scale(1.15); }
-		}
-		@keyframes auroraDriftB {
-			0%   { transform: translate3d(0, 0, 0) scale(1.1); }
-			100% { transform: translate3d(-10%, -6%, 0) scale(1); }
-		}
-
-		/* 2. SCROLL REVEAL — toggled by IntersectionObserver. Subtle rise + fade. */
-		.reveal {
+			top: 100%;
+			right: 0;
+			background: #fff;
+			border-radius: 12px;
+			box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+			min-width: 280px;
 			opacity: 0;
-			transform: translate3d(0, 24px, 0);
-			transition: opacity 0.7s ease, transform 0.7s ease;
-			/* transform/opacity auto-promote to a compositor layer during the
-			   transition — no persistent will-change needed (and the global rule
-			   above would strip it anyway). */
+			visibility: hidden;
+			transition: all 0.3s ease;
+			transform: translateY(10px);
+			padding: 20px;
+			border: 1px solid #f0f0f0;
 		}
-		.reveal.reveal--in {
+
+		.user-login:hover .luxe-dropdown,
+		.top-cart:hover .luxe-dropdown,
+		.top-search:hover .luxe-dropdown,
+		.top-search .luxe-dropdown.search-open {
 			opacity: 1;
-			transform: translate3d(0, 0, 0);
+			visibility: visible;
+			transform: translateY(0);
 		}
 
-		/* 3. IMAGE ZOOM — subtle, framed, no layout shift. */
-		.sin-product .pro-img {
-			overflow: hidden;
-		}
-		.sin-product .pro-img img {
-			transition: transform 0.5s ease;
-			backface-visibility: hidden;
-		}
-		.sin-product:hover .pro-img img {
-			transform: scale(1.06);
-		}
-
-		/* 4. MOUSE-REACTIVE GLOW + MAGNETIC PULL — hero CTA only.
-		   Glow follows cursor via CSS custom props; magnetic translate set in JS.
-		   The transition smooths the pull and the spring-back on mouseleave.
-		   transform-only → compositor-friendly, no layout thrash. */
-		.cta-primary {
-			position: relative;
-			overflow: hidden;
-			isolation: isolate;
-			transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-		}
-		.cta-primary::before {
-			content: "";
+		/* Live search suggestions dropdown */
+		.live-search-results {
+			display: none;
 			position: absolute;
-			inset: 0;
-			z-index: -1;
-			background: radial-gradient(
-				120px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-				rgba(255, 255, 255, 0.45),
-				rgba(255, 255, 255, 0) 60%
-			);
-			opacity: 0;
-			transition: opacity 0.3s ease;
-		}
-		.cta-primary:hover::before {
-			opacity: 1;
+			top: calc(100% + 8px);
+			left: 0;
+			right: 0;
+			background: #fff;
+			border: 1px solid #f0f0f0;
+			border-radius: 10px;
+			box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+			max-height: 360px;
+			overflow-y: auto;
+			z-index: 1080;
 		}
 
-		/* ACCESSIBILITY / PERF — honor reduced motion: kill all motion,
-		   reveal content immediately, no aurora drift, no zoom, no glow. */
-		@media (prefers-reduced-motion: reduce) {
-			.animated { animation: none !important; }
-			.slider-wrapper .aurora::before,
-			.slider-wrapper .aurora::after {
-				animation: none;
-			}
-			.reveal {
-				opacity: 1;
-				transform: none;
-				transition: none;
-			}
-			.sin-product:hover .pro-img img {
-				transform: none;
-			}
-			.cta-primary::before {
-				display: none;
-			}
-			.cta-primary {
-				transform: none !important;
-				transition: none;
-			}
+		.live-search-results.is-open {
+			display: block;
+		}
+
+		.live-search-item {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 10px 14px;
+			color: #1b1b18;
+			text-decoration: none;
+			border-bottom: 1px solid #f5f5f5;
+		}
+
+		.live-search-item:last-child {
+			border-bottom: none;
+		}
+
+		.live-search-item:hover {
+			background: #fdfbf7;
+		}
+
+		.live-search-item img {
+			width: 44px;
+			height: 44px;
+			object-fit: cover;
+			border-radius: 6px;
+			flex-shrink: 0;
+		}
+
+		.live-search-item .ls-name {
+			flex: 1;
+			font-size: 14px;
+			font-weight: 600;
+			line-height: 1.3;
+		}
+
+		.live-search-item .ls-price {
+			font-size: 13px;
+			font-weight: 700;
+			color: #c29b67;
+			white-space: nowrap;
+		}
+
+		.live-search-empty {
+			padding: 14px;
+			font-size: 13px;
+			color: #7d7d7d;
+			text-align: center;
+		}
+
+		.luxe-separator {
+			width: 1px;
+			height: 24px;
+			background: #eee;
+			margin: 0 10px;
+		}
+
+		/* Responsive Adjustments */
+		@media (max-width: 1199px) {
+			.nav-pill-wrapper { padding: 4px 8px; }
+			.nav-pill-wrapper ul li a { padding: 8px 15px; font-size: 12px; }
+			.header-right-luxe { gap: 15px; }
+		}
+
+		@media (max-width: 991px) {
+			.header-area { padding: 15px 0; }
+			.menu-container { display: none; }
 		}
 	</style>
 
 	@stack('styles')
-
-	<!-- Active Navigation Highlighting -->
-	<style>
-		/* Desktop Navigation Active State */
-		#navigation li a.active {
-			color: #FFD700 !important;
-			font-weight: 700 !important;
-			position: relative;
-		}
-		
-		#navigation li a.active::after {
-			content: '';
-			position: absolute;
-			bottom: -5px;
-			left: 0;
-			width: 100%;
-			height: 3px;
-			background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
-			border-radius: 2px;
-			box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
-		}
-		
-		/* Mobile Navigation Active State */
-		#mobilemenu .out-link.active a {
-			color: #FFD700 !important;
-			font-weight: 700 !important;
-			background: rgba(255, 215, 0, 0.1);
-			padding-left: 20px !important;
-			border-left: 4px solid #FFD700;
-		}
-		
-		/* Hover effect for non-active items */
-		#navigation li a:not(.active):hover {
-			color: #FFA500 !important;
-		}
-	</style>
-
+	
 	@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
@@ -499,22 +348,6 @@
 		<span>{{ session('success') ?? session('error') }}</span>
 	</div>
 @endif
-@verbatim
-<style>
-.flash-toast{position:fixed;top:20px;right:20px;z-index:99999;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:8px;color:#fff;font-weight:600;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:90vw;animation:flashToastIn .35s ease both}
-.flash-toast--success{background:#27ae60}
-.flash-toast--error{background:#e74c3c}
-.flash-toast i{font-size:18px}
-.flash-toast.flash-toast--hide{animation:flashToastOut .4s ease forwards}
-@keyframes flashToastIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes flashToastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-16px)}}
-@media (max-width:767px){.flash-toast{top:12px;right:12px;left:12px;justify-content:center}}
-</style>
-<script>
-(function(){var t=document.getElementById('flash-toast');if(!t)return;setTimeout(function(){t.classList.add('flash-toast--hide');setTimeout(function(){if(t&&t.parentNode)t.parentNode.removeChild(t);},400);},3500);})();
-</script>
-@endverbatim
-
 
 	<div class="site-content">
 
@@ -523,167 +356,160 @@
 		<!--=========================-->
 
 		<header id="header" class="header-area">
-			<div class="container-fluid custom-container menu-rel-container">
-				<div class="row">
-					<!-- Logo
-					============================================= -->
-
-				<div class="col-lg-6 col-xl-2">
-					<div class="logo">
-						<a href="{{ url('/') }}">
-							@if($siteSettings->logo)
-								<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
-							@else
-								<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
-							@endif
-						</a>
+			<div class="container custom-container">
+				<div class="row align-items-center">
+					<!-- Logo Area -->
+					<div class="col-lg-2 col-md-4 col-6">
+						<div class="logo">
+							<a href="{{ url('/') }}">
+								@if($siteSettings->logo)
+									<img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
+								@else
+									<img src="{{ asset('media/images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'Softyskin' }}">
+								@endif
+							</a>
+						</div>
 					</div>
-				</div>
 
-					<!-- Main menu
-					============================================= -->
-
-					<div class="col-lg-12 col-xl-7 order-lg-3 order-xl-2 menu-container">
-						<div class="mainmenu">
+					<!-- Navigation Pill Area -->
+					<div class="col-lg-6 d-none d-lg-flex justify-content-center">
+						<div class="nav-pill-wrapper">
 							<ul id="navigation">
-								<li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">home</a></li>
+								<li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">HOME</a></li>
 								<li><a href="{{ route('collection') }}" class="{{ request()->is('collection*') || request()->is('product/*') ? 'active' : '' }}">COLLECTION</a></li>
 								<li><a href="{{ route('contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">CONTACT</a></li>
 							</ul>
 						</div>
 					</div>
-					<!--Main menu end-->
-					<div class="col-lg-6 col-xl-3 order-lg-2 order-xl-3">
-						<div class="header-right-one">
-							<ul>
-								@auth
-									@php
-										$userHasOrders = \App\Models\Order::where('user_id', auth()->id())->exists();
-									@endphp
-									@if($userHasOrders)
-										<li>
-											<a href="{{ route('orders.index') }}" title="My Orders" style="display: flex; align-items: center; gap: 5px;">
-												<i class="fa fa-list-alt" aria-hidden="true"></i>
-												<span style="font-size: 13px; font-weight: 500;">My Orders</span>
-											</a>
-										</li>
-									@endif
-								@endauth
-								@if($currencyService->hasEgpRate())
-								<li style="position: relative; list-style: none;">
-									<div style="display: flex; align-items: center; gap: 4px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; font-size: 12px; font-weight: 700; height: 32px;">
-										<form method="POST" action="{{ route('currency.set') }}" style="margin:0;">
-											@csrf
-											<input type="hidden" name="currency" value="USD">
-											<button type="submit" style="padding: 0 8px; height: 32px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; {{ $activeCurrency === 'USD' ? 'background:#1b1b18; color:#fff;' : 'background:#fff; color:#555;' }}">USD</button>
-										</form>
-										<form method="POST" action="{{ route('currency.set') }}" style="margin:0;">
-											@csrf
-											<input type="hidden" name="currency" value="EGP">
-											<button type="submit" style="padding: 0 8px; height: 32px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; {{ $activeCurrency === 'EGP' ? 'background:#1b1b18; color:#fff;' : 'background:#fff; color:#555;' }}">EGP</button>
-										</form>
-									</div>
-								</li>
-								@endif
-								<li class="user-login" style="position: relative;">
-									@auth
-										<!-- Logged-in User -->
-										<a href="#" style="display: flex; align-items: center; gap: 8px;">
-											<div style="width: 35px; height: 35px; border-radius: 50%; background: #FFD700; color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;">
-												{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-											</div>
-										</a>
-										<!-- Dropdown Menu -->
-										<div class="cart-drop" style="min-width: 200px; right: 0; left: auto;">
-											<div style="padding: 15px;">
-												<p style="font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-													{{ auth()->user()->name }}
-												</p>
-												@if(auth()->user()->role === 'admin')
-													<a href="/admin" style="display: block; padding: 8px 0; color: #333;">
-														<i class="fa fa-shield"></i> Admin Dashboard
-													</a>
-												@endif
-												@if($userHasOrders)
-													<a href="{{ route('orders.index') }}" style="display: block; padding: 8px 0; color: #333;">
-														<i class="fa fa-list-alt"></i> My Orders
-													</a>
-												@endif
-												<a href="{{ route('cart') }}" style="display: block; padding: 8px 0; color: #333;">
-													<i class="fa fa-shopping-cart"></i> My Cart
-												</a>
-												<form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-													@csrf
-													<button type="submit" style="display: block; width: 100%; text-align: left; padding: 8px 0; border: none; background: none; color: #d9534f; cursor: pointer;">
-														<i class="fa fa-sign-out"></i> Logout
-													</button>
-												</form>
-											</div>
+
+					<!-- Right Action Area -->
+					<div class="col-lg-4 col-md-8 col-6">
+						<div class="header-right-luxe">
+							<!-- Search -->
+							<div class="top-search d-flex align-items-center">
+								<a href="javascript:void(0)" class="icon-link"><i class="fa fa-search"></i></a>
+								<div class="luxe-dropdown" style="min-width: 350px;">
+									<form action="{{ route('collection') }}" method="GET" autocomplete="off">
+										<div class="position-relative">
+											<input type="text" name="search" value="{{ request('search') }}" class="luxe-input" placeholder="Search products..." id="live-search-input" style="width: 100%;">
+											<div class="live-search-results" id="live-search-results"></div>
 										</div>
-									@else
-										<!-- Guest User -->
-										<a href="{{ route('login') }}" title="Login">
-											<i class="fa fa-user" aria-hidden="true"></i>
-										</a>
-									@endauth
-								</li>
-							<li class="top-cart">
-								<a href="javascript:void(0)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> ({{ $globalCartCount }})</a>
-								<div class="cart-drop">
-									@forelse($globalCartItems as $item)
-										<div class="single-cart">
-											<div class="cart-img">
-												<img alt="{{ $item->product->name }}" src="{{ $item->product->primary_image ? asset('storage/' . $item->product->primary_image) : asset('media/images/product/car1.jpg') }}">
-											</div>
-											<div class="cart-title">
-												<p><a href="{{ route('product.show', $item->product->slug) }}">{{ \Illuminate\Support\Str::limit($item->product->name, 30) }}</a></p>
-											</div>
-											<div class="cart-price">
-												<p>{{ $item->quantity }} x @price($item->product->final_price)</p>
-											</div>
-											<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="cart-remove-form">
+									</form>
+								</div>
+							</div>
+
+							<div class="luxe-separator d-none d-xl-block"></div>
+
+							<!-- My Orders -->
+							@auth
+								@php
+									$userHasOrders = \App\Models\Order::where('user_id', auth()->id())->exists();
+								@endphp
+								@if($userHasOrders)
+									<a href="{{ route('orders.index') }}" class="my-orders-link d-none d-xl-flex">
+										<i class="fa fa-calendar-check"></i> My Orders
+									</a>
+									<div class="luxe-separator d-none d-xl-block"></div>
+								@endif
+							@endauth
+
+							<!-- Currency Switcher -->
+							@if($currencyService->hasEgpRate())
+								<div class="currency-switcher-luxe d-none d-md-flex">
+									<form method="POST" action="{{ route('currency.set') }}" class="m-0">
+										@csrf
+										<input type="hidden" name="currency" value="USD">
+										<button type="submit" class="currency-btn {{ $activeCurrency === 'USD' ? 'active' : '' }}">USD</button>
+									</form>
+									<form method="POST" action="{{ route('currency.set') }}" class="m-0">
+										@csrf
+										<input type="hidden" name="currency" value="EGP">
+										<button type="submit" class="currency-btn {{ $activeCurrency === 'EGP' ? 'active' : '' }}">EGP</button>
+									</form>
+								</div>
+								<div class="luxe-separator d-none d-md-block"></div>
+							@endif
+
+							<!-- User -->
+							<div class="user-login position-relative d-flex align-items-center">
+								@auth
+									<a href="#" class="user-avatar-luxe">
+										{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+									</a>
+									<div class="luxe-dropdown">
+										<div class="p-2">
+											<p class="font-weight-bold mb-3 pb-3 border-bottom luxe-sans" style="font-size: 15px;">
+												Hello, {{ auth()->user()->name }}
+											</p>
+											@if(auth()->user()->role === 'admin')
+												<a href="/admin" class="d-block py-2 text-dark"><i class="fa fa-shield-alt mr-2 text-muted"></i> Admin Dashboard</a>
+											@endif
+											<a href="{{ route('orders.index') }}" class="d-block py-2 text-dark"><i class="fa fa-list-alt mr-2 text-muted"></i> My Orders</a>
+											<a href="{{ route('cart') }}" class="d-block py-2 text-dark"><i class="fa fa-shopping-cart mr-2 text-muted"></i> My Cart</a>
+											<form method="POST" action="{{ route('logout') }}" class="m-0 border-top mt-3 pt-3">
 												@csrf
-												@method('DELETE')
-												<button type="submit" style="border:none; background:none; color:#d9534f; cursor:pointer; padding:0; width:100%; height:100%;">
-													<i class="fa fa-times"></i>
+												<button type="submit" class="border-0 bg-transparent text-danger p-0 luxe-sans font-weight-bold">
+													<i class="fa fa-sign-out-alt mr-2"></i> Logout
 												</button>
 											</form>
 										</div>
+									</div>
+								@else
+									<a href="{{ route('login') }}" class="icon-link"><i class="fa fa-user"></i></a>
+								@endauth
+							</div>
+
+							<!-- Cart -->
+							<div class="top-cart position-relative">
+								<a href="javascript:void(0)" class="cart-pill-luxe">
+									<i class="fa fa-shopping-cart"></i>
+									<span class="cart-count">({{ $globalCartCount }})</span>
+								</a>
+								<div class="luxe-dropdown" style="min-width: 320px;">
+									@forelse($globalCartItems as $item)
+										<div class="d-flex align-items-center mb-3 pb-3 border-bottom position-relative">
+											<div class="mr-3" style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: #f8f9fa;">
+												<img alt="{{ $item->product->name }}" src="{{ $item->product->primary_image ? asset('storage/' . $item->product->primary_image) : asset('media/images/product/car1.jpg') }}" style="width: 100%; height: 100%; object-fit: cover;">
+											</div>
+											<div class="flex-grow-1">
+												<h6 class="mb-1 luxe-sans" style="font-size: 13px;"><a href="{{ route('product.show', $item->product->slug) }}" class="text-dark">{{ \Illuminate\Support\Str::limit($item->product->name, 25) }}</a></h6>
+												<p class="mb-0 text-muted" style="font-size: 12px;">{{ $item->quantity }} × @price($item->product->final_price)</p>
+											</div>
+											<form method="POST" action="{{ route('cart.remove', $item->id) }}" class="m-0 position-absolute" style="top: 0; right: 0;">
+												@csrf @method('DELETE')
+												<button type="submit" class="border-0 bg-transparent text-danger p-0" title="Remove"><i class="fa fa-times" style="font-size: 12px;"></i></button>
+											</form>
+										</div>
 									@empty
-										<div class="single-cart" style="text-align:center; padding:20px;">
-											<p>Your cart is empty</p>
+										<div class="text-center py-4">
+											<i class="fa fa-shopping-basket fa-2x text-light mb-3"></i>
+											<p class="text-muted mb-0 luxe-sans">Your cart is empty</p>
 										</div>
 									@endforelse
 
 									@if($globalCartItems->isNotEmpty())
-										<div class="cart-bottom">
-											<div class="cart-sub-total">
-												<p>Total <span>@price($globalCartTotal)</span></p>
+										<div class="pt-3">
+											<div class="d-flex justify-content-between mb-3">
+												<span class="text-muted">Total:</span>
+												<span class="font-weight-bold luxe-gold">@price($globalCartTotal)</span>
 											</div>
-											<div class="cart-checkout">
-												<a href="{{ route('cart') }}"><i class="fa fa-shopping-cart"></i>View Cart</a>
-											</div>
-											<div class="cart-share">
-												<a href="{{ route('checkout') }}" class="checkout-btn"><i class="fa fa-share"></i>Checkout</a>
+											<div class="row no-gutters gap-2">
+												<div class="col-6 pr-1">
+													<a href="{{ route('cart') }}" class="btn btn-block btn-outline-dark btn-sm rounded-pill py-2">View Cart</a>
+												</div>
+												<div class="col-6 pl-1">
+													<a href="{{ route('checkout') }}" class="btn btn-block btn-dark btn-sm rounded-pill py-2">Checkout</a>
+												</div>
 											</div>
 										</div>
 									@endif
 								</div>
-							</li>
-								<li class="top-search">
-									<a href="javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
-									</a>
-									<form action="{{ route('collection') }}" method="GET" autocomplete="off">
-										<input type="text" name="search" value="{{ request('search') }}" class="search-input" placeholder="Search" id="live-search-input">
-										<div class="live-search-results" id="live-search-results"></div>
-									</form>
-								</li>
-							</ul>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!--Container-Fluid-->
+		</header>-Fluid-->
 		</header>
 		<!--Main Header end-->
 
@@ -1165,6 +991,86 @@
 			// Checkout buttons now work directly without modal interference
 			// Removed the preventDefault() that was blocking checkout navigation
 		});
+	</script>
+
+	<script>
+		// Live search autocomplete — wires the existing inputs to the existing
+		// search.suggestions endpoint. No routes/controllers changed.
+		(function () {
+			var endpoint = "{{ route('search.suggestions') }}";
+
+			function escapeHtml(value) {
+				return String(value)
+					.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+			}
+
+			function render(results, item) {
+				if (!Array.isArray(results) || results.length === 0) {
+					results.length = 0;
+					item.innerHTML = '<div class="live-search-empty">No products found</div>';
+					item.classList.add('is-open');
+					return;
+				}
+				item.innerHTML = results.map(function (p) {
+					return '<a class="live-search-item" href="' + escapeHtml(p.url) + '">' +
+						'<img src="' + escapeHtml(p.image) + '" alt="">' +
+						'<span class="ls-name">' + escapeHtml(p.name) + '</span>' +
+						'<span class="ls-price">' + escapeHtml(p.price) + '</span>' +
+						'</a>';
+				}).join('');
+				item.classList.add('is-open');
+			}
+
+			function wire(inputId, resultsId) {
+				var input = document.getElementById(inputId);
+				var results = document.getElementById(resultsId);
+				if (!input || !results) return;
+
+				var timer = null;
+				var dropdown = input.closest('.luxe-dropdown');
+
+				input.addEventListener('focus', function () {
+					if (dropdown) dropdown.classList.add('search-open');
+				});
+
+				input.addEventListener('input', function () {
+					var term = input.value.trim();
+					if (timer) clearTimeout(timer);
+
+					if (term.length < 2) {
+						results.classList.remove('is-open');
+						results.innerHTML = '';
+						return;
+					}
+
+					timer = setTimeout(function () {
+						fetch(endpoint + '?q=' + encodeURIComponent(term), {
+							headers: { 'Accept': 'application/json' }
+						})
+							.then(function (r) { return r.ok ? r.json() : []; })
+							.then(function (data) { render(data, results); })
+							.catch(function () {
+								results.classList.remove('is-open');
+								results.innerHTML = '';
+							});
+					}, 250);
+				});
+
+				// Hide results when clicking outside this search box.
+				document.addEventListener('click', function (e) {
+					if (!results.contains(e.target) && e.target !== input) {
+						results.classList.remove('is-open');
+						if (dropdown && !dropdown.contains(e.target)) {
+							dropdown.classList.remove('search-open');
+						}
+					}
+				});
+			}
+
+			wire('live-search-input', 'live-search-results');
+			wire('live-search-input-mobile', 'live-search-results-mobile');
+		})();
 	</script>
 
 
