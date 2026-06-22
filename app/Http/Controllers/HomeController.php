@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\HomepageSection;
 use App\Models\Review;
 use App\Models\HeroSlider;
-use App\Models\PromotionalBanner;
 use App\Models\SiteSetting;
 use App\Models\FeatureIcon;
 use Illuminate\Http\Request;
@@ -24,24 +24,13 @@ class HomeController extends Controller
             return HeroSlider::active()->ordered()->get();
         });
 
-        // Get promotional banners for "after_products" position. Short TTL
-        // because scheduled() is time-bound (start_date/end_date) — a longer
-        // cache would keep showing an expired banner past its end_date.
-        $promoBannersAfterProducts = Cache::remember('home:promo_banners:after_products', 300, function () {
-            return PromotionalBanner::active()
-                ->scheduled()
-                ->byPosition('after_products')
-                ->ordered()
-                ->get();
-        });
-
-        // Get promotional banners for "after_reviews" position
-        $promoBannersAfterReviews = Cache::remember('home:promo_banners:after_reviews', 300, function () {
-            return PromotionalBanner::active()
-                ->scheduled()
-                ->byPosition('after_reviews')
-                ->ordered()
-                ->get();
+        // Short TTL because cards use scheduled() (start_date/end_date) — a longer
+        // cache would keep showing an expired card past its end_date.
+        $homepageSections = Cache::remember('home:sections', 300, function () {
+            return HomepageSection::active()->ordered()
+                ->with(['cards' => fn ($q) => $q->active()->scheduled()->ordered()])
+                ->get()
+                ->groupBy('position');
         });
 
         // Get feature icons
@@ -79,8 +68,7 @@ class HomeController extends Controller
         return view('welcome', compact(
             'siteSettings',
             'heroSliders',
-            'promoBannersAfterProducts',
-            'promoBannersAfterReviews',
+            'homepageSections',
             'featureIcons',
             'featuredProducts',
             'categories',

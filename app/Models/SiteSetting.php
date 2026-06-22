@@ -39,10 +39,14 @@ class SiteSetting extends Model
         'footer_background_color',
         'footer_text_color',
         'default_currency',
+        'enable_product_card_ctas',
+        'enable_buy_now_button',
     ];
 
     protected $casts = [
         'sticky_header' => 'boolean',
+        'enable_product_card_ctas' => 'boolean',
+        'enable_buy_now_button' => 'boolean',
     ];
 
     /**

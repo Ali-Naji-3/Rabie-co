@@ -14,7 +14,7 @@ class ProductObserver
      * checkout — busting the cache on every stock decrement would defeat
      * most of the caching benefit during normal order volume.
      */
-    private const DISPLAY_FIELDS = ['is_active', 'is_featured', 'name', 'price', 'sale_price', 'discount_percentage', 'primary_image'];
+    private const DISPLAY_FIELDS = ['is_active', 'is_featured', 'name', 'slug', 'short_description', 'price', 'sale_price', 'discount_percentage', 'primary_image', 'rating', 'rating_count', 'auto_review_count'];
 
     public function created(Product $product): void
     {

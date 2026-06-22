@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class PromotionalBanner extends Model
 {
     protected $fillable = [
+        'homepage_section_id',
         'image',
         'mobile_image',
         'focal_point',
@@ -49,6 +51,11 @@ class PromotionalBanner extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(HomepageSection::class, 'homepage_section_id');
+    }
 
     /**
      * Scope to get only active banners

@@ -9,13 +9,11 @@ class PromotionalBannerObserver
 {
     public function saved(PromotionalBanner $promotionalBanner): void
     {
-        Cache::forget('home:promo_banners:after_products');
-        Cache::forget('home:promo_banners:after_reviews');
+        Cache::forget('home:sections');
     }
 
     public function deleted(PromotionalBanner $promotionalBanner): void
     {
-        Cache::forget('home:promo_banners:after_products');
-        Cache::forget('home:promo_banners:after_reviews');
+        Cache::forget('home:sections');
     }
 }

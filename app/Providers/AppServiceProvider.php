@@ -9,12 +9,14 @@ use App\Models\Category;
 use App\Models\FeatureIcon;
 use App\Models\HeroSlider;
 use App\Models\Product;
+use App\Models\HomepageSection;
 use App\Models\PromotionalBanner;
 use App\Models\Review;
 use App\Models\SiteSetting;
 use App\Observers\CategoryObserver;
 use App\Observers\FeatureIconObserver;
 use App\Observers\HeroSliderObserver;
+use App\Observers\HomepageSectionObserver;
 use App\Observers\ProductObserver;
 use App\Observers\PromotionalBannerObserver;
 use App\Observers\ReviewObserver;
@@ -99,6 +101,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         HeroSlider::observe(HeroSliderObserver::class);
         PromotionalBanner::observe(PromotionalBannerObserver::class);
+        HomepageSection::observe(HomepageSectionObserver::class);
         FeatureIcon::observe(FeatureIconObserver::class);
         Review::observe(ReviewObserver::class);
 

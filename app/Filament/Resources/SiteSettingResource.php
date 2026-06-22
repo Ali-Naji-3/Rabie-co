@@ -285,6 +285,22 @@ class SiteSettingResource extends Resource
                                     ->columns(2),
                             ]),
                             
+                        // Product Card Settings Tab
+                        Forms\Components\Tabs\Tab::make('Product Card Settings')
+                            ->icon('heroicon-o-shopping-bag')
+                            ->schema([
+                                Forms\Components\Section::make('Global CTAs')
+                                    ->description('Control buttons shown on product cards across the store.')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('enable_product_card_ctas')
+                                            ->label('Enable Add to Cart Button')
+                                            ->default(true),
+                                        Forms\Components\Toggle::make('enable_buy_now_button')
+                                            ->label('Enable Buy Now Button')
+                                            ->default(true),
+                                    ])
+                                    ->columns(2),
+                            ]),
                     ])
                     ->columnSpanFull(),
             ]);

@@ -173,69 +173,11 @@
 										</button>
 									</div>
 
-									<div class="row" id="mobile-product-row">
+									<div class="row g-2" id="mobile-product-row" style="margin-left: -5px; margin-right: -5px;">
 										@forelse($products as $product)
-										<div class="reveal col-sm-6 col-xl-3">
-											<div class="sin-product style-two">
-												<div class="pro-img">
-													<a href="{{ route('product.show', $product->slug) }}">
-														<img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/sp1.jpg') }}" 
-															alt="{{ $product->name }}" 
-															loading="lazy"
-															style="max-width: 100%; height: auto;">
-													</a>
-													<div class="icon-wrapper">
-														<div class="pro-icon">
-															<ul>
-																<li><a href="{{ route('product.show', $product->slug) }}"><i class="flaticon-eye"></i></a></li>
-															</ul>
-														</div>
-														<div class="add-to-cart">
-															<form method="POST" action="{{ route('cart.add') }}">
-																@csrf
-																<input type="hidden" name="product_id" value="{{ $product->id }}">
-																<input type="hidden" name="quantity" value="1">
-																<button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; width:100%;">
-																	add to cart
-																</button>
-															</form>
-														</div>
-													</div>
-												</div>
-												@if($product->stock === 0)
-													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10;">OUT OF STOCK</span>
-												@elseif($product->discount_percentage > 0)
-													<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold; color: white;">{{ $product->discount_percentage }}% OFF</span>
-												@endif
-												<div class="mid-wrapper">
-													@if($product->display_rating !== null)
-														<div style="margin-bottom: 4px; text-align: center;">
-															@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
-														</div>
-													@endif
-													<h5 class="pro-title"><a href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a></h5>
-													@include('partials.product-short-description', ['description' => $product->short_description])
-													<div class="price-section">
-														@if($product->final_price < $product->price)
-															<div class="mb-1">
-																<span style="color: #e74c3c; font-size: 20px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
-																	@price($product->price)
-																</span>
-															</div>
-															<div class="mb-1">
-																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																	@price($product->final_price)
-																</span>
-															</div>
-														@else
-															<div class="mb-1">
-																<span style="color: #27ae60; font-size: 26px; font-weight: bold; letter-spacing: 1px;">
-																	@price($product->final_price)
-																</span>
-															</div>
-														@endif
-													</div>
-												</div>
+										<div class="reveal col-6 col-md-4 col-xl-3 mb-3" style="padding-left: 5px; padding-right: 5px;">
+											<div style="width: 100%; height: 100%;">
+												@include('partials.product-card', ['product' => $product])
 											</div>
 										</div>
 										@empty
@@ -244,7 +186,7 @@
 											<p>Try adjusting your filters or search criteria.</p>
 										</div>
 										@endforelse
-												</div>
+									</div>
 									<!-- Pagination -->
 									<div class="row mt-4">
 										<div class="reveal col-12 d-flex justify-content-center">

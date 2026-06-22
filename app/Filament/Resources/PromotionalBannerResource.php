@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromotionalBannerResource\Pages;
+use App\Models\HomepageSection;
 use App\Models\PromotionalBanner;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -244,15 +245,12 @@ class PromotionalBannerResource extends Resource
                     
                 Forms\Components\Section::make('Display Settings')
                     ->schema([
-                        Forms\Components\Select::make('position')
-                            ->label('Banner Position')
-                            ->options([
-                                'after_products' => 'After Featured Products',
-                                'after_reviews' => 'After Customer Reviews',
-                            ])
-                            ->default('after_products')
-                            ->required()
-                            ->helperText('Choose where to display this banner on the homepage'),
+                        Forms\Components\Select::make('homepage_section_id')
+                            ->label('Homepage Section')
+                            ->relationship('section', 'section_name')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Assign this card to a section. Cards are best managed from the section\'s edit screen.'),
                         Forms\Components\TextInput::make('order')
                             ->label('Display Order')
                             ->numeric()
@@ -267,10 +265,12 @@ class PromotionalBannerResource extends Resource
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_date')
                             ->label('Start Date')
-                            ->helperText('Leave empty to show immediately'),
+                            ->helperText('Leave empty to show immediately')
+                            ->beforeOrEqual('end_date'),
                         Forms\Components\DateTimePicker::make('end_date')
                             ->label('End Date')
-                            ->helperText('Leave empty for no expiration'),
+                            ->helperText('Leave empty for no expiration')
+                            ->afterOrEqual('start_date'),
                     ])
                     ->columns(2)
                     ->collapsed(),
@@ -299,16 +299,12 @@ class PromotionalBannerResource extends Resource
                     ->weight('bold')
                     ->wrap()
                     ->placeholder('(No title)'),
-                Tables\Columns\TextColumn::make('position')
-                    ->label('Position')
+                Tables\Columns\TextColumn::make('section.section_name')
+                    ->label('Section')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'after_products' => 'info',
-                        'after_reviews' => 'success',
-                        'before_footer' => 'warning',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => ucwords(str_replace('_', ' ', $state))),
+                    ->color('info')
+                    ->placeholder('(No section)')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('order')
                     ->label('Order')
                     ->numeric()
@@ -334,12 +330,11 @@ class PromotionalBannerResource extends Resource
             ->defaultSort('order', 'asc')
             ->reorderable('order')
             ->filters([
-                Tables\Filters\SelectFilter::make('position')
-                    ->label('Position')
-                    ->options([
-                        'after_products' => 'After Featured Products',
-                        'after_reviews' => 'After Customer Reviews',
-                    ]),
+                Tables\Filters\SelectFilter::make('homepage_section_id')
+                    ->label('Section')
+                    ->relationship('section', 'section_name')
+                    ->searchable()
+                    ->preload(),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active Status')
                     ->placeholder('All banners')

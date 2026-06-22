@@ -87,6 +87,10 @@ class CartController extends Controller
             }
         }
 
+        if ($request->has('redirect')) {
+            return redirect($request->input('redirect'))->with('success', 'Product added to cart');
+        }
+
         return back()->with('success', 'Product added to cart');
     }
 

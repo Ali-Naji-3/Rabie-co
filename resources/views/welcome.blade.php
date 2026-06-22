@@ -210,66 +210,12 @@
 			<!-- /.section-heading-->
 			<div class="row">
 				<div class="col-xl-12 ">
-					<div class="pro-tab-filter">
-						<div class="grid row">
+						<div class="row g-2 g-md-4">
 							@forelse($featuredProducts as $product)
 								<!-- single product -->
-								<div class="reveal grid-item col-6 col-md-6 col-lg-4 col-xl-3">
-									<div class="sin-product style-one">
-										<div class="pro-img" style="height: 250px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
-											<a href="{{ route('product.show', $product->slug) }}">
-												<img src="{{ $product->primary_image ? asset('storage/' . $product->primary_image) : asset('media/images/product/1.jpg') }}" 
-													alt="{{ $product->name }}"
-													loading="lazy"
-													style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
-											</a>
-											@if($product->stock === 0)
-												<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10;">OUT OF STOCK</span>
-											@elseif($product->discount_percentage > 0)
-												<span class="badge bg-danger" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-size: 14px; font-weight: bold; color: white;">{{ $product->discount_percentage }}% OFF</span>
-											@endif
-										</div>
-										<div class="mid-wrapper">
-											@if($product->display_rating !== null)
-												<div style="margin-bottom: 4px;">
-													@include('partials.star-rating', ['rating' => $product->display_rating, 'count' => $product->display_review_count])
-												</div>
-											@endif
-											<h5 class="pro-title" style="font-size: 20px; font-weight: 900; color: #222; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-												<a href="{{ route('product.show', $product->slug) }}" style="color: #222; text-decoration: none; font-weight: 900;">{{ $product->name }}</a>
-											</h5>
-											@include('partials.product-short-description', ['description' => $product->short_description])
-										<div class="price-section">
-											@if($product->final_price < $product->price)
-												<div class="mb-1">
-													<span style="color: #e74c3c; font-size: 18px; font-weight: bold; text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px;">
-														@price($product->price)
-													</span>
-												</div>
-												<div class="mb-1">
-													<span style="color: #27ae60; font-size: 24px; font-weight: bold; letter-spacing: 1px;">
-														@price($product->final_price)
-													</span>
-												</div>
-											@else
-												<div class="mb-1">
-													<span style="color: #27ae60; font-size: 24px; font-weight: bold; letter-spacing: 1px;">
-														@price($product->final_price)
-													</span>
-												</div>
-											@endif
-										</div>
-										@if($product->stock === 0)
-											<button type="button" class="btn-two quick-add-btn" disabled style="width:100%;margin-top:12px;opacity:.55;cursor:not-allowed;">Out of Stock</button>
-										@else
-											<form method="POST" action="{{ route('cart.add') }}" class="quick-add-form" style="margin-top:12px;">
-												@csrf
-												<input type="hidden" name="product_id" value="{{ $product->id }}">
-												<input type="hidden" name="quantity" value="1">
-												<button type="submit" class="btn-two quick-add-btn" style="width:100%;">Add to Cart</button>
-											</form>
-										@endif
-										</div>
+								<div class="reveal col-6 col-md-4 col-xl-3 mb-4">
+									<div style="width: 100%; height: 100%;">
+										@include('partials.product-card', ['product' => $product])
 									</div>
 								</div>
 							@empty
@@ -293,26 +239,12 @@
 	<!-- main-product -->
 
 	<!--=========================-->
-	<!--=   Promotional Banners (Dynamic)   =-->
+	<!--=   Homepage Sections (after_products)   =-->
 	<!--=========================-->
 
-	@if($promoBannersAfterProducts->isNotEmpty())
-	<section class="reveal promo-banners-section">
-		<div class="promo-banner-section-header">
-			<h6 class="promo-banner-section-title">Real Results</h6>
-			<p class="promo-banner-section-subtitle">See what to expect at every stage of your treatment</p>
-		</div>
-		<div class="promo-banner-wrap">
-			<div class="promo-banner-carousel owl-carousel"
-				 data-items="{{ min($promoBannersAfterProducts->count(), 4) }}"
-				 data-total="{{ $promoBannersAfterProducts->count() }}">
-				@foreach($promoBannersAfterProducts as $banner)
-					@include('partials.promo-banner-item', ['banner' => $banner])
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
+	@foreach(($homepageSections['after_products'] ?? []) as $section)
+		@include('partials.homepage-section', ['section' => $section])
+	@endforeach
 
 	<!--=========================-->
 	<!--=   Small Product area    =-->
@@ -403,31 +335,64 @@
 		@endif
 
 	<!--=========================-->
-	<!--=   Promotional Banners After Reviews (Dynamic)   =-->
+	<!--=   Homepage Sections (after_reviews)   =-->
 	<!--=========================-->
 
-	@if($promoBannersAfterReviews->isNotEmpty())
-	<section class="reveal promo-banners-section">
-		<div class="promo-banner-section-header">
-			<h6 class="promo-banner-section-title">Special Offers</h6>
-			<p class="promo-banner-section-subtitle">Exclusive deals selected for you</p>
-		</div>
-		<div class="promo-banner-wrap">
-			<div class="promo-banner-carousel owl-carousel"
-				 data-items="{{ min($promoBannersAfterReviews->count(), 4) }}"
-				 data-total="{{ $promoBannersAfterReviews->count() }}">
-				@foreach($promoBannersAfterReviews as $banner)
-					@include('partials.promo-banner-item', ['banner' => $banner])
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
+	@foreach(($homepageSections['after_reviews'] ?? []) as $section)
+		@include('partials.homepage-section', ['section' => $section])
+	@endforeach
+
+	<!--=========================-->
+	<!--=   Homepage Sections (before_footer)   =-->
+	<!--=========================-->
+
+	@foreach(($homepageSections['before_footer'] ?? []) as $section)
+		@include('partials.homepage-section', ['section' => $section])
+	@endforeach
 
 @endsection
 
 @push('styles')
 <style>
+/* Featured product card: cancel theme float so title/desc/price stack vertically */
+.sin-product.style-one .mid-wrapper h5.pro-title {
+    float: none;
+    width: 100%;
+    display: block;
+    clear: both;
+    text-align: center;
+    margin-bottom: 6px;
+}
+.sin-product.style-one .mid-wrapper h5.pro-title a {
+    white-space: normal;
+    width: auto;
+    overflow: visible;
+    text-overflow: unset;
+    display: block;
+    text-align: center;
+}
+.sin-product.style-one .mid-wrapper p {
+    float: none !important;
+    display: block !important;
+    width: 100% !important;
+    clear: both;
+    text-align: center !important;
+}
+.sin-product.style-one .mid-wrapper > ul {
+    float: none;
+    clear: both;
+    display: block;
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 0;
+    text-align: center;
+}
+.sin-product.style-one .mid-wrapper > ul > li {
+    display: block !important;
+    float: none !important;
+    text-align: center;
+}
+
 /* ── Shop by Category ─────────────────────── */
 
 .category-discovery-section {
@@ -680,6 +645,61 @@
 }
 .promo-banners-section .owl-nav .owl-prev:hover,
 .promo-banners-section .owl-nav .owl-next:hover { background: rgba(0,0,0,0.7) !important; }
+
+/* ── Steps card layout (How To Use / Why Choose Us / Features) ─── */
+.step-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.step-card-label {
+    background: #1b1b18;
+    color: #d19e66;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    text-align: center;
+}
+.step-card-media {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+.step-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.step-card-body {
+    padding: 18px 20px 22px;
+    flex: 1;
+}
+.step-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1b1b18;
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+.step-card-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 8px;
+}
+.step-card-desc:last-child { margin-bottom: 0; }
+@media (max-width: 767px) {
+    .step-card-body { padding: 14px 16px 18px; }
+    .step-card-title { font-size: 14px; }
+    .step-card-desc  { font-size: 13px; }
+}
 </style>
 @endpush
 
