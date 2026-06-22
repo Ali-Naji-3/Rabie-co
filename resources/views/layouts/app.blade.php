@@ -509,7 +509,6 @@
 					</div>
 				</div>
 			</div>
-		</header>-Fluid-->
 		</header>
 		<!--Main Header end-->
 
