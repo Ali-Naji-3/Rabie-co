@@ -210,12 +210,6 @@
         <div class="details-layout d-flex flex-column flex-lg-row">
             <div class="details-media-panel">
                 <img id="modalLargeImage" src="" alt="Customer Photo">
-                <div class="media-thumbnails d-flex mt-3">
-                    <img src="https://picsum.photos/100/100?random=1" class="active">
-                    <img src="https://picsum.photos/100/100?random=2">
-                    <img src="https://picsum.photos/100/100?random=3">
-                    <div class="thumb-more">See more</div>
-                </div>
             </div>
             <div class="details-info-panel p-4">
                 <div class="customer-info-header d-flex align-items-center mb-3">
@@ -368,10 +362,6 @@
 
 .details-media-panel { flex: 1.2; background: #000; display: flex; flex-direction: column; }
 .details-media-panel img#modalLargeImage { width: 100%; height: 500px; object-fit: cover; }
-.media-thumbnails { padding: 15px; gap: 10px; background: #fff; }
-.media-thumbnails img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; cursor: pointer; opacity: 0.6; }
-.media-thumbnails img.active { opacity: 1; border: 2px solid #D4AF37; }
-.thumb-more { width: 60px; height: 60px; border-radius: 6px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #888; text-align: center; }
 
 .details-info-panel { flex: 1; background: #fff; overflow-y: auto; max-height: 600px; }
 
