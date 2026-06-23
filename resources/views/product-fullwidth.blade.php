@@ -288,23 +288,6 @@
 		transform: translateY(-2px);
 		box-shadow: 0 14px 30px rgba(17,17,17,0.22);
 	}
-	.pdp-wishlist {
-		width: 60px;
-		height: 60px;
-		border-radius: 10px;
-		border: 1.5px solid var(--gold);
-		background: var(--white);
-		color: var(--gold);
-		font-size: 18px;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		transition: all .25s ease;
-		flex-shrink: 0;
-	}
-	.pdp-wishlist:hover, .pdp-wishlist.is-active { background: var(--gold); color: #fff; }
-
 	/* ---- Trust badges ---- */
 	.pdp-trust {
 		display: flex;
@@ -599,10 +582,6 @@
 							<button type="submit" class="pdp-add-cart">
 								<i class="fas fa-shopping-bag"></i> Add to Cart
 							</button>
-
-							<button type="button" class="pdp-wishlist" id="pdpWishlist" aria-label="Add to wishlist">
-								<i class="far fa-heart"></i>
-							</button>
 						</div>
 					</form>
 
@@ -783,13 +762,6 @@
 	if (plus)  plus.addEventListener('click', function () { qty.value = clampQty(parseInt(qty.value, 10) + 1); });
 	if (qty)   qty.addEventListener('change', function () { qty.value = clampQty(parseInt(qty.value, 10)); });
 
-	// ---- Wishlist (visual only) ----
-	var wish = document.getElementById('pdpWishlist');
-	if (wish) wish.addEventListener('click', function () {
-		wish.classList.toggle('is-active');
-		var icon = wish.querySelector('i');
-		if (icon) { icon.classList.toggle('far'); icon.classList.toggle('fas'); }
-	});
 })();
 </script>
 @endpush

@@ -5,8 +5,15 @@
             <p style="color: #666; margin-top: 10px;">Compare our advanced Ice Cooling technology with traditional hair removal methods.</p>
         </div>
 
+        {{-- Mobile image: shown only on ≤400px instead of the broken table layout --}}
+        <img src="{{ asset('media/images/comparison-table-mobile.png') }}"
+             alt="Comparison table: ICE COOLING PRO 3 vs Razor, Waxing, Salon Laser"
+             class="comparison-mobile-img"
+             loading="lazy"
+             width="900" height="500">
+
         <div class="comparison-table-container">
-            <div class="table-responsive">
+            <div class="table-scroll-wrapper">
                 <table class="comparison-ui-table">
                     <thead>
                         <tr>
@@ -62,23 +69,59 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </div>{{-- /.table-scroll-wrapper --}}
+        </div>{{-- /.comparison-table-container --}}
     </div>
 </section>
 
 <style>
 /* --- Comparison Table Styles --- */
+
+/* Mobile image: only visible at ≤400px */
+.comparison-mobile-img {
+    display: none;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    border: 1px solid #f0f0f0;
+}
+
+@media (max-width: 400px) {
+    .comparison-mobile-img { display: block; }
+    .comparison-table-container { display: none; }
+}
+
 .comparison-table-container {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-    overflow: hidden;
+    overflow: hidden; /* fallback: older Safari clips to border-radius */
+    overflow: clip;   /* modern: clips to border-radius without blocking child scroll */
     border: 1px solid #f0f0f0;
 }
 
+/* Scrollable wrapper so table never squishes below its min-width */
+.table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Legacy app.css has a global ≤575px "responsive cart table" hack
+   (table,thead,tbody,th,td,tr{display:block} + thead tr{top:-9999px})
+   that is NOT scoped and breaks every table site-wide. Restore proper
+   table semantics for THIS table only so it scrolls instead of stacking. */
+.comparison-ui-table        { display: table; }
+.comparison-ui-table thead  { display: table-header-group; }
+.comparison-ui-table tbody  { display: table-row-group; }
+.comparison-ui-table tr     { display: table-row; border: 0; }
+.comparison-ui-table th,
+.comparison-ui-table td      { display: table-cell; }
+.comparison-ui-table thead tr { position: static; top: auto; left: auto; }
+
 .comparison-ui-table {
     width: 100%;
+    min-width: 520px;
     border-collapse: collapse;
     background: #fff;
 }
